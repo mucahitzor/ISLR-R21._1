@@ -1,0 +1,23 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "ISLR-R21._1"
+  author: "MÜCAHİT ZOR"
+  date: "8/23/2023"
+  chapters:
+    - index.qmd
+    - Chapter2.qmd
+    - Chapter3.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+
