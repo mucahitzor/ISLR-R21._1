@@ -25,7 +25,7 @@
     "href": "index.html",
     "title": "ISLR-R21._1",
     "section": "",
-    "text": "Preface\nThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n\n1 + 1\n\n[1] 2"
+    "text": "Preface\nHere are my notes on Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani. An Introduction to Statistical Learning : with Applications in R. New York :Springer, 2013"
   },
   {
     "objectID": "Chapter3.html#simple-linear-regression",
