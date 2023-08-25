@@ -4,7 +4,10 @@ project:
 
 book:
   title: "ISLR-R21._1"
-  author: "MÜCAHİT ZOR"
+  author: "Mücahit Zor"
+  search: true
+  downloads: [pdf,epub]
+  sharing: twitter
   date: "8/23/2023"
   chapters:
     - index.qmd
@@ -13,9 +16,11 @@ book:
 
 bibliography: references.bib
 
+
 format:
   html:
-    theme: cosmo
+    theme: minty
+    mainfont: Circular
   pdf:
     documentclass: scrreprt
 

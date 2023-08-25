@@ -3,6 +3,7 @@ output: html_document
 editor_options: 
   chunk_output_type: console
 ---
+
 # Preface {.unnumbered}
 
 This is a Quarto book.
