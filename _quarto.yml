@@ -16,11 +16,19 @@ book:
 
 bibliography: references.bib
 
+sidebar:
+  pinned: true
+  align: center
+  
 
+highlight-style: a11y
 format:
   html:
-    theme: minty
-    mainfont: Circular
+    theme: 
+      light: minty
+      dark: darkly
+    code-overflow: wrap
+    toc: true
   pdf:
     documentclass: scrreprt
 
