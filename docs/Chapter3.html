@@ -196,6 +196,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#estimating-the-regression-coefficients" id="toc-estimating-the-regression-coefficients" class="nav-link" data-scroll-target="#estimating-the-regression-coefficients"><span class="header-section-number">2.2.1</span> Estimating the Regression Coefficients</a></li>
   <li><a href="#some-important-questions" id="toc-some-important-questions" class="nav-link" data-scroll-target="#some-important-questions"><span class="header-section-number">2.2.2</span> Some important Questions</a></li>
   </ul></li>
+  <li><a href="#other-considerations-in-the-regression-model" id="toc-other-considerations-in-the-regression-model" class="nav-link" data-scroll-target="#other-considerations-in-the-regression-model"><span class="header-section-number">2.3</span> Other Considerations in the Regression Model</a>
+  <ul class="collapse">
+  <li><a href="#qualitative-predictors" id="toc-qualitative-predictors" class="nav-link" data-scroll-target="#qualitative-predictors"><span class="header-section-number">2.3.1</span> Qualitative Predictors</a></li>
+  <li><a href="#extensions-of-the-linear-model" id="toc-extensions-of-the-linear-model" class="nav-link" data-scroll-target="#extensions-of-the-linear-model"><span class="header-section-number">2.3.2</span> Extensions of the Linear Model</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -1503,6 +1508,438 @@ RSE = \sqrt{\frac{1}{n-p-1}RSS}
 \]</span></p>
 <p>Models with more variables can have higher RSE if the decrease in RSS is small relative to the increase in <span class="math inline">\(p\)</span>.</p>
 <p>So we can look at both the RSE and <span class="math inline">\(R^2\)</span>.</p>
+<p><strong>Four: Predictions</strong></p>
+<p>After fitting the model we can predict <span class="math inline">\(Y\)</span> =&gt; <span class="math inline">\(\hat{y}\)</span> with estimated coefficients. However, there are three sorts of uncertainty associated with this prediction:</p>
+<ol type="1">
+<li><p>The coefficient esstimates <span class="math inline">\(\hat{\beta_0}, \hat{\beta_1},\dots,\hat{\beta_p}\)</span> are estimates for <span class="math inline">\(\beta_0, \beta_1, \dots, \beta_p\)</span>:</p>
+<p>That is, the <em>least squares plane</em></p></li>
+</ol>
+<p><span class="math display">\[
+\hat{y} = \hat{\beta_0} + \hat{\beta_1}x_1 + \dots +  \hat{\beta_p}x_p
+\]</span></p>
+<p>which is only an estimate for the <em>true population regression plane</em> <span class="math display">\[
+f(X) = \beta_0 + \beta_1x_1 + \dots + \beta_px_p
+\]</span></p>
+<p>So there is an inaccuracy in the coefficient estimates =&gt; this is the <em>reducible error</em> from Chapter 2. We can compute a <em>confidence interval</em> to determine how close <span class="math inline">\(\hat{y}\)</span> will be to <span class="math inline">\(f(X)\)</span>.</p>
+<ol start="2" type="1">
+<li><p>Assuming a linear model for <span class="math inline">\(f(X)\)</span> is almost always an aaproximation of reality (usually relationships are not linear), so ther is an additional source of potentially reducible error =&gt; this is the <em>model bias</em>.</p>
+<p>When we are using a linear model, we are in fact estimating the best linear approximation to the true surface. However, we will ignore this discrepancy and operate as if the linear model is correct</p></li>
+<li><p>Even if we knew <span class="math inline">\(f(X)\)</span>–that is even if we knew the true values of <span class="math inline">\(\beta\)</span>–the response value cannot be predicted perfectly because of the random error <span class="math inline">\(\epsilon\)</span> in the model =&gt; <em>irreducable error</em>. How much will <span class="math inline">\(Y\)</span> vary from <span class="math inline">\(\hat{y}\)</span> =&gt; we use <em>prediction intervals</em> to answer this question.</p>
+<p>Predicion intervals are always wider than confidence intervals, because they contain both the <em>reducible error</em>(error from estimating coefficients of <span class="math inline">\(f(X)\)</span>) and irreducible error.</p></li>
+</ol>
+<p>We use a <em>confidence interval</em> to quantify the uncertainty surrounding the <em>average</em> <code>sales</code> over a large number of cities. For example given that $100,000 is spent on <code>TV</code> advertising and $20,000 is spent on <code>radio</code> advertising in each city, the 95% confidence interval is <span class="math inline">\([10,985, 11,528]\)</span>. We interpret this to mean that 95% of intervals of this form will contain the true value of <span class="math inline">\(f(X)\)</span>.</p>
+<p>On the other hand, <em>a prediction interval</em> can be used to quantify the uncertainty surrounding <code>sales</code> for a <em>particular</em> city. Given that $100,000 is spent on <code>TV</code> advertising and $20,000 is spent on <code>radio</code> advertising in that city the 95% prediction interval is <span class="math inline">\([7,930, 14,580]\)</span>. We interpret this to mean that 95% of intervals of this form will contain the true value of <span class="math inline">\(Y\)</span> for this city. Note that both intervals are centered at 11,256, but that the prediction intervaş is substantially wider than the confidence interval, reflecting the increased uncertainty about <code>sales</code> for a given city in comparison to the average <code>sales</code> over many locations.</p>
+</section>
+</section>
+<section id="other-considerations-in-the-regression-model" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="other-considerations-in-the-regression-model"><span class="header-section-number">2.3</span> Other Considerations in the Regression Model</h2>
+<section id="qualitative-predictors" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="qualitative-predictors"><span class="header-section-number">2.3.1</span> Qualitative Predictors</h3>
+<p>In practice not all variables are <em>quantitative</em>; some predictors are <em>qualitative</em>.</p>
+<p>Check out the <code>Credit</code> data set</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"./data/Credit.csv"</span>) <span class="sc">%&gt;%</span> as_tibble</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>Credit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 400 × 12
+      ID Income Limit Rating Cards   Age Education Gender   Student Married
+   &lt;int&gt;  &lt;dbl&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;  
+ 1     1   14.9  3606    283     2    34        11 " Male"  No      Yes    
+ 2     2  106.   6645    483     3    82        15 "Female" Yes     Yes    
+ 3     3  105.   7075    514     4    71        11 " Male"  No      No     
+ 4     4  149.   9504    681     3    36        11 "Female" No      No     
+ 5     5   55.9  4897    357     2    68        16 " Male"  No      Yes    
+ 6     6   80.2  8047    569     4    77        10 " Male"  No      No     
+ 7     7   21.0  3388    259     2    37        12 "Female" No      No     
+ 8     8   71.4  7114    512     2    87         9 " Male"  No      No     
+ 9     9   15.1  3300    266     5    66        13 "Female" No      No     
+10    10   71.1  6819    491     3    41        19 "Female" Yes     Yes    
+# ℹ 390 more rows
+# ℹ 2 more variables: Ethnicity &lt;chr&gt;, Balance &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>Lets do a scatterplot of all variables</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">%&gt;%</span> <span class="fu">pairs</span>(.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-70-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Fig 3.6 The credit data set contains infortmation about blaance, age, cards, education income, limit and rating for a number of potential customers</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Predictors with Only Two Levels</strong></p>
+<p>We want to investigate differences in credit card balance between maels and females, ignoring other variables for the moment. If a qualitative predictors (also known as <em>factor</em>) only has two <em>levels</em>, then incorporating it into a regression model is very simple. We create a <em>dummy variable</em> that takes on two possible <em>numerical</em> values. For example based on <code>Gender</code> varaible, we can create a new varaible that takes the form</p>
+<p><span class="math display">\[
+x_i =
+\begin{cases}
+1 &amp; \text{if}\space i\text{th} \space\text{person is female} \\
+0 &amp; \text{if}\space i\text{th} \space\text{person is male}
+\end{cases}
+\]</span> (3.26)</p>
+<p>and use this variable as a predictor in the regression equation. This results in the model</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1x_i + \epsilon_i =
+\begin{cases}
+\beta_0 + \beta_1 + \epsilon_i &amp; i\text{th} \space\text{person is female} \\
+\beta_0 + \epsilon_i &amp; i\text{th} \space\text{person is male}
+\end{cases}
+\]</span> (3.27)</p>
+<p>Now <span class="math inline">\(\beta_0\)</span> can be interpreted as the average credit card balance among males, <span class="math inline">\(\beta_0 + \beta_1\)</span> as the average credit card among females, and <span class="math inline">\(\beta_1\)</span> as the average difference in credit card balance between females and males.</p>
+<p>Here is the regression results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a>Credit<span class="sc">$</span>Gender <span class="ot">&lt;-</span> <span class="fu">factor</span>(Credit<span class="sc">$</span>Gender, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">" Male"</span>,<span class="st">"Female"</span>))</span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb129-5"><a href="#cb129-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Gender, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb129-6"><a href="#cb129-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb129-7"><a href="#cb129-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = Balance ~ Gender, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-529.54 -455.35  -60.17  334.71 1489.20 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    509.80      33.13  15.389   &lt;2e-16 ***
+GenderFemale    19.73      46.05   0.429    0.669    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 460.2 on 398 degrees of freedom
+Multiple R-squared:  0.0004611, Adjusted R-squared:  -0.00205 
+F-statistic: 0.1836 on 1 and 398 DF,  p-value: 0.6685</code></pre>
+</div>
+</div>
+<p>R converts all <em>“Female”</em> values to 1 automatically. If we were to do this manually</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> </span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Gender =</span> <span class="fu">as.character</span>(Gender)) <span class="sc">%&gt;%</span> </span>
+<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Gender =</span> <span class="fu">ifelse</span>(Gender <span class="sc">==</span> <span class="st">"Female"</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb131-4"><a href="#cb131-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(Balance <span class="sc">~</span> Gender, .) <span class="sc">%&gt;%</span> </span>
+<span id="cb131-5"><a href="#cb131-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Balance ~ Gender, data = .)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-529.54 -455.35  -60.17  334.71 1489.20 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   509.80      33.13  15.389   &lt;2e-16 ***
+Gender         19.73      46.05   0.429    0.669    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 460.2 on 398 degrees of freedom
+Multiple R-squared:  0.0004611, Adjusted R-squared:  -0.00205 
+F-statistic: 0.1836 on 1 and 398 DF,  p-value: 0.6685</code></pre>
+</div>
+</div>
+<p>This means that average credit card debt for males is estimated to be $509.80, whereas females are estimated to carry $19.73 in additional debt for a total of <span class="math inline">\(\$509.80 + \$19.73 = \$529.53\)</span>. However, the coefficient of the dummy variable is not significant; there is no statistical evidence of a difference in average credit card balance between the genders.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> </span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>Gender, <span class="at">y =</span>Balance, <span class="at">fill =</span> Gender) <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="at">show.legend =</span> F) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span>(Credit <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Gender) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Balance =</span> <span class="fu">mean</span>(Balance))),<span class="at">shape =</span> <span class="dv">4</span>, <span class="at">show.legend =</span> F) <span class="sc">+</span> <span class="fu">theme_clean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-73-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The desicion to code females as 1 and males as 0 in (3.27) is arbitrary, and has no effect on the regression fit, but does alter the interpretation of the coefficients. If we had coded males as 1 and females as 0:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> </span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Gender =</span> <span class="fu">factor</span>(Gender, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">" Male"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(Balance <span class="sc">~</span> Gender,.) <span class="sc">%&gt;%</span> </span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Balance ~ Gender, data = .)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-529.54 -455.35  -60.17  334.71 1489.20 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   529.54      31.99  16.554   &lt;2e-16 ***
+Gender Male   -19.73      46.05  -0.429    0.669    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 460.2 on 398 degrees of freedom
+Multiple R-squared:  0.0004611, Adjusted R-squared:  -0.00205 
+F-statistic: 0.1836 on 1 and 398 DF,  p-value: 0.6685</code></pre>
+</div>
+</div>
+<p>Then we would say that estimated average debt for females is $529.54, and for males is <span class="math inline">\(\$529.52 - \$19.73 = \$509.80\)</span>.</p>
+<p>Alternatively, instead of 0/1 coding scheme, we could create a dummy variable</p>
+<p><span class="math display">\[
+x_i =
+\begin{cases}
+1 &amp; \text{if}\space i\text{th}\space \text{person is female} \\
+-1 &amp; \text{if}\space i\text{th}\space \text{person is male}
+\end{cases}
+\]</span> and use this variable in the regression equation. This results in the model</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1x_i + \epsilon_i =
+\begin{cases}
+\beta_0 + \beta_1 + \epsilon_i &amp; \text{if}\space i\text{th}\space \text{person is female} \\
+\beta_0 - \beta_1 + \epsilon_i &amp; \text{if}\space i\text{th}\space \text{person is male}
+\end{cases}
+\]</span> Now <span class="math inline">\(\beta_0\)</span> can be interpreted as the overall average credit card balance (ignoring the gender effect), and <span class="math inline">\(\beta_1\)</span> is the amount that females are above the average and males are below the average.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> </span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Gender =</span> <span class="fu">as.character</span>(Gender)) <span class="sc">%&gt;%</span> </span>
+<span id="cb136-3"><a href="#cb136-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Gender =</span> <span class="fu">ifelse</span>(Gender <span class="sc">==</span> <span class="st">"Female"</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb136-4"><a href="#cb136-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(Balance <span class="sc">~</span> Gender,.) <span class="sc">%&gt;%</span> </span>
+<span id="cb136-5"><a href="#cb136-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Balance ~ Gender, data = .)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-529.54 -455.35  -60.17  334.71 1489.20 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  519.670     23.026  22.569   &lt;2e-16 ***
+Gender         9.867     23.026   0.429    0.669    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 460.2 on 398 degrees of freedom
+Multiple R-squared:  0.0004611, Adjusted R-squared:  -0.00205 
+F-statistic: 0.1836 on 1 and 398 DF,  p-value: 0.6685</code></pre>
+</div>
+</div>
+<p>Now <span class="math inline">\(\beta_0\)</span> is $ 519.670 which is the halfway between the male and female averages of $509.80 and $529.53. The estimate for <span class="math inline">\(\beta_1\)</span> is $9.865, which is half of $19.74, the average difference between females and males.</p>
+<p><strong>Qualitative Predictors with More than Two levels</strong></p>
+<p>In this case we need to create an additional dummy. For example have a look at the <code>Ethnicity</code> variable</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> <span class="fu">select</span>(Ethnicity) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  Ethnicity       
+  &lt;chr&gt;           
+1 Caucasian       
+2 Asian           
+3 African American</code></pre>
+</div>
+</div>
+<p>Has three possible values. Then we need to create two dummies</p>
+<p><span class="math display">\[
+x_{i1} =
+\begin{cases}
+1 &amp; \text{if}\space i\text{th}\space \text{person is Asian} \\
+0 &amp; \text{if}\space i\text{th}\space \text{person is not Asian}
+\end{cases}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+x_{i2} =
+\begin{cases}
+1 &amp; \text{if}\space i\text{th}\space \text{person is Caucasian} \\
+0 &amp; \text{if}\space i\text{th}\space \text{person is not Caucasian}
+\end{cases}
+\]</span></p>
+<p>Then both these varaibles can be used in the regression equation, in order to obtain the model</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1x_{i1} + \beta_2x_{i2} + \epsilon_i =
+\begin{cases}
+\beta_0 + \beta_1 + \epsilon_i &amp; \text{if}\space i\text{th}\space \text{person is Asian} \\
+\beta_0 + \beta_2 + \epsilon_i &amp; \text{if}\space i\text{th}\space \text{person is Caucasian} \\
+\beta_0 + \epsilon_i &amp; \text{if}\space i\text{th}\space \text{person is African American}
+\end{cases}
+\]</span> Now <span class="math inline">\(\beta_0\)</span> can be interpreted as the average credit card balance for African Americans, <span class="math inline">\(\beta_1\)</span> can be interpreted as the difference in the average balance between Asian and African american categories, and <span class="math inline">\(\beta_2\)</span> can be interpreted as the difference in average balance between the Caucasian and African American categories.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb140-3"><a href="#cb140-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb140-4"><a href="#cb140-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Ethnicity, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb140-5"><a href="#cb140-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb140-6"><a href="#cb140-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = Balance ~ Ethnicity, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-531.00 -457.08  -63.25  339.25 1480.50 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          531.00      46.32  11.464   &lt;2e-16 ***
+EthnicityAsian       -18.69      65.02  -0.287    0.774    
+EthnicityCaucasian   -12.50      56.68  -0.221    0.826    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 460.9 on 397 degrees of freedom
+Multiple R-squared:  0.0002188, Adjusted R-squared:  -0.004818 
+F-statistic: 0.04344 on 2 and 397 DF,  p-value: 0.9575</code></pre>
+</div>
+</div>
+<p>There will always be one fewer dummy variable than the number of levels. The level with no dummy variable–African American in this example–is known as the <em>baseline</em>.</p>
+<p>From the regression results we see that the estimated <code>balance</code> for the baseline, African American, is $531.00. It is estimated that Asian category will have $18.69 less debt than the African American category on average, and the Caucasian category will have $12.50 less debt that the African American category. However, p-values associated with the coefficient estimates for the two dummy variables are very large, suggesting no statistical evidence of a real difference in credit card balance between the ethnicities. The coefficients will change bassed on the baseline and coding.</p>
+<p>Rather than relying on the individual coefficients, we can use F-test to test <span class="math inline">\(H_0 : \beta_1 = \beta_2 = 0\)</span>; this does not depend on the coding. The F-test has a p-value of 0.9575, indicating that we cannot reject the null hypothesis that there is no relationship between <code>balance</code> and <code>ethnicity</code>.</p>
+<p>Using this dummy variable approach presents no difficulties when using both quantitative and qualitative predictors. For example, to regress <code>balance</code> on both a quantitative varaible such as <code>income</code> and a qualitative variable such as <code>student</code>, we must simply create a dummy varaible for <code>student</code> and then fit a multiple linear regression model using <code>income</code> and the dummy variable as the predictors for credit card balance.</p>
+</section>
+<section id="extensions-of-the-linear-model" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="extensions-of-the-linear-model"><span class="header-section-number">2.3.2</span> Extensions of the Linear Model</h3>
+<p>Linear regression model is very interpretable and works quite well on many real-world problems. However, it makes several highly restrictive assumptions that are ofthen violated in practice. Two of them ost important assumptions state that the relationship between the predictors and response are <em>additive</em> and <em>linear</em>.</p>
+<p>The <em>additive</em> assumption means that the effect of changes in a predictor <span class="math inline">\(x_j\)</span> on the response <span class="math inline">\(Y\)</span> is independent of the vlaues of the other predictors.</p>
+<p>The <em>linear</em> assumption means thatt the change in the response <span class="math inline">\(Y\)</span> due to one-unit change in <span class="math inline">\(x_j\)</span> is constant, regardless of the vlaue of <span class="math inline">\(x_j\)</span>.</p>
+<p>We can relax these assumptions. Here some classical approaches to do that</p>
+<p><strong>Removing the Additive Assumption</strong></p>
+<p>From <code>Advertising</code> data, we concluded that both <code>TV</code> and <code>radio</code> seem to be associated with <code>sales</code>. Our model was linear; the effect of <code>TV</code> and <code>radio</code> advertising spending on sales is independent of each other, and their effect is constant no matter the level of spending.</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1 TV_i + \beta_2 radio_i + \epsilon_i
+\]</span> this model means that, the average effect on sales of a one unit increase in tv is always <span class="math inline">\(\beta_1\)</span> regardless of the amount spent on radio.</p>
+<p>However, this simple model may be incorrect. Suppose that spending money on radio advertising actually increases the effectiveness of TV advertising, so that the slope term for <code>TV</code> should increase as <code>radio</code> increases. In this situation, given a fixed budget $100,000, spending half on <code>radio</code> and half on <code>TV</code> may increase <code>sales</code> more than allocating the entire amount to either <code>TV</code> or to <code>radio</code>. In marketing this is known as the <em>synergy effect</em>, in statistics <em>interaction effect</em>.</p>
+<p>Consider the standard linear regression with two variables,</p>
+<p><span class="math display">\[
+Y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \epsilon
+\]</span> Here if we increaes <span class="math inline">\(x_1\)</span> by one unit, <span class="math inline">\(Y\)</span> will increase by an average of <span class="math inline">\(\beta_1\)</span> units. The presence of <span class="math inline">\(x_2\)</span> does not alter this statement-regardless of the value of <span class="math inline">\(x_2\)</span>, a one-unit increase in <span class="math inline">\(x_1\)</span> will lead to <span class="math inline">\(\beta_1\)</span> unit increae in <span class="math inline">\(Y\)</span>.</p>
+<p>We can extend this model by allowing interaction effects by including a third predictor, called an <em>interaction term</em>, which is constructed by computing the product of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>:</p>
+<p><span class="math display">\[
+Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + \epsilon
+\]</span> (3.31)</p>
+<p>We can write this equation</p>
+<p><span class="math display">\[
+\begin{align}
+Y &amp;= \beta_0 + (\beta_1 + \beta_3 x_2)x_1 + \beta_2x_2 +\epsilon \\
+&amp;= \beta_0 + \tilde{\beta_1}x_1 + \beta_2x_2 + \epsilon
+\end{align}
+\]</span> where <span class="math inline">\(\tilde{\beta_1} = \beta_1 + \beta_3x_2\)</span>. Since <span class="math inline">\(\tilde{\beta_1}\)</span> changes with <span class="math inline">\(x_2\)</span>, the effect of <span class="math inline">\(x_1\)</span> on <span class="math inline">\(Y\)</span> is no longer constant: adjusting <span class="math inline">\(x_2\)</span> will change the impact of <span class="math inline">\(x_1\)</span> on <span class="math inline">\(Y\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Productivy of a factory
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Suppose that we are interested in studying the productivity of a factory. We want to predict the number of <code>units</code> produced on the basis of the number of production <code>lines</code> and the total number of <code>workers</code>. Probably the effect of increasing <code>lines</code> on <code>units</code> produced will depend on the number of <code>workers</code>, since if no workers are available to operate the lines, then increasing the number of lines will not increase the production. This suggest to include an interaction term between <code>lines</code> and <code>workers</code> in a linear model to predict <code>units</code>.</p>
+<p>Suppose when we fit the model, we obtain</p>
+<p><span class="math display">\[
+\begin{align}
+units &amp;\approx 1.2 + 3.4 \times lines + 0.22 \times workers + 1.4 \times (lines \times workers) \\
+&amp;= 1.2 + (3.4 + 1.4 \times workers) \times lines + 0.22 \times workers
+\end{align}
+\]</span> Adding an addtional line will increase the number of units produced by <span class="math inline">\(3.4 + 1.4 \times workers\)</span>. Hence, the more <code>workers</code> we have, the stronger will be the effect of <code>lines</code>.</p>
+</div>
+</div>
+<p>For the advitising, a linear model that uses <code>radio</code>, <code>TV</code> and interaction between the two to predict <code>sales</code> takes the form</p>
+<p><span class="math display">\[
+\begin{align}
+sales &amp;= \beta_0 + \beta_1 \times TV + \beta_2 \times radio + \beta_3 \times(radio \times TV) + \epsilon \\
+&amp;= \beta_0 + (\beta_1 + \beta_3 \times radio)\times Tv + \beta_2 \times radio + \epsilon
+\end{align}
+\]</span> (3.33) We can interpret <span class="math inline">\(\beta_3\)</span> as the increase in the effectiveness of TV advertising for a one unit increse in radio advertising (or vice versa). The coefficients that result from fitting the model (3.33) are</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb142-4"><a href="#cb142-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio <span class="sc">+</span> TV<span class="sc">*</span>radio, advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb142-5"><a href="#cb142-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb142-6"><a href="#cb142-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = sales ~ TV + radio + TV * radio, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.3366 -0.4028  0.1831  0.5948  1.5246 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 6.750e+00  2.479e-01  27.233   &lt;2e-16 ***
+TV          1.910e-02  1.504e-03  12.699   &lt;2e-16 ***
+radio       2.886e-02  8.905e-03   3.241   0.0014 ** 
+TV:radio    1.086e-03  5.242e-05  20.727   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9435 on 196 degrees of freedom
+Multiple R-squared:  0.9678,    Adjusted R-squared:  0.9673 
+F-statistic:  1963 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Adding the interaction term increased the <span class="math inline">\(R^2\)</span> significantly from 0.8972 to 0.9678, RSE from 1.681 to 0.9435.</p>
+<p>The p-value for the interaction term is very low; <span class="math inline">\(H_\alpha : \beta_3 \neq 0\)</span>. This means that the relationship is not additive.</p>
+<p>To interpret the coefficients:</p>
+<p>$1,000 increse in <code>TV</code> advertising results with <span class="math inline">\(\hat{\beta_1} +\hat{\beta_3}\times radio = \$19.1 + \$1.09 \times radio\)</span> increase in sales on average.</p>
+<p>$1,000 invrease in <code>radio</code> advertising results with <span class="math inline">\(\hat{\beta_2} + \hat{\beta_3} \times TV = \$28.9 + \$1.09 \times TV\)</span> increase in sales on average.</p>
+<p>All p-values are significant =&gt; all three varibles should be included in the model.</p>
+<p>Sometimes interaction term has a very small pvalue but the associated main effects(in this case <code>TV</code> and <code>radio</code>) do not. The <em>hieararchial principle states that if we include an interaction in a model, we should also include the main effects, even if the p-values associated with their coefficients are not significant.</em></p>
+<p>Here both our varaibles were quantitative. However, the consept of interaction applies to qualitative varaibles, or combination of qualitative and quantitative varibles. Actually interaction between a quantitative and qualitative variable has a particularly nice interpreateion:</p>
+<p>Consider the <code>Credit</code> data set. Suppose we want to predict <code>balance</code> using <code>income</code>(quantitative) and <code>student</code>(qualitative) varaibles. In the absence of an interaction term the model takes the form</p>
+<p><span class="math display">\[
+balance_i &amp;\approx \beta_0 + \beta_1 \times income_i +
+\begin{cases}
+\beta_2 &amp; \text{if} \space i\text{th} \space \text{person is student} \\
+0&amp; \text{if} \space i\text{th} \space \text{person is not student}
+\end{cases}
+\]</span> <span class="math display">\[
+balance_i = \beta_1 \times income +
+\begin{cases}
+\beta_0 + \beta_2 &amp;\text{if} \space i\text{th} \space \text{person is student} \\
+\beta_0 &amp;\text{if} \space i\text{th} \space \text{person is student}
+\end{cases}
+\]</span> (3.34)</p>
+<p>Notice that this amounts to fitting two parallel lines to the data, one for students and one for non-students. The lines for students and non students have different intercepts, <span class="math inline">\(\beta_0 + \beta_2\)</span> versus <span class="math inline">\(\beta_0\)</span>, but the slope <span class="math inline">\(\beta_1\)</span> is the same.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb144-3"><a href="#cb144-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb144-4"><a href="#cb144-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Income <span class="sc">+</span> Student, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb144-5"><a href="#cb144-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb144-6"><a href="#cb144-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = Balance ~ Income + Student, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-762.37 -331.38  -45.04  323.60  818.28 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 211.1430    32.4572   6.505 2.34e-10 ***
+Income        5.9843     0.5566  10.751  &lt; 2e-16 ***
+StudentYes  382.6705    65.3108   5.859 9.78e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 391.8 on 397 degrees of freedom
+Multiple R-squared:  0.2775,    Adjusted R-squared:  0.2738 
+F-statistic: 76.22 on 2 and 397 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> </span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">y=</span>Balance, <span class="at">x=</span>Income) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">shape =</span><span class="cn">NA</span>) <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">211.1430</span>, <span class="at">slope =</span> <span class="fl">5.9843</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size=</span><span class="fl">1.2</span>) <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">593.8135</span>, <span class="at">slope =</span> <span class="fl">5.9843</span>, <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size=</span> <span class="fl">1.2</span>) <span class="sc">+</span> <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">200</span>,<span class="dv">1400</span>)) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1400</span>,<span class="dv">400</span>)) <span class="sc">+</span> <span class="fu">theme_clean</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">80</span>,<span class="dv">80</span>), <span class="at">y =</span><span class="fu">c</span>(<span class="dv">1130</span>,<span class="dv">640</span>), <span class="at">z =</span> <span class="fu">c</span>(<span class="st">"Student"</span>,<span class="st">"non-student"</span>)), <span class="at">inherit.aes =</span> F, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">label=</span>z), <span class="at">angle=</span><span class="fl">25.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-80-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
 </section>
