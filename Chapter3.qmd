@@ -1234,12 +1234,14 @@ Here both our varaibles were quantitative. However, the consept of interaction a
 Consider the `Credit` data set. Suppose we want to predict `balance` using `income`(quantitative) and `student`(qualitative) varaibles. In the absence of an interaction term the model takes the form
 
 $$
-balance_i & \approx \beta_0 + \beta_1 \times income_i + 
+balance_i  \approx \beta_0 + \beta_1 \times income_i + 
 \begin{cases}
 \beta_2 & \text{if} \space i\text{th} \space \text{person is student} \\
 0 & \text{if} \space i\text{th} \space \text{person is not student}
 \end{cases}
 $$
+
+
 $$
 balance_i = \beta_1 \times income + 
 \begin{cases}
@@ -1274,7 +1276,6 @@ Notice the since the slopes  are same, two lines are parallel; average effect of
 This limitation can be addressed by adding an interaction varaible, created by multiplying `student` and `income` with the dummy for student. Our model now becomes
 
 $$
-
 balance_i \approx \beta_0 + \beta_1 \times income_i + 
 \begin{cases}
 \beta_2 + \beta_3 \times income_i & \text{if student} \\
@@ -1446,6 +1447,7 @@ So what do we expect a plot of "fitted" vs "resid"; if the relationship is linea
 If the relationship is not linear then we expect ot see a pattern because as the fitted values increase the resiudls will increase.
 
 
+
 ```{r}
 linear_reg() %>% 
   set_mode("regression") %>% 
@@ -1457,6 +1459,20 @@ linear_reg() %>%
 
 
 ```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(mpg ~ horsepower, Auto) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  ggplot() + aes(x=horsepower, y = .resid) + geom_point() + geom_smooth(se=F) + theme_light()
+```
+
+Here we observe a U-shape trend; indicating non-linear relationship between `horsepower` and `mpg`.
+
+Lets do a plot of fitted vs residual for linear and non linear regression:
+
+```{r}
 gridExtra::grid.arrange(
 linear_reg() %>% 
   set_mode("regression") %>% 
@@ -1464,7 +1480,7 @@ linear_reg() %>%
   fit(mpg ~ horsepower, Auto) %>% 
   pluck("fit") %>% 
   augment() %>% 
-  ggplot() + aes(x=.fitted, y=.resid) + geom_point() + geom_smooth(se=F) + geom_hline(yintercept = 0, linetype = "dashed") + theme_minimal()
+  ggplot() + aes(x=.fitted, y=.resid) + geom_point() + geom_smooth(se=F) + geom_hline(yintercept = 0, linetype = "dashed") + theme_light()
 ,
 
 linear_reg() %>% 
@@ -1473,7 +1489,7 @@ linear_reg() %>%
   fit(mpg ~ horsepower + I(horsepower^2), Auto) %>% 
   pluck("fit") %>% 
   augment() %>% 
-  ggplot() + aes(x=.fitted, y=.resid) + geom_point() + geom_smooth(se=F) + geom_hline(yintercept = 0, linetype = "dashed") + theme_minimal(), ncol=2)
+  ggplot() + aes(x=.fitted, y=.resid) + geom_point() + geom_smooth(se=F) + geom_hline(yintercept = 0, linetype = "dashed") + theme_light(), ncol=2)
 ```
 
 Here is the plots. On the left fitted vs resid for regressing horsepower onto mpg, on the right regressing horsepower and horsepower^2 onto mpg. 
@@ -1483,5 +1499,38 @@ Blue line is a smooth fit to the residuals to identify trends easily. The residu
 Right hand panel displays a little pattern, suggesting that the quadratic term improves the fit to the data.
 
 If the residual plot indicates that there are non-linear associations in the data, then a simple approach is to use non-linear transformations of the predictors, such as $\log X$, $\sqrt{X}$, and $X^2$, in the regression model. We will discuss more later on.
+
+**2.Correlation of Error Terms**
+
+An important assumption of the linear regression is that error terms $\epsilon_1, \epsilon_2, \dots, \epsilon_n$ are uncorrelated. This means that $\epsilon_{i+1} \neq f(\epsilon_i)$. The standard errors that are computed for the estimated regression coeffieints or the fitted values are based on this assumption. If there is correaltion among the error terms, the estimated standard errors will tend to underestimate the true standard errors => confidence and prediction intervals will be narrower than they should be. P-values will be lower as well, causing false discoveries perhaps.
+
+Usually correlation among error terms occur in *time series* data. In many cases, observations that are obtained at adjacent time points will have positevely correalated errors. To test this we can plot the residuals from our model as a function of time. If the errors are uncorrelated, then we expect no pattern. If the error terms are positevly correlated, then we may see *tracking* in the residuals--*adjacent residuals may have similar values*.
+
+![](fig3.10.png)
+Check out Figure 3.10. In the top panel, we see the residuals from a linear regression fit to data generated with uncorrelated errors. Adjacent years don't take similar values; there is no evidence of a time-related trend in the residuals. But in the bottom panel, we see plotted residuals which have correlation 0.9 with time: now there is a clear pattern in the residuals--adjacent residuals tend to take on similar values. Finally, the center panel illustrates a more moderate case in which residuals had a correlation of 0.5. There is still evidence of tracking, but the pattern is less clear.
+
+Correlation among the error terms can also occur outside of time series data. For instance, consider a study where we predict people's hights from their weights. The assumption of uncorrelated errors could be violated if some of the individauls in the study are members of the same family, or eat the same diet, or have been exposed to same environmental factors. 
+
+
+**3.Non-constant Variance of Error Terms**
+
+Another important assumption of the linear regression model is that error terms have a constant variance, $\text{Var}(\epsilon_i) = \sigma^2$. The standard errors, confidence intervals, and hypothesis tests rely upon this assumption. 
+
+Unfortunately, often variances of the error terms are non-constant => *heteroscedasticity*. For instance, variances of the error terms may increase with the value of the response. We can identify non-constant variances in the errors from the presence of a *funnel shape* in the residual plot.
+
+![](fig3.11.png)
+On the left panel magnitude of the residuals tends to increase with the fitted values. When faced with this problem, one possible solution is to transform the response $Y$ using a concave function such as $\log Y$ or $\sqrt{Y}$. Such a transformation results in a greater amount of shrinkage of the larger responses, leading to a reduction in heteroscedasticity.  On the right hand panel we see that residuals apper to have constant variance.
+
+
+**4.Outliers**
+
+An *outlier* is a point for which $y_i$ is far from the vlaue predicted by the model. 
+
+![](fig3.12.png)
+
+The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the otlier. In this case, removing the otlier has little effect on the least squares line: it leads to almost no change in the slope, and a miniscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when otlier is included, but it is only 0.77 when excluded => RSE is used to calculate all confidence intervals, p values => bias. $R^2$ also decreases from 0.829 to 0.805 when included otlier.
+
+
+
 
 

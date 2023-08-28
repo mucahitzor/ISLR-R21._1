@@ -1892,12 +1892,13 @@ F-statistic:  1963 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Here both our varaibles were quantitative. However, the consept of interaction applies to qualitative varaibles, or combination of qualitative and quantitative varibles. Actually interaction between a quantitative and qualitative variable has a particularly nice interpreateion:</p>
 <p>Consider the <code>Credit</code> data set. Suppose we want to predict <code>balance</code> using <code>income</code>(quantitative) and <code>student</code>(qualitative) varaibles. In the absence of an interaction term the model takes the form</p>
 <p><span class="math display">\[
-balance_i &amp; \approx \beta_0 + \beta_1 \times income_i +
+balance_i  \approx \beta_0 + \beta_1 \times income_i +
 \begin{cases}
 \beta_2 &amp; \text{if} \space i\text{th} \space \text{person is student} \\
 0 &amp; \text{if} \space i\text{th} \space \text{person is not student}
 \end{cases}
-\]</span> <span class="math display">\[
+\]</span></p>
+<p><span class="math display">\[
 balance_i = \beta_1 \times income +
 \begin{cases}
 \beta_0 + \beta_2 &amp; \text{if} \space i\text{th} \space \text{person is student} \\
@@ -1945,19 +1946,19 @@ F-statistic: 76.22 on 2 and 397 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>Notice the since the slopes are same, two lines are parallel; average effect of income on balance does not depend on whether or not the individual is a student. This is a limitation; change in income may have a very different effect on the credit card balance of a student versus non student.</p>
 <p>This limitation can be addressed by adding an interaction varaible, created by multiplying <code>student</code> and <code>income</code> with the dummy for student. Our model now becomes</p>
-<p>$$</p>
-balance_i _0 + _1 income_i +
-<span class="math display">\[\begin{cases}
+<p><span class="math display">\[
+balance_i \approx \beta_0 + \beta_1 \times income_i +
+\begin{cases}
 \beta_2 + \beta_3 \times income_i &amp; \text{if student} \\
 0 &amp; \text{if not student}
-\end{cases}\]</span>
-<span class="math display">\[
-\]</span> balance_i =
-<span class="math display">\[\begin{cases}
+\end{cases}
+\]</span> <span class="math display">\[
+balance_i =
+\begin{cases}
 (\beta_0 + \beta_2) + (\beta_1 + \beta_3) \times income_i &amp; \text{if student} \\
 \beta_0 + \beta_1 \times income_i &amp; \text{if not student}
-\end{cases}\]</span>
-<p>$$ (3.35)</p>
+\end{cases}
+\]</span> (3.35)</p>
 <p>Again, our intercepts differ based on whether individual is student or not. However, this time slope also differs!</p>
 <p>Lets estimate this model</p>
 <div class="cell">
@@ -2286,35 +2287,65 @@ F-statistic: 8.299e+31 on 5 and 386 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
-<span id="cb172-2"><a href="#cb172-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb172-3"><a href="#cb172-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-4"><a href="#cb172-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-5"><a href="#cb172-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower, Auto) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-6"><a href="#cb172-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-7"><a href="#cb172-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb172-8"><a href="#cb172-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>.fitted, <span class="at">y=</span>.resid) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span>
-<span id="cb172-9"><a href="#cb172-9" aria-hidden="true" tabindex="-1"></a>,</span>
-<span id="cb172-10"><a href="#cb172-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb172-11"><a href="#cb172-11" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb172-12"><a href="#cb172-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-13"><a href="#cb172-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-14"><a href="#cb172-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower <span class="sc">+</span> <span class="fu">I</span>(horsepower<span class="sc">^</span><span class="dv">2</span>), Auto) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-15"><a href="#cb172-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb172-16"><a href="#cb172-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb172-17"><a href="#cb172-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>.fitted, <span class="at">y=</span>.resid) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>(), <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb172-2"><a href="#cb172-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-3"><a href="#cb172-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-4"><a href="#cb172-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower, Auto) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-5"><a href="#cb172-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-6"><a href="#cb172-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb172-7"><a href="#cb172-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>horsepower, <span class="at">y =</span> .resid) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-94-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Here we observe a U-shape trend; indicating non-linear relationship between <code>horsepower</code> and <code>mpg</code>.</p>
+<p>Lets do a plot of fitted vs residual for linear and non linear regression:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb174"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb174-1"><a href="#cb174-1" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
+<span id="cb174-2"><a href="#cb174-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb174-3"><a href="#cb174-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-4"><a href="#cb174-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-5"><a href="#cb174-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower, Auto) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-6"><a href="#cb174-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-7"><a href="#cb174-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb174-8"><a href="#cb174-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>.fitted, <span class="at">y=</span>.resid) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_light</span>()</span>
+<span id="cb174-9"><a href="#cb174-9" aria-hidden="true" tabindex="-1"></a>,</span>
+<span id="cb174-10"><a href="#cb174-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb174-11"><a href="#cb174-11" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb174-12"><a href="#cb174-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-13"><a href="#cb174-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-14"><a href="#cb174-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower <span class="sc">+</span> <span class="fu">I</span>(horsepower<span class="sc">^</span><span class="dv">2</span>), Auto) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-15"><a href="#cb174-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb174-16"><a href="#cb174-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb174-17"><a href="#cb174-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>.fitted, <span class="at">y=</span>.resid) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_light</span>(), <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Chapter3_files/figure-html/unnamed-chunk-94-1.png" class="img-fluid" width="672"></p>
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-95-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Here is the plots. On the left fitted vs resid for regressing horsepower onto mpg, on the right regressing horsepower and horsepower^2 onto mpg.</p>
 <p>Blue line is a smooth fit to the residuals to identify trends easily. The residuals on the left panel exhibit a clear U shape, which is a strong indication that the true relationship is not linear.</p>
 <p>Right hand panel displays a little pattern, suggesting that the quadratic term improves the fit to the data.</p>
 <p>If the residual plot indicates that there are non-linear associations in the data, then a simple approach is to use non-linear transformations of the predictors, such as <span class="math inline">\(\log X\)</span>, <span class="math inline">\(\sqrt{X}\)</span>, and <span class="math inline">\(X^2\)</span>, in the regression model. We will discuss more later on.</p>
+<p><strong>2.Correlation of Error Terms</strong></p>
+<p>An important assumption of the linear regression is that error terms <span class="math inline">\(\epsilon_1, \epsilon_2, \dots, \epsilon_n\)</span> are uncorrelated. This means that <span class="math inline">\(\epsilon_{i+1} \neq f(\epsilon_i)\)</span>. The standard errors that are computed for the estimated regression coeffieints or the fitted values are based on this assumption. If there is correaltion among the error terms, the estimated standard errors will tend to underestimate the true standard errors =&gt; confidence and prediction intervals will be narrower than they should be. P-values will be lower as well, causing false discoveries perhaps.</p>
+<p>Usually correlation among error terms occur in <em>time series</em> data. In many cases, observations that are obtained at adjacent time points will have positevely correalated errors. To test this we can plot the residuals from our model as a function of time. If the errors are uncorrelated, then we expect no pattern. If the error terms are positevly correlated, then we may see <em>tracking</em> in the residuals–<em>adjacent residuals may have similar values</em>.</p>
+<p><img src="fig3.10.png" class="img-fluid"> Check out Figure 3.10. In the top panel, we see the residuals from a linear regression fit to data generated with uncorrelated errors. Adjacent years don’t take similar values; there is no evidence of a time-related trend in the residuals. But in the bottom panel, we see plotted residuals which have correlation 0.9 with time: now there is a clear pattern in the residuals–adjacent residuals tend to take on similar values. Finally, the center panel illustrates a more moderate case in which residuals had a correlation of 0.5. There is still evidence of tracking, but the pattern is less clear.</p>
+<p>Correlation among the error terms can also occur outside of time series data. For instance, consider a study where we predict people’s hights from their weights. The assumption of uncorrelated errors could be violated if some of the individauls in the study are members of the same family, or eat the same diet, or have been exposed to same environmental factors.</p>
+<p><strong>3.Non-constant Variance of Error Terms</strong></p>
+<p>Another important assumption of the linear regression model is that error terms have a constant variance, <span class="math inline">\(\text{Var}(\epsilon_i) = \sigma^2\)</span>. The standard errors, confidence intervals, and hypothesis tests rely upon this assumption.</p>
+<p>Unfortunately, often variances of the error terms are non-constant =&gt; <em>heteroscedasticity</em>. For instance, variances of the error terms may increase with the value of the response. We can identify non-constant variances in the errors from the presence of a <em>funnel shape</em> in the residual plot.</p>
+<p><img src="fig3.11.png" class="img-fluid"> On the left panel magnitude of the residuals tends to increase with the fitted values. When faced with this problem, one possible solution is to transform the response <span class="math inline">\(Y\)</span> using a concave function such as <span class="math inline">\(\log Y\)</span> or <span class="math inline">\(\sqrt{Y}\)</span>. Such a transformation results in a greater amount of shrinkage of the larger responses, leading to a reduction in heteroscedasticity. On the right hand panel we see that residuals apper to have constant variance.</p>
+<p><strong>4.Outliers</strong></p>
+<p>An <em>outlier</em> is a point for which <span class="math inline">\(y_i\)</span> is far from the vlaue predicted by the model.</p>
+<p><img src="fig3.12.png" class="img-fluid"></p>
+<p>The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the otlier. In this case, removing the otlier has little effect on the least squares line: it leads to almost no change in the slope, and a miniscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when otlier is included, but it is only 0.77 when excluded =&gt; RSE is used to calculate all confidence intervals, p values =&gt; bias. <span class="math inline">\(R^2\)</span> also decreases from 0.829 to 0.805 when included otlier.</p>
 
 
 </section>
