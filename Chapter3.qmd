@@ -1234,16 +1234,16 @@ Here both our varaibles were quantitative. However, the consept of interaction a
 Consider the `Credit` data set. Suppose we want to predict `balance` using `income`(quantitative) and `student`(qualitative) varaibles. In the absence of an interaction term the model takes the form
 
 $$
-balance_i &\approx \beta_0 + \beta_1 \times income_i + 
+balance_i & \approx \beta_0 + \beta_1 \times income_i + 
 \begin{cases}
 \beta_2 & \text{if} \space i\text{th} \space \text{person is student} \\
-0& \text{if} \space i\text{th} \space \text{person is not student}
+0 & \text{if} \space i\text{th} \space \text{person is not student}
 \end{cases}
 $$
 $$
 balance_i = \beta_1 \times income + 
 \begin{cases}
-\beta_0 + \beta_2 &\text{if} \space i\text{th} \space \text{person is student} \\
+\beta_0 + \beta_2 & \text{if} \space i\text{th} \space \text{person is student} \\
 \beta_0 &\text{if} \space i\text{th} \space \text{person is student}
 \end{cases}
 $$
@@ -1260,30 +1260,228 @@ linear_reg() %>%
   summary()
 ```
 
+Average Non student balance is \$211.1430; students have \$382.6705 more balance on average compared to non students. \$1,000 increase in income increases balance by \$5,984 on average. All coefficients are statistically significant. $R^2 = 0.2775$
+
 ```{r}
 #| warning: false
 Credit %>% 
-  ggplot() + aes(y=Balance, x=Income) + geom_point(shape =NA) + geom_abline(intercept = 211.1430, slope = 5.9843, color = "black", size=1.2) + geom_abline(intercept = 593.8135, slope = 5.9843, color = "darkred", size= 1.2) + coord_cartesian(xlim = c(0,150), ylim=c(200,1400)) + scale_y_continuous(breaks = seq(0,1400,400)) + theme_clean() + geom_text(data = tibble(x = c(80,80), y =c(1130,640), z = c("Student","non-student")), inherit.aes = F, aes(x=x, y=y, label=z), angle=25.9)
+  ggplot() + aes(y=Balance, x=Income) + geom_point(shape =NA) + geom_abline(intercept = 211.1430, slope = 5.9843, color = "black", size=1.2) + geom_abline(intercept = 593.8135, slope = 5.9843, color = "darkred", size= 1.2) + coord_cartesian(xlim = c(0,150), ylim=c(200,1400)) + scale_y_continuous(breaks = seq(0,1400,400)) + theme_clean() + geom_text(data = tibble(x = c(80,80), y =c(1130,640), z = c("Student","non-student")), inherit.aes = F, aes(x=x, y=y, label=z), angle=25.9) -> p1
+p1
+```
+
+Notice the since the slopes  are same, two lines are parallel; average effect of income on balance does not depend on whether or not the individual is a student. This is a limitation; change in income may have a very different effect on the credit card balance of a student versus non student.
+
+This limitation can be addressed by adding an interaction varaible, created by multiplying `student` and `income` with the dummy for student. Our model now becomes
+
+$$
+
+balance_i \approx \beta_0 + \beta_1 \times income_i + 
+\begin{cases}
+\beta_2 + \beta_3 \times income_i & \text{if student} \\
+0 & \text{if not student}
+\end{cases}
+$$
+$$
+balance_i = 
+\begin{cases}
+(\beta_0 + \beta_2) + (\beta_1 + \beta_3) \times income_i & \text{if student} \\
+\beta_0 + \beta_1 \times income_i & \text{if not student}
+\end{cases}
+$$
+(3.35)
+
+Again, our intercepts differ based on whether individual is student or not. However, this time slope also differs!
+
+Lets estimate this model
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(Balance ~ Income + Student + Income * Student, Credit) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+
+This results in
+
+```{r}
+tibble(
+  intercept = c(200.6232, 200.6232+476.6758),
+  income = c(6.2182, 6.2182 - 1.9992),
+  type = c("Non-student", "student")
+)
+```
+
+and becomes
+
+```{r}
+#| warning: false
+Credit %>% 
+  ggplot() + aes(x = Income, y = Balance) + geom_point(shape =NA)+
+  geom_abline(intercept = 201, slope = 6.22, color = "black", size =1.2) +
+  geom_abline(intercept = 677, slope = 4.22, size = 1.2, color = "darkred") +  coord_cartesian(xlim = c(0,150), ylim=c(200,1400)) + scale_y_continuous(breaks = seq(0,1400,400)) + theme_clean() + geom_text(data = tibble(x = c(80,80), y =c(1130,640), z = c("Student","non-student")), inherit.aes = F, aes(x=x, y=y, label=z), angle=25.9) -> p2
+p2
+```
+
+Lets merge this two plots together
+
+```{r}
+#| warning: false
+gridExtra::grid.arrange(p1,p2, ncol =2)
+```
+
+Slope for studens is lower than the slope for non-students => increases in income are associated with smaller increases in credit card balance among students as copared to non-students.
+
+
+**Not-linear Relationships**
+
+Linear model assumes linear relationship between the response and the predictors. However, this is often not true. We can relax this assumption using *polynomial regression*.
+
+Consider `Auto`
+
+```{r}
+#| fig-cap: linear regresion fit is in orange, blue curve is a linear regression fit for a model that includes horsepower^2, and green curve includes up to horsepower^5
+Auto %>% as_tibble() %>% 
+  ggplot() + aes(x=horsepower, y = mpg) + geom_point(shape =1, size =1.4) + 
+  geom_smooth(method = "lm", se = F, color ="#FEBF63") +
+  geom_smooth(method = "lm", formula = y ~ poly(x,2), color ="#7FDBDA", se = F) +
+  geom_smooth(method = "lm", formula = y ~ poly(x,5), color ="#ADE498", se=F) + theme_blank() 
+```
+
+It is obvious that there is relationship between `mpg` and `horsepower`. But it seems like this relationship is not linear: the data suggest a curved relationship. 
+
+A simple approach for incorporating non linear associations in a linear model is to include transformed versions of the predictors in the model. For example figure above seem to have a *quadratic* shape, suggesting that a model of the form
+
+$$
+mpg = \beta_0 + \beta_1 \times horsepower + \beta_2 \times horsepower^2 + \epsilon
+$$
+May be a better fit. Equation
+
+You can do it in  different ways:
+1.
+
+```{r}
+Auto %>% 
+  mutate(hp.sq = horsepower^2) %>% 
+  lm(mpg~horsepower + hp.sq,.) %>% 
+  summary()
+```
+
+2. 
+
+```{r}
+summary(lm(mpg ~ horsepower + I(horsepower^2), Auto))
 ```
 
 
+3.
+
+```{r}
+summary(lm(mpg ~ poly(horsepower,2, raw=T), Auto))
+```
+
+4.
+```{r}
+summary(nls(mpg ~a + b * horsepower + c * horsepower^2, data = Auto, start = c(a=0,b=0,c=0)))
+```
+--
+
+```{r}
+summary(lm(mpg ~ horsepower, Auto))
+```
+
+```{r}
+summary(lm(mpg ~ horsepower + I(horsepower^2),Auto))
+```
 
 
+The $R^2$ of the quadratic fit is 0.688, compared to 0.606 for the linear fit. And the p-value is highly significant for quadratic model.
+
+If adding $horsepower^2$ increses the $R^2$ why not include $^3$ or $^4$ or more?
+
+Lets estimate the green curve on the previous plot
+
+```{r}
+summary(lm(horsepower ~ poly(horsepower,5, raw=T),Auto))
+```
+
+The green fit seems unnecassasrliy wiggly- that is it is unclear includig the additional terms really has led to a better fit to the data. 
+
+The approach we have just described for extending the linear model to accomodate non-linear relationships is known as *polynomial regression*, since we have included polynomial functions of the predictors in the regression model. Check out Chapter 7.
+
+### Potential Problems
+
+When we fit a linear regression model to a particular data set, many problems may occur. Most common among these are the following
+
+1. *Non-linearity of the response-predictor relationships*.
+
+2. *Correalation of error terms*
+
+3. *Non-constant variance of error terms*
+
+4. *Outliers*
+
+5. *High-leverage points*
+
+6. *Collinearity*
+
+Lets breifly discuss each
+
+**1.Non-linearity of the Data**
+
+Linear regression assumes there is a straight line relationship between the predictors and the respose. If the true relationship is far from linear, then our estimations are not good. Also our prediction accuracy is reduced.
+
+*Residual plots* are a useful graphical tool for identifying non-linearity.
+
+We can plot the residuals $e_i = y_i - \hat{y_i}$ versus $x_i$ for Simple linear regression. 
+
+For multiple linear regression since we have lost of $x_i$ we plot residuals versus predicted values($e_i$ vs $\hat{y_i}$).
+
+We want to have *no visible pattern*. If there is a pattern => problem!
 
 
+So what do we expect a plot of "fitted" vs "resid"; if the relationship is linear as the "fitted"  values increase "resid" should not increase or decrease, should swing with no relationship: linear.
+
+If the relationship is not linear then we expect ot see a pattern because as the fitted values increase the resiudls will increase.
 
 
-    
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(mpg ~ horsepower, Auto) %>% 
+  pluck("fit") %>% 
+  augment() 
+```
 
 
+```{r}
+gridExtra::grid.arrange(
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(mpg ~ horsepower, Auto) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  ggplot() + aes(x=.fitted, y=.resid) + geom_point() + geom_smooth(se=F) + geom_hline(yintercept = 0, linetype = "dashed") + theme_minimal()
+,
 
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(mpg ~ horsepower + I(horsepower^2), Auto) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  ggplot() + aes(x=.fitted, y=.resid) + geom_point() + geom_smooth(se=F) + geom_hline(yintercept = 0, linetype = "dashed") + theme_minimal(), ncol=2)
+```
 
+Here is the plots. On the left fitted vs resid for regressing horsepower onto mpg, on the right regressing horsepower and horsepower^2 onto mpg. 
 
+Blue line is a smooth fit to the residuals to identify trends easily. The residuals on the left panel exhibit a clear U shape, which is a strong indication that the true relationship is not linear.
 
+Right hand panel displays a little pattern, suggesting that the quadratic term improves the fit to the data.
 
-
-
-
-
+If the residual plot indicates that there are non-linear associations in the data, then a simple approach is to use non-linear transformations of the predictors, such as $\log X$, $\sqrt{X}$, and $X^2$, in the regression model. We will discuss more later on.
 
 

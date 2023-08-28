@@ -200,6 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#qualitative-predictors" id="toc-qualitative-predictors" class="nav-link" data-scroll-target="#qualitative-predictors"><span class="header-section-number">2.3.1</span> Qualitative Predictors</a></li>
   <li><a href="#extensions-of-the-linear-model" id="toc-extensions-of-the-linear-model" class="nav-link" data-scroll-target="#extensions-of-the-linear-model"><span class="header-section-number">2.3.2</span> Extensions of the Linear Model</a></li>
+  <li><a href="#potential-problems" id="toc-potential-problems" class="nav-link" data-scroll-target="#potential-problems"><span class="header-section-number">2.3.3</span> Potential Problems</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1891,15 +1892,15 @@ F-statistic:  1963 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Here both our varaibles were quantitative. However, the consept of interaction applies to qualitative varaibles, or combination of qualitative and quantitative varibles. Actually interaction between a quantitative and qualitative variable has a particularly nice interpreateion:</p>
 <p>Consider the <code>Credit</code> data set. Suppose we want to predict <code>balance</code> using <code>income</code>(quantitative) and <code>student</code>(qualitative) varaibles. In the absence of an interaction term the model takes the form</p>
 <p><span class="math display">\[
-balance_i &amp;\approx \beta_0 + \beta_1 \times income_i +
+balance_i &amp; \approx \beta_0 + \beta_1 \times income_i +
 \begin{cases}
 \beta_2 &amp; \text{if} \space i\text{th} \space \text{person is student} \\
-0&amp; \text{if} \space i\text{th} \space \text{person is not student}
+0 &amp; \text{if} \space i\text{th} \space \text{person is not student}
 \end{cases}
 \]</span> <span class="math display">\[
 balance_i = \beta_1 \times income +
 \begin{cases}
-\beta_0 + \beta_2 &amp;\text{if} \space i\text{th} \space \text{person is student} \\
+\beta_0 + \beta_2 &amp; \text{if} \space i\text{th} \space \text{person is student} \\
 \beta_0 &amp;\text{if} \space i\text{th} \space \text{person is student}
 \end{cases}
 \]</span> (3.34)</p>
@@ -1933,13 +1934,387 @@ Multiple R-squared:  0.2775,    Adjusted R-squared:  0.2738
 F-statistic: 76.22 on 2 and 397 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<p>Average Non student balance is $211.1430; students have $382.6705 more balance on average compared to non students. $1,000 increase in income increases balance by $5,984 on average. All coefficients are statistically significant. <span class="math inline">\(R^2 = 0.2775\)</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> </span>
-<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">y=</span>Balance, <span class="at">x=</span>Income) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">shape =</span><span class="cn">NA</span>) <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">211.1430</span>, <span class="at">slope =</span> <span class="fl">5.9843</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size=</span><span class="fl">1.2</span>) <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">593.8135</span>, <span class="at">slope =</span> <span class="fl">5.9843</span>, <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size=</span> <span class="fl">1.2</span>) <span class="sc">+</span> <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">200</span>,<span class="dv">1400</span>)) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1400</span>,<span class="dv">400</span>)) <span class="sc">+</span> <span class="fu">theme_clean</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">80</span>,<span class="dv">80</span>), <span class="at">y =</span><span class="fu">c</span>(<span class="dv">1130</span>,<span class="dv">640</span>), <span class="at">z =</span> <span class="fu">c</span>(<span class="st">"Student"</span>,<span class="st">"non-student"</span>)), <span class="at">inherit.aes =</span> F, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">label=</span>z), <span class="at">angle=</span><span class="fl">25.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">y=</span>Balance, <span class="at">x=</span>Income) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">shape =</span><span class="cn">NA</span>) <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">211.1430</span>, <span class="at">slope =</span> <span class="fl">5.9843</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size=</span><span class="fl">1.2</span>) <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="fl">593.8135</span>, <span class="at">slope =</span> <span class="fl">5.9843</span>, <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size=</span> <span class="fl">1.2</span>) <span class="sc">+</span> <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">200</span>,<span class="dv">1400</span>)) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1400</span>,<span class="dv">400</span>)) <span class="sc">+</span> <span class="fu">theme_clean</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">80</span>,<span class="dv">80</span>), <span class="at">y =</span><span class="fu">c</span>(<span class="dv">1130</span>,<span class="dv">640</span>), <span class="at">z =</span> <span class="fu">c</span>(<span class="st">"Student"</span>,<span class="st">"non-student"</span>)), <span class="at">inherit.aes =</span> F, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">label=</span>z), <span class="at">angle=</span><span class="fl">25.9</span>) <span class="ot">-&gt;</span> p1</span>
+<span id="cb146-3"><a href="#cb146-3" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Chapter3_files/figure-html/unnamed-chunk-80-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Notice the since the slopes are same, two lines are parallel; average effect of income on balance does not depend on whether or not the individual is a student. This is a limitation; change in income may have a very different effect on the credit card balance of a student versus non student.</p>
+<p>This limitation can be addressed by adding an interaction varaible, created by multiplying <code>student</code> and <code>income</code> with the dummy for student. Our model now becomes</p>
+<p>$$</p>
+balance_i _0 + _1 income_i +
+<span class="math display">\[\begin{cases}
+\beta_2 + \beta_3 \times income_i &amp; \text{if student} \\
+0 &amp; \text{if not student}
+\end{cases}\]</span>
+<span class="math display">\[
+\]</span> balance_i =
+<span class="math display">\[\begin{cases}
+(\beta_0 + \beta_2) + (\beta_1 + \beta_3) \times income_i &amp; \text{if student} \\
+\beta_0 + \beta_1 \times income_i &amp; \text{if not student}
+\end{cases}\]</span>
+<p>$$ (3.35)</p>
+<p>Again, our intercepts differ based on whether individual is student or not. However, this time slope also differs!</p>
+<p>Lets estimate this model</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb147-2"><a href="#cb147-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb147-3"><a href="#cb147-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb147-4"><a href="#cb147-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Income <span class="sc">+</span> Student <span class="sc">+</span> Income <span class="sc">*</span> Student, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb147-5"><a href="#cb147-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb147-6"><a href="#cb147-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = Balance ~ Income + Student + Income * Student, 
+    data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-773.39 -325.70  -41.13  321.65  814.04 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       200.6232    33.6984   5.953 5.79e-09 ***
+Income              6.2182     0.5921  10.502  &lt; 2e-16 ***
+StudentYes        476.6758   104.3512   4.568 6.59e-06 ***
+Income:StudentYes  -1.9992     1.7313  -1.155    0.249    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 391.6 on 396 degrees of freedom
+Multiple R-squared:  0.2799,    Adjusted R-squared:  0.2744 
+F-statistic:  51.3 on 3 and 396 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>This results in</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb149-2"><a href="#cb149-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">intercept =</span> <span class="fu">c</span>(<span class="fl">200.6232</span>, <span class="fl">200.6232+476.6758</span>),</span>
+<span id="cb149-3"><a href="#cb149-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">income =</span> <span class="fu">c</span>(<span class="fl">6.2182</span>, <span class="fl">6.2182</span> <span class="sc">-</span> <span class="fl">1.9992</span>),</span>
+<span id="cb149-4"><a href="#cb149-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"Non-student"</span>, <span class="st">"student"</span>)</span>
+<span id="cb149-5"><a href="#cb149-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  intercept income type       
+      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;      
+1      201.   6.22 Non-student
+2      677.   4.22 student    </code></pre>
+</div>
+</div>
+<p>and becomes</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>Credit <span class="sc">%&gt;%</span> </span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> Income, <span class="at">y =</span> Balance) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">shape =</span><span class="cn">NA</span>)<span class="sc">+</span></span>
+<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">201</span>, <span class="at">slope =</span> <span class="fl">6.22</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span><span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb151-4"><a href="#cb151-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">677</span>, <span class="at">slope =</span> <span class="fl">4.22</span>, <span class="at">size =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">200</span>,<span class="dv">1400</span>)) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1400</span>,<span class="dv">400</span>)) <span class="sc">+</span> <span class="fu">theme_clean</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">80</span>,<span class="dv">80</span>), <span class="at">y =</span><span class="fu">c</span>(<span class="dv">1130</span>,<span class="dv">640</span>), <span class="at">z =</span> <span class="fu">c</span>(<span class="st">"Student"</span>,<span class="st">"non-student"</span>)), <span class="at">inherit.aes =</span> F, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">label=</span>z), <span class="at">angle=</span><span class="fl">25.9</span>) <span class="ot">-&gt;</span> p2</span>
+<span id="cb151-5"><a href="#cb151-5" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-83-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Lets merge this two plots together</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1,p2, <span class="at">ncol =</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-84-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Slope for studens is lower than the slope for non-students =&gt; increases in income are associated with smaller increases in credit card balance among students as copared to non-students.</p>
+<p><strong>Not-linear Relationships</strong></p>
+<p>Linear model assumes linear relationship between the response and the predictors. However, this is often not true. We can relax this assumption using <em>polynomial regression</em>.</p>
+<p>Consider <code>Auto</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>Auto <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>horsepower, <span class="at">y =</span> mpg) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">shape =</span><span class="dv">1</span>, <span class="at">size =</span><span class="fl">1.4</span>) <span class="sc">+</span> </span>
+<span id="cb153-3"><a href="#cb153-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> F, <span class="at">color =</span><span class="st">"#FEBF63"</span>) <span class="sc">+</span></span>
+<span id="cb153-4"><a href="#cb153-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x,<span class="dv">2</span>), <span class="at">color =</span><span class="st">"#7FDBDA"</span>, <span class="at">se =</span> F) <span class="sc">+</span></span>
+<span id="cb153-5"><a href="#cb153-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x,<span class="dv">5</span>), <span class="at">color =</span><span class="st">"#ADE498"</span>, <span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">theme_blank</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-85-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">linear regresion fit is in orange, blue curve is a linear regression fit for a model that includes horsepower^2, and green curve includes up to horsepower^5</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>It is obvious that there is relationship between <code>mpg</code> and <code>horsepower</code>. But it seems like this relationship is not linear: the data suggest a curved relationship.</p>
+<p>A simple approach for incorporating non linear associations in a linear model is to include transformed versions of the predictors in the model. For example figure above seem to have a <em>quadratic</em> shape, suggesting that a model of the form</p>
+<p><span class="math display">\[
+mpg = \beta_0 + \beta_1 \times horsepower + \beta_2 \times horsepower^2 + \epsilon
+\]</span> May be a better fit. Equation</p>
+<p>You can do it in different ways: 1.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a>Auto <span class="sc">%&gt;%</span> </span>
+<span id="cb155-2"><a href="#cb155-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hp.sq =</span> horsepower<span class="sc">^</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb155-3"><a href="#cb155-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(mpg<span class="sc">~</span>horsepower <span class="sc">+</span> hp.sq,.) <span class="sc">%&gt;%</span> </span>
+<span id="cb155-4"><a href="#cb155-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mpg ~ horsepower + hp.sq, data = .)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.7135  -2.5943  -0.0859   2.2868  15.8961 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 56.9000997  1.8004268   31.60   &lt;2e-16 ***
+horsepower  -0.4661896  0.0311246  -14.98   &lt;2e-16 ***
+hp.sq        0.0012305  0.0001221   10.08   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.374 on 389 degrees of freedom
+Multiple R-squared:  0.6876,    Adjusted R-squared:  0.686 
+F-statistic:   428 on 2 and 389 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mpg <span class="sc">~</span> horsepower <span class="sc">+</span> <span class="fu">I</span>(horsepower<span class="sc">^</span><span class="dv">2</span>), Auto))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mpg ~ horsepower + I(horsepower^2), data = Auto)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.7135  -2.5943  -0.0859   2.2868  15.8961 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     56.9000997  1.8004268   31.60   &lt;2e-16 ***
+horsepower      -0.4661896  0.0311246  -14.98   &lt;2e-16 ***
+I(horsepower^2)  0.0012305  0.0001221   10.08   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.374 on 389 degrees of freedom
+Multiple R-squared:  0.6876,    Adjusted R-squared:  0.686 
+F-statistic:   428 on 2 and 389 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mpg <span class="sc">~</span> <span class="fu">poly</span>(horsepower,<span class="dv">2</span>, <span class="at">raw=</span>T), Auto))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mpg ~ poly(horsepower, 2, raw = T), data = Auto)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.7135  -2.5943  -0.0859   2.2868  15.8961 
+
+Coefficients:
+                                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   56.9000997  1.8004268   31.60   &lt;2e-16 ***
+poly(horsepower, 2, raw = T)1 -0.4661896  0.0311246  -14.98   &lt;2e-16 ***
+poly(horsepower, 2, raw = T)2  0.0012305  0.0001221   10.08   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.374 on 389 degrees of freedom
+Multiple R-squared:  0.6876,    Adjusted R-squared:  0.686 
+F-statistic:   428 on 2 and 389 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<ol start="4" type="1">
+<li></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">nls</span>(mpg <span class="sc">~</span>a <span class="sc">+</span> b <span class="sc">*</span> horsepower <span class="sc">+</span> c <span class="sc">*</span> horsepower<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> Auto, <span class="at">start =</span> <span class="fu">c</span>(<span class="at">a=</span><span class="dv">0</span>,<span class="at">b=</span><span class="dv">0</span>,<span class="at">c=</span><span class="dv">0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Formula: mpg ~ a + b * horsepower + c * horsepower^2
+
+Parameters:
+    Estimate Std. Error t value Pr(&gt;|t|)    
+a 56.9000997  1.8004268   31.60   &lt;2e-16 ***
+b -0.4661896  0.0311246  -14.98   &lt;2e-16 ***
+c  0.0012305  0.0001221   10.08   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.374 on 389 degrees of freedom
+
+Number of iterations to convergence: 1 
+Achieved convergence tolerance: 1.293e-09</code></pre>
+</div>
+</div>
+<p>–</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mpg <span class="sc">~</span> horsepower, Auto))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mpg ~ horsepower, data = Auto)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-13.5710  -3.2592  -0.3435   2.7630  16.9240 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 39.935861   0.717499   55.66   &lt;2e-16 ***
+horsepower  -0.157845   0.006446  -24.49   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.906 on 390 degrees of freedom
+Multiple R-squared:  0.6059,    Adjusted R-squared:  0.6049 
+F-statistic: 599.7 on 1 and 390 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(mpg <span class="sc">~</span> horsepower <span class="sc">+</span> <span class="fu">I</span>(horsepower<span class="sc">^</span><span class="dv">2</span>),Auto))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mpg ~ horsepower + I(horsepower^2), data = Auto)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.7135  -2.5943  -0.0859   2.2868  15.8961 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     56.9000997  1.8004268   31.60   &lt;2e-16 ***
+horsepower      -0.4661896  0.0311246  -14.98   &lt;2e-16 ***
+I(horsepower^2)  0.0012305  0.0001221   10.08   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.374 on 389 degrees of freedom
+Multiple R-squared:  0.6876,    Adjusted R-squared:  0.686 
+F-statistic:   428 on 2 and 389 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>The <span class="math inline">\(R^2\)</span> of the quadratic fit is 0.688, compared to 0.606 for the linear fit. And the p-value is highly significant for quadratic model.</p>
+<p>If adding <span class="math inline">\(horsepower^2\)</span> increses the <span class="math inline">\(R^2\)</span> why not include <span class="math inline">\(^3\)</span> or <span class="math inline">\(^4\)</span> or more?</p>
+<p>Lets estimate the green curve on the previous plot</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(horsepower <span class="sc">~</span> <span class="fu">poly</span>(horsepower,<span class="dv">5</span>, <span class="at">raw=</span>T),Auto))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in summary.lm(lm(horsepower ~ poly(horsepower, 5, raw = T), Auto)):
+essentially perfect fit: summary may be unreliable</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = horsepower ~ poly(horsepower, 5, raw = T), data = Auto)
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-7.256e-13 -1.620e-15 -1.000e-16  3.540e-15  3.819e-14 
+
+Coefficients:
+                                Estimate Std. Error    t value Pr(&gt;|t|)    
+(Intercept)                    2.739e-13  2.468e-13  1.110e+00    0.268    
+poly(horsepower, 5, raw = T)1  1.000e+00  1.125e-14  8.887e+13   &lt;2e-16 ***
+poly(horsepower, 5, raw = T)2  1.496e-16  1.946e-16  7.690e-01    0.442    
+poly(horsepower, 5, raw = T)3 -1.196e-18  1.598e-18 -7.480e-01    0.455    
+poly(horsepower, 5, raw = T)4  4.368e-21  6.255e-21  6.980e-01    0.485    
+poly(horsepower, 5, raw = T)5 -5.894e-24  9.373e-24 -6.290e-01    0.530    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.736e-14 on 386 degrees of freedom
+Multiple R-squared:      1, Adjusted R-squared:      1 
+F-statistic: 8.299e+31 on 5 and 386 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>The green fit seems unnecassasrliy wiggly- that is it is unclear includig the additional terms really has led to a better fit to the data.</p>
+<p>The approach we have just described for extending the linear model to accomodate non-linear relationships is known as <em>polynomial regression</em>, since we have included polynomial functions of the predictors in the regression model. Check out Chapter 7.</p>
+</section>
+<section id="potential-problems" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="potential-problems"><span class="header-section-number">2.3.3</span> Potential Problems</h3>
+<p>When we fit a linear regression model to a particular data set, many problems may occur. Most common among these are the following</p>
+<ol type="1">
+<li><p><em>Non-linearity of the response-predictor relationships</em>.</p></li>
+<li><p><em>Correalation of error terms</em></p></li>
+<li><p><em>Non-constant variance of error terms</em></p></li>
+<li><p><em>Outliers</em></p></li>
+<li><p><em>High-leverage points</em></p></li>
+<li><p><em>Collinearity</em></p></li>
+</ol>
+<p>Lets breifly discuss each</p>
+<p><strong>1.Non-linearity of the Data</strong></p>
+<p>Linear regression assumes there is a straight line relationship between the predictors and the respose. If the true relationship is far from linear, then our estimations are not good. Also our prediction accuracy is reduced.</p>
+<p><em>Residual plots</em> are a useful graphical tool for identifying non-linearity.</p>
+<p>We can plot the residuals <span class="math inline">\(e_i = y_i - \hat{y_i}\)</span> versus <span class="math inline">\(x_i\)</span> for Simple linear regression.</p>
+<p>For multiple linear regression since we have lost of <span class="math inline">\(x_i\)</span> we plot residuals versus predicted values(<span class="math inline">\(e_i\)</span> vs <span class="math inline">\(\hat{y_i}\)</span>).</p>
+<p>We want to have <em>no visible pattern</em>. If there is a pattern =&gt; problem!</p>
+<p>So what do we expect a plot of “fitted” vs “resid”; if the relationship is linear as the “fitted” values increase “resid” should not increase or decrease, should swing with no relationship: linear.</p>
+<p>If the relationship is not linear then we expect ot see a pattern because as the fitted values increase the resiudls will increase.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb170"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb170-1"><a href="#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb170-2"><a href="#cb170-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb170-3"><a href="#cb170-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb170-4"><a href="#cb170-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower, Auto) <span class="sc">%&gt;%</span> </span>
+<span id="cb170-5"><a href="#cb170-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb170-6"><a href="#cb170-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 392 × 9
+   .rownames   mpg horsepower .fitted .resid    .hat .sigma   .cooksd .std.resid
+   &lt;chr&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+ 1 1            18        130   19.4  -1.42  0.00368   4.91   1.54e-4    -0.289 
+ 2 2            15        165   13.9   1.11  0.00888   4.91   2.31e-4     0.227 
+ 3 3            18        150   16.3   1.74  0.00613   4.91   3.91e-4     0.356 
+ 4 4            16        150   16.3  -0.259 0.00613   4.91   8.66e-6    -0.0530
+ 5 5            17        140   17.8  -0.838 0.00473   4.91   6.96e-5    -0.171 
+ 6 6            15        198    8.68  6.32  0.0177    4.90   1.52e-2     1.30  
+ 7 7            14        220    5.21  8.79  0.0256    4.89   4.33e-2     1.82  
+ 8 8            14        215    6.00  8.00  0.0236    4.89   3.30e-2     1.65  
+ 9 9            14        225    4.42  9.58  0.0276    4.89   5.57e-2     1.98  
+10 10           15        190    9.95  5.05  0.0152    4.91   8.31e-3     1.04  
+# ℹ 382 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
+<span id="cb172-2"><a href="#cb172-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb172-3"><a href="#cb172-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-4"><a href="#cb172-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-5"><a href="#cb172-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower, Auto) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-6"><a href="#cb172-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-7"><a href="#cb172-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb172-8"><a href="#cb172-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>.fitted, <span class="at">y=</span>.resid) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span>
+<span id="cb172-9"><a href="#cb172-9" aria-hidden="true" tabindex="-1"></a>,</span>
+<span id="cb172-10"><a href="#cb172-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb172-11"><a href="#cb172-11" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb172-12"><a href="#cb172-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-13"><a href="#cb172-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-14"><a href="#cb172-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(mpg <span class="sc">~</span> horsepower <span class="sc">+</span> <span class="fu">I</span>(horsepower<span class="sc">^</span><span class="dv">2</span>), Auto) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-15"><a href="#cb172-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb172-16"><a href="#cb172-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb172-17"><a href="#cb172-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>.fitted, <span class="at">y=</span>.resid) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se=</span>F) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>(), <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-94-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Here is the plots. On the left fitted vs resid for regressing horsepower onto mpg, on the right regressing horsepower and horsepower^2 onto mpg.</p>
+<p>Blue line is a smooth fit to the residuals to identify trends easily. The residuals on the left panel exhibit a clear U shape, which is a strong indication that the true relationship is not linear.</p>
+<p>Right hand panel displays a little pattern, suggesting that the quadratic term improves the fit to the data.</p>
+<p>If the residual plot indicates that there are non-linear associations in the data, then a simple approach is to use non-linear transformations of the predictors, such as <span class="math inline">\(\log X\)</span>, <span class="math inline">\(\sqrt{X}\)</span>, and <span class="math inline">\(X^2\)</span>, in the regression model. We will discuss more later on.</p>
 
 
 </section>
