@@ -211,7 +211,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, boxrule=0pt, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -3580,7 +3580,7 @@ Y &= \beta_0 + (\beta_1 + \beta_3 x_2)x_1 + \beta_2x_2 +\epsilon \\
 is no longer constant: adjusting \(x_2\) will change the impact of
 \(x_1\) on \(Y\).
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, coltitle=black, titlerule=0mm, arc=.35mm, bottomtitle=1mm, leftrule=.75mm, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, opacityback=0, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Productivy of a factory}, toptitle=1mm, rightrule=.15mm, left=2mm, breakable, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-note-color-frame, opacityback=0, toptitle=1mm, toprule=.15mm, rightrule=.15mm, bottomtitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Productivy of a factory}, colbacktitle=quarto-callout-note-color!10!white, arc=.35mm, breakable, leftrule=.75mm, coltitle=black, bottomrule=.15mm, opacitybacktitle=0.6, left=2mm, colback=white]
 
 Suppose that we are interested in studying the productivity of a
 factory. We want to predict the number of \texttt{units} produced on the

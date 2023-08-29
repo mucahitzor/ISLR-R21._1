@@ -25,6 +25,7 @@ sidebar:
 highlight-style: a11y
 format:
   html:
+    page-layout: full
     theme: 
       light: minty
       dark: darkly
