@@ -2345,7 +2345,264 @@ F-statistic: 8.299e+31 on 5 and 386 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p><strong>4.Outliers</strong></p>
 <p>An <em>outlier</em> is a point for which <span class="math inline">\(y_i\)</span> is far from the vlaue predicted by the model.</p>
 <p><img src="fig3.12.png" class="img-fluid"></p>
-<p>The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the otlier. In this case, removing the otlier has little effect on the least squares line: it leads to almost no change in the slope, and a miniscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when otlier is included, but it is only 0.77 when excluded =&gt; RSE is used to calculate all confidence intervals, p values =&gt; bias. <span class="math inline">\(R^2\)</span> also decreases from 0.829 to 0.805 when included otlier.</p>
+<p>The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the outlier. In this case, removing the outlier has little effect on the least squares line: it leads to almost no change in the slope, and a minuscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when outlier is included, but it is only 0.77 when excluded =&gt; RSE is used to calculate all confidence intervals, p values =&gt; bias. <span class="math inline">\(R^2\)</span> also decreases from 0.829 to 0.805 when included outlier.</p>
+<p>Residual plots can be used to identify outliers =&gt; center panel of Figure 3.12. But it can be difficult to decide how large a residual needs to before we consider the point to be an outlier. To address this problem instead of plotting the residuals we can plot the <em>studentized residuals</em> computed by dividing each residuls <span class="math inline">\(e_i\)</span> by its estimated standard error.</p>
+<p><span class="math display">\[
+e_i^*=\frac{e_i}{sd(e_i)} = \frac{e_i}{\sqrt{MSE(1-h_{ii})}}
+\]</span> <span class="math inline">\(h_{ii}\)</span> is leverage point.</p>
+<p>Observations whose studentized residuals are greater than 3 in absolute value are possible outliers. In the right-hand panel of Figure 3.12 the outlier’s studentized residual exceeds 6; while all other observations have studentized residauls between -2 and 2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb176"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb176-2"><a href="#cb176-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb176-3"><a href="#cb176-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb176-4"><a href="#cb176-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio,advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb176-5"><a href="#cb176-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb176-6"><a href="#cb176-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb176-7"><a href="#cb176-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.std.resid_3 =</span> <span class="fu">ifelse</span>(<span class="fu">abs</span>(.std.resid) <span class="sc">&gt;=</span><span class="dv">3</span>,T,F), <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">200</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb176-8"><a href="#cb176-8" aria-hidden="true" tabindex="-1"></a>  print <span class="sc">%&gt;%</span> </span>
+<span id="cb176-9"><a href="#cb176-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>.fitted, <span class="at">y =</span>.std.resid, <span class="at">color =</span> .std.resid_3) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>)) <span class="sc">+</span> </span>
+<span id="cb176-10"><a href="#cb176-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb176-11"><a href="#cb176-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">ifelse</span>(.std.resid_3 <span class="sc">==</span> T,id,<span class="st">""</span>)), <span class="at">nudge_x =</span> <span class="fl">0.5</span>, <span class="at">show.legend =</span> F)<span class="sc">+</span> <span class="fu">theme_light</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200 × 11
+   sales    TV radio .fitted  .resid    .hat .sigma   .cooksd .std.resid
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+ 1  22.1 230.   37.8   20.6   1.54   0.0140    1.68 0.00406       0.925 
+ 2  10.4  44.5  39.3   12.3  -1.95   0.0188    1.68 0.00871      -1.17  
+ 3   9.3  17.2  45.9   12.3  -3.04   0.0295    1.67 0.0341       -1.83  
+ 4  18.5 152.   41.3   17.6   0.883  0.0124    1.68 0.00117       0.528 
+ 5  12.9 181.   10.8   13.2  -0.324  0.00951   1.69 0.000120     -0.194 
+ 6   7.2   8.7  48.9   12.5  -5.31   0.0347    1.64 0.124        -3.22  
+ 7  11.8  57.5  32.8   11.7   0.0818 0.0129    1.69 0.0000105     0.0490
+ 8  13.2 120.   19.6   12.1   1.09   0.00576   1.68 0.000823      0.653 
+ 9   4.8   8.6   2.1    3.71  1.09   0.0271    1.68 0.00401       0.658 
+10  10.6 200.    2.6   12.6  -1.95   0.0171    1.68 0.00797      -1.17  
+# ℹ 190 more rows
+# ℹ 2 more variables: .std.resid_3 &lt;lgl&gt;, id &lt;int&gt;</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-96-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>or</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb178"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb178-1"><a href="#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">lm</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio,advertising), <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-97-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We have spotted that 6th and 131 are possible outliers.</p>
+<p>Here is all the data regression result:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb179"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb179-2"><a href="#cb179-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb179-3"><a href="#cb179-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb179-4"><a href="#cb179-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb179-5"><a href="#cb179-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb179-6"><a href="#cb179-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = sales ~ TV + radio, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7977 -0.8752  0.2422  1.1708  2.8328 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.92110    0.29449   9.919   &lt;2e-16 ***
+TV           0.04575    0.00139  32.909   &lt;2e-16 ***
+radio        0.18799    0.00804  23.382   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.681 on 197 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
+F-statistic: 859.6 on 2 and 197 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Here is regression result after removing outliers</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb181"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb181-2"><a href="#cb181-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb181-3"><a href="#cb181-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb181-4"><a href="#cb181-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">131</span>),]) <span class="sc">%&gt;%</span> </span>
+<span id="cb181-5"><a href="#cb181-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb181-6"><a href="#cb181-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = sales ~ TV + radio, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.3938 -0.8195  0.2003  1.0785  2.8134 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 3.051908   0.265279   11.51   &lt;2e-16 ***
+TV          0.044220   0.001269   34.84   &lt;2e-16 ***
+radio       0.195295   0.007315   26.70   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.511 on 195 degrees of freedom
+Multiple R-squared:  0.9146,    Adjusted R-squared:  0.9138 
+F-statistic:  1045 on 2 and 195 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(R^2\)</span> has increased, residual standard errors has decreased, standard errors of estimates decreased and coefficients has changed.</p>
+<p><strong>5.High Leverage Points</strong></p>
+<p>Outliers are observations for which the response <span class="math inline">\(y_i\)</span> is unusual given the predictor <span class="math inline">\(x_i\)</span>. In contrast, observations with <em>high leverage</em> have an unusual value for <span class="math inline">\(x_i\)</span>.</p>
+<p><img src="fig3.13.png" class="img-fluid"></p>
+<p>For example observation 41 in the left-hand panel of Figure 3.13 has high leverage =&gt; predictor value for this observation is large relative to other observations. The red solid line is the least squares fit to the data, the blue dashed line is the fit when obs 41 is removed.</p>
+<p>Removing the high leverage observation has a much more substantial impact on the least squares line than removing an outlier. High leverage obss have a big impact on the estiamted regression line. It is important to identify them.</p>
+<p>For SLR =&gt; look at the range of <span class="math inline">\(x_i\)</span> and spot the out of range observations.</p>
+<p>MLR =&gt; it is possible to have an observation that is well within the range of each individual predictor’s values, but that is unusual in terms of the full set of predictors.</p>
+<p>Have a look at the center panel in Figure 3.13. Most of the observations’ predictor values fall within the blue dashed ellipse, but the red observation is well outside of this range. But neither its value for <span class="math inline">\(x_1\)</span> nor <span class="math inline">\(x_2\)</span> is unusual.</p>
+<p>We can quantify an observation’s leverage using the <em>leverage statistic</em>. A large value indicates a high leverage.</p>
+<p>For SLR:</p>
+<p><span class="math display">\[
+\begin{align}
+h_i &amp;= \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i'=1}^n(x_{i'} - \bar{x})^2} \\
+&amp;1/n \leq h_i \leq 1 \\
+&amp;\bar{h_i} = (p+1)/n
+\end{align}
+\]</span> as <span class="math inline">\(x_i\)</span> increases its distance from <span class="math inline">\(\bar{x}\)</span> <span class="math inline">\(h_i\)</span> increases.</p>
+<p><span class="math inline">\(h_i\)</span> is always between <span class="math inline">\(1/n\)</span> and <span class="math inline">\(1\)</span>, and the average leverage for all the observations is always equal to <span class="math inline">\((p+1)/n\)</span>. If an observation has a <span class="math inline">\(h\)</span> that greatly exceeds <span class="math inline">\((p+1)/n\)</span> then we may suspect of high leverage.</p>
+<p>Right hand panel of Figure 3.13 shows studentized residuals versus <span class="math inline">\(h_i\)</span>. Obs 41 stands out as having a very high leverage statistic as well as a high studentized residual =&gt; It is an outlier as well as a high leverage observaiton. This is very dangerous. This plot also shows the reason that obs 20 had relatively little effect on the least sqaures fit in Figure 3.12: it has low leverage.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb183"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb183-1"><a href="#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb183-2"><a href="#cb183-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb183-3"><a href="#cb183-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb183-4"><a href="#cb183-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb183-5"><a href="#cb183-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb183-6"><a href="#cb183-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200 × 9
+   sales    TV radio .fitted  .resid    .hat .sigma   .cooksd .std.resid
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+ 1  22.1 230.   37.8   20.6   1.54   0.0140    1.68 0.00406       0.925 
+ 2  10.4  44.5  39.3   12.3  -1.95   0.0188    1.68 0.00871      -1.17  
+ 3   9.3  17.2  45.9   12.3  -3.04   0.0295    1.67 0.0341       -1.83  
+ 4  18.5 152.   41.3   17.6   0.883  0.0124    1.68 0.00117       0.528 
+ 5  12.9 181.   10.8   13.2  -0.324  0.00951   1.69 0.000120     -0.194 
+ 6   7.2   8.7  48.9   12.5  -5.31   0.0347    1.64 0.124        -3.22  
+ 7  11.8  57.5  32.8   11.7   0.0818 0.0129    1.69 0.0000105     0.0490
+ 8  13.2 120.   19.6   12.1   1.09   0.00576   1.68 0.000823      0.653 
+ 9   4.8   8.6   2.1    3.71  1.09   0.0271    1.68 0.00401       0.658 
+10  10.6 200.    2.6   12.6  -1.95   0.0171    1.68 0.00797      -1.17  
+# ℹ 190 more rows</code></pre>
+</div>
+</div>
+<p>leverages are shown in <code>.hat</code> here.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb185"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">lm</span>(sales<span class="sc">~</span>TV,advertising), <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-101-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><strong>6.Collinearity</strong></p>
+<p><em>Collinearity</em> refers to the situation in which two or more predictor variables are closely related to one another.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb186"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb186-1"><a href="#cb186-1" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
+<span id="cb186-2"><a href="#cb186-2" aria-hidden="true" tabindex="-1"></a>  Credit <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>Limit, <span class="at">y =</span> Age) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span><span class="st">"red"</span>, <span class="at">alpha =</span><span class="fl">0.4</span>),</span>
+<span id="cb186-3"><a href="#cb186-3" aria-hidden="true" tabindex="-1"></a>  Credit <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>Limit, <span class="at">y=</span> Rating) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span><span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>),</span>
+<span id="cb186-4"><a href="#cb186-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol=</span><span class="dv">2</span></span>
+<span id="cb186-5"><a href="#cb186-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-102-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure 3.14</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In the left panel of Figure 3.14 we see no relationship, but on the right hand panel predicors are highly correlated: they are <em>collinear</em> =&gt; it is difficult to seperate out the individual effects of colliniar varaibles on the response.</p>
+<p>Collinearity reduces the accuracy of the estiamtes of the regression coefficients, it causes the standard error for <span class="math inline">\(\hat{\beta_j}\)</span> to grow. t-statistic for each predictor is calculated by dividing <span class="math inline">\(\hat{\beta_j}\)</span> by its standard error =&gt; collinearity declines the t-statistics =&gt; we may fail to reject <span class="math inline">\(H_0:\beta_j = 0\)</span>.</p>
+<p>Lets do two regressions:</p>
+<ul>
+<li>model1: balance regressed onto age and limit which has no collinearity</li>
+<li>model2: balance regressed onto rating and limit which are collinear.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb187"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb187-2"><a href="#cb187-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-3"><a href="#cb187-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-4"><a href="#cb187-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Age <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-5"><a href="#cb187-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-6"><a href="#cb187-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-7"><a href="#cb187-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb187-8"><a href="#cb187-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb187-9"><a href="#cb187-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-10"><a href="#cb187-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-11"><a href="#cb187-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Rating <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-12"><a href="#cb187-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-13"><a href="#cb187-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span><span class="dv">2</span>)</span>
+<span id="cb187-14"><a href="#cb187-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+  term         estimate std.error statistic   p.value model
+  &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+1 (Intercept) -173.      43.8        -3.96  9.01e-  5     1
+2 Age           -2.29     0.672      -3.41  7.23e-  4     1
+3 Limit          0.173    0.00503    34.5   1.63e-121     1
+4 (Intercept) -378.      45.3        -8.34  1.21e- 15     2
+5 Rating         2.20     0.952       2.31  2.13e-  2     2
+6 Limit          0.0245   0.0638      0.384 7.01e-  1     2</code></pre>
+</div>
+</div>
+<p>In the first model both <code>age</code> and <code>limit</code> are statistically significant. In the second, collinearity between <code>limit</code> and <code>raiting</code> has caused standard error for the limit coefficient estimate to increase by a factor of 12 and p-value to increase to 0.701. The importance of the limit variable has been masked due to presence of collinearity.</p>
+<p>A simple way to detect collinearity is to look at the correlation matrix of the predictors. Correlation matrix shows the relatinship of two variables but, it is possible for colşinearty to exist between three or more varaibles even if no pair of variables has a particularly high correlation. This situation is called <em>multicollinaerity</em>.</p>
+<p>Instead of inspecting the correlatino matrix, better way to assess multicollinaerity is to compute the <em>variance inflation factor</em> (VIF). The VIF is the raio of the variance of <span class="math inline">\(\hat{\beta_j}\)</span> when fitting the model divided by the variance of <span class="math inline">\(\hat{\beta_j}\)</span> if fit on its own.</p>
+<p><span class="math display">\[
+1 \leq VIF
+\]</span> Smallest possible value of VIF is 1: complete absence of collinearity. Usuall there is always some degree of collinearity among the predictors. A VIF that exceeds 5 or 10 indicates a problematic amount of collinaerity.</p>
+<p>The VIF for each vairable can be computed using the formula</p>
+<p><span class="math display">\[
+VIF(\hat{\beta_j}) = \frac{1}{1-R^2_{x_j | x_{-j}}}
+\]</span> <span class="math inline">\(R^2_{x_j | x_{-j}}\)</span> is the <span class="math inline">\(R^2\)</span> from a regression of <span class="math inline">\(x_j\)</span> onto all of the other predictors. If <span class="math inline">\(R^2_{x_j | x_{-j}}\)</span> is close to one, then collinearity is present, so VIF will be large.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb189"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb189-2"><a href="#cb189-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-3"><a href="#cb189-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-4"><a href="#cb189-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Age <span class="sc">+</span> Rating <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-5"><a href="#cb189-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-6"><a href="#cb189-6" aria-hidden="true" tabindex="-1"></a>  car<span class="sc">::</span><span class="fu">vif</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Age     Rating      Limit 
+  1.011385 160.668301 160.592880 </code></pre>
+</div>
+</div>
+<p>A regression of balance on age, rating, and limit indicates that the predictors have VIF Values of 1.01, 160.67, 160.59. There is considerable collinearity in the data.</p>
+<p>When faced with collinearity, two simple solutions exist: * drop one of the problematic variables from the regression * combine collinear variables together into a single predictor. We might take the average of standardized versions of limit and rating in order to create a new varaible that measures <em>credit worthiness</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb191"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper,advertising) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + radio + newspaper, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.8277 -0.8908  0.2418  1.1893  2.8292 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.938889   0.311908   9.422   &lt;2e-16 ***
+TV           0.045765   0.001395  32.809   &lt;2e-16 ***
+radio        0.188530   0.008611  21.893   &lt;2e-16 ***
+newspaper   -0.001037   0.005871  -0.177     0.86    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.686 on 196 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8956 
+F-statistic: 570.3 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
 
 
 </section>

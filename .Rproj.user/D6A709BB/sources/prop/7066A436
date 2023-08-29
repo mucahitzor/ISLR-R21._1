@@ -5,8 +5,9 @@
     "Source": "Source",
     "docOutlineVisible": "1",
     "rmdVisualCollapsedChunks": "",
-    "cursorPosition": "1530,529",
-    "scrollLine": "1518",
+    "cursorPosition": "1714,0",
+    "scrollLine": "1704",
     "rmdVisualModeLocation": "77:4",
-    "chunk_output_type": "console"
+    "chunk_output_type": "console",
+    "quartoPreviewFormat": "html"
 }

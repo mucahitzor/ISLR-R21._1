@@ -18,6 +18,7 @@ library(ggthemes)
 library(sjPlot)
 library(corrplot)
 library(tidymodels)
+library(magrittr)
 ```
 
 ```{r}
@@ -1528,7 +1529,190 @@ An *outlier* is a point for which $y_i$ is far from the vlaue predicted by the m
 
 ![](fig3.12.png)
 
-The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the otlier. In this case, removing the otlier has little effect on the least squares line: it leads to almost no change in the slope, and a miniscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when otlier is included, but it is only 0.77 when excluded => RSE is used to calculate all confidence intervals, p values => bias. $R^2$ also decreases from 0.829 to 0.805 when included otlier.
+The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the outlier. In this case, removing the outlier has little effect on the least squares line: it leads to almost no change in the slope, and a minuscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when outlier is included, but it is only 0.77 when excluded => RSE is used to calculate all confidence intervals, p values => bias. $R^2$ also decreases from 0.829 to 0.805 when included outlier.
+
+Residual plots can be used to identify outliers => center panel of Figure 3.12. But it can be difficult to decide how large a residual needs to before we consider the point to be an outlier. To address this problem instead of plotting the residuals we can plot the *studentized residuals* computed by dividing each residuls $e_i$ by its estimated standard error.
+
+$$
+e_i^*=\frac{e_i}{sd(e_i)} = \frac{e_i}{\sqrt{MSE(1-h_{ii})}}
+$$
+$h_{ii}$ is leverage point.
+
+Observations whose studentized residuals are greater than 3 in absolute value are possible outliers. In the right-hand panel of Figure 3.12 the outlier's studentized residual exceeds 6; while all other observations have studentized residauls between -2 and 2.
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales~TV + radio,advertising) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  mutate(.std.resid_3 = ifelse(abs(.std.resid) >=3,T,F), id = 1:200) %>% 
+  print %>% 
+  ggplot() + aes(x=.fitted, y =.std.resid, color = .std.resid_3) + geom_point() + scale_color_manual(values = c("black","red")) + 
+  geom_hline(yintercept = 0, linetype="dashed") +
+  geom_text(aes(label = ifelse(.std.resid_3 == T,id,"")), nudge_x = 0.5, show.legend = F)+ theme_light() 
+```
+
+or
+```{r}
+plot(lm(sales ~ TV + radio,advertising), which = 3)
+```
+
+
+We have spotted that 6th and 131 are possible outliers.
+
+Here is all the data regression result:
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales ~ TV + radio, advertising) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+
+Here is regression result after removing outliers
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales ~ TV + radio, advertising[-c(6,131),]) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+
+$R^2$ has increased, residual standard errors has decreased, standard errors of estimates decreased and coefficients has changed. 
+
+**5.High Leverage Points**
+
+Outliers are observations for which the response $y_i$ is unusual given the predictor $x_i$. In contrast, observations with *high leverage* have an unusual value for $x_i$.
+
+![](fig3.13.png)
+
+For example observation 41 in the left-hand panel of Figure 3.13 has high leverage => predictor value for this observation is large relative to other observations. The red solid line is the least squares fit to the data, the blue dashed line is the fit when obs 41 is removed.
+
+Removing the high leverage observation has a much more substantial impact on the least squares line than removing an outlier. High leverage obss have a big impact on the estiamted regression line. It is important to identify them.
+
+For SLR => look at the range of $x_i$ and spot the out of range observations. 
+
+MLR => it is possible to have an observation that is well within the range of each individual predictor's values, but that is unusual in terms of the full set of predictors.
+
+Have a look at the center panel in Figure 3.13. Most of the observations' predictor values fall within the blue dashed ellipse, but the red observation is well outside of this range. But neither its value for $x_1$ nor $x_2$ is unusual. 
+
+We can quantify an observation's leverage using the *leverage statistic*. A large value indicates a high leverage. 
+
+For SLR:
+
+$$
+\begin{align}
+h_i &= \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i'=1}^n(x_{i'} - \bar{x})^2} \\
+&1/n \leq h_i \leq 1 \\
+&\bar{h_i} = (p+1)/n
+\end{align}
+$$
+as $x_i$ increases its distance from $\bar{x}$ $h_i$ increases. 
+
+$h_i$ is always between $1/n$ and $1$, and the average leverage for all the observations is always equal to $(p+1)/n$. If an observation has a $h$ that greatly exceeds $(p+1)/n$ then we may suspect of high leverage.
+
+
+Right hand panel of Figure 3.13 shows studentized residuals versus $h_i$. Obs 41 stands out as having a very high leverage statistic as well as a high studentized residual => It is an outlier as well as a high leverage observaiton. This is very dangerous. This plot also shows the reason that obs 20 had relatively little effect on the least sqaures fit in Figure 3.12: it has low leverage.
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales ~ TV + radio, advertising) %>% 
+  pluck("fit") %>% 
+  augment()
+```
+
+leverages are shown in `.hat` here.
+
+```{r}
+plot(lm(sales~TV,advertising), which = 5)
+```
+
+
+**6.Collinearity**
+
+*Collinearity* refers to the situation in which two or more predictor variables are closely related to one another. 
+
+
+```{r}
+#| fig-cap: Figure 3.14
+gridExtra::grid.arrange(
+  Credit %>% ggplot() + aes(x=Limit, y = Age) + geom_point(color ="red", alpha =0.4),
+  Credit %>% ggplot() + aes(x=Limit, y= Rating) + geom_point(color ="red", alpha = 0.4),
+  ncol=2
+)
+```
+
+
+
+
+In the left panel of Figure 3.14 we see no relationship, but on the right hand panel predicors are highly correlated: they are *collinear* => it is difficult to seperate out the individual effects of colliniar varaibles on the response. 
+
+Collinearity reduces the accuracy of the estiamtes of the regression coefficients, it causes the standard error for $\hat{\beta_j}$ to grow. t-statistic for each predictor is calculated by dividing $\hat{\beta_j}$ by its standard error => collinearity declines the t-statistics => we may fail to reject $H_0:\beta_j = 0$. 
+
+Lets do two regressions:
+
+* model1: balance regressed onto age and limit which has no collinearity
+* model2: balance regressed onto rating and limit which are collinear.
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(Balance ~ Age + Limit, Credit) %>% 
+  pluck("fit") %>% 
+  tidy() %>% mutate(model = 1) %>% 
+  bind_rows(
+    linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(Balance ~ Rating + Limit, Credit) %>% 
+  pluck("fit") %>% 
+  tidy() %>% mutate(model =2)
+  )
+```
+In the first model both `age` and `limit` are statistically significant. In the second, collinearity between `limit` and `raiting` has caused standard error for the limit coefficient estimate to increase by a factor of 12 and p-value to increase to 0.701. The importance of the limit variable has been masked due to presence of collinearity. 
+
+A simple way to detect collinearity is to look at the correlation matrix of the predictors. Correlation matrix shows the relatinship of two variables but, it is possible for colşinearty to exist between three or more varaibles even if no pair of variables has a particularly high correlation. This situation is called *multicollinaerity*.
+
+Instead of inspecting the correlatino matrix, better way to assess multicollinaerity is to compute the *variance inflation factor* (VIF). The VIF is the raio of the variance of $\hat{\beta_j}$ when fitting the model divided by the variance of $\hat{\beta_j}$ if fit on its own. 
+
+$$
+1 \leq VIF
+$$
+Smallest possible value of VIF is 1: complete absence of collinearity. Usuall there is always some degree of collinearity among the predictors. A VIF that exceeds 5 or 10 indicates a problematic amount of collinaerity. 
+
+The VIF for each vairable can be computed using the formula
+
+$$
+VIF(\hat{\beta_j}) = \frac{1}{1-R^2_{x_j | x_{-j}}}
+$$
+$R^2_{x_j | x_{-j}}$ is the $R^2$ from a regression of $x_j$ onto all of the other predictors. If $R^2_{x_j | x_{-j}}$ is close to one, then collinearity is present, so VIF will be large.
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(Balance ~ Age + Rating + Limit, Credit) %>% 
+  pluck("fit") %>% 
+  car::vif() 
+```
+
+A regression of balance on age, rating, and limit indicates that the predictors have VIF Values of 1.01, 160.67, 160.59. There is considerable collinearity in the data.
+
+When faced with collinearity, two simple solutions exist: 
+* drop one of the problematic variables from the regression
+* combine collinear variables together into a single predictor. We might take the average of standardized versions of limit and rating in order to create a new varaible that measures *credit worthiness*.
+
+```{r}
+lm(sales~TV + radio + newspaper,advertising) %>% summary()
+```
 
 
 
