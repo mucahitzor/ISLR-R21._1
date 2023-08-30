@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ISLR-R21._1 - 3&nbsp; Summary and Exercise on Linear Model</title>
+<title>ISLR-R21._1 - 3&nbsp; Summary: Linear Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -63,6 +97,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -75,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ExerciseLinearModel.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary and Exercise on Linear Model</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ExerciseLinearModel.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary: Linear Regression</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -142,7 +178,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ExerciseLinearModel.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary and Exercise on Linear Model</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary: Linear Regression</span></span></a>
   </div>
 </li>
     </ul>
@@ -150,15 +186,25 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#simple-linear-regression" id="toc-simple-linear-regression" class="nav-link active" data-scroll-target="#simple-linear-regression"><span class="header-section-number">3.1</span> Simple Linear Regression</a>
+  <ul class="collapse">
+  <li><a href="#assumptions-about-u" id="toc-assumptions-about-u" class="nav-link" data-scroll-target="#assumptions-about-u"><span class="header-section-number">3.1.1</span> Assumptions about <span class="math inline">\(u\)</span></a></li>
+  <li><a href="#estimating-the-coefficients-deriving-the-ordinary-least-squares-estimates" id="toc-estimating-the-coefficients-deriving-the-ordinary-least-squares-estimates" class="nav-link" data-scroll-target="#estimating-the-coefficients-deriving-the-ordinary-least-squares-estimates"><span class="header-section-number">3.1.2</span> Estimating the coefficients: Deriving the Ordinary least squares estimates</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content">
+<main class="content column-body" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary and Exercise on Linear Model</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary: Linear Regression</span></h1>
 </div>
 
 
@@ -173,8 +219,216 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<section id="simple-linear-regression" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="simple-linear-regression"><span class="header-section-number">3.1</span> Simple Linear Regression</h2>
+<p>We have an idea in mind: we want to explain one response variable <span class="math inline">\(y\)</span> varies with changes in one single predictor variable <span class="math inline">\(x\)</span>; that is we are trying to explain <span class="math inline">\(y\)</span> in terms of<span class="math inline">\(x\)</span>.</p>
+<p>We assume a linear relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and we need to write a model for it.</p>
+<p>Now, we know that <span class="math inline">\(y\)</span> is not effected only by <span class="math inline">\(x\)</span>–it would not make any sense– there are some variables also effecting <span class="math inline">\(y\)</span>. That is, even if we knew the true relationship between <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>–<span class="math inline">\(f(x)\)</span> we would not perfectly explain the variations in <span class="math inline">\(y\)</span> with the changes in <span class="math inline">\(x\)</span> solely. So we would have the following equation</p>
+<p><span class="math display">\[
+\begin{align}
+y_i &amp; \approx f(x_i) \\
+y &amp;\approx f(x)
+\end{align}
+\]</span></p>
+<p>For each observation we would have <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> values but the function would not constitute a perfect fit to data. Changes in <span class="math inline">\(x\)</span> would not explain changes in <span class="math inline">\(y\)</span> perfectly; so <span class="math inline">\(y\)</span> would never be equal to the function of <span class="math inline">\(x\)</span>. So even if we knew the true function <span class="math inline">\(f\)</span> we would not be able to predict <span class="math inline">\(y_i\)</span> values using <span class="math inline">\(x_i\)</span>; because <span class="math inline">\(x\)</span> is not the only variable affecting <span class="math inline">\(y\)</span>. So using our true function <span class="math inline">\(f\)</span> we could put each observation <span class="math inline">\(x\)</span> to the function and get some values (<span class="math inline">\(f(x)\)</span>) which would not be equal to the true <span class="math inline">\(y\)</span> values observed. The difference than would be the effect of other variables to <span class="math inline">\(y\)</span>; the effect which is not being explained by <span class="math inline">\(x\)</span>. For each <span class="math inline">\(x\)</span> value we would have different values for this difference <span class="math inline">\(y - f(x)\)</span>. <mark style="background: #FDE5EC;color: black">This difference is called error and marked with</mark> <span class="math inline">\(\epsilon\)</span> or <span class="math inline">\(u\)</span> symbols. So now we can get the eqaulity and write</p>
+<p><span class="math display">\[
+\begin{align}
+y_i &amp;= f(x_i) + u_i \\
+y &amp;= f(x) + u
+\end{align}
+\]</span></p>
+<p>Generally our goal is to estimate <span class="math inline">\(f\)</span> with different approaches: <mark style="background: #2881FD;color: white">statistical learning</mark>.</p>
+<p>For <strong>SLR</strong> case we make several assumptions. The most important one is the form of this function: <span class="math inline">\(f\)</span> is linear. So we can write a <em>simple linear regression model</em> of:</p>
+<p><span class="math display">\[
+y_i = \beta_0 + \beta_1 x_i + u_i
+\]</span> or</p>
+<p><span class="math display">\[
+y = \beta_0 + \beta_1 x + u
+\]</span> (a.1)</p>
+<p><span class="math inline">\(u\)</span> here captures all the effects except the <span class="math inline">\(x\)</span>’s, so we refer it as <em>unobserved</em>. If other factors in <span class="math inline">\(u\)</span> is zero, <span class="math inline">\(\Delta u = 0\)</span>, then <span class="math inline">\(x\)</span> has a <em>linear</em> effect on y:</p>
+<p><span class="math display">\[
+\Delta y = \beta_1 \Delta x, \space \text{if} \space \Delta u = 0
+\]</span> So, the change in <span class="math inline">\(y\)</span> is equal to change in <span class="math inline">\(x\)</span> multiplied by <span class="math inline">\(\beta_1\)</span>. Now notice that this <span class="math inline">\(\beta_1\)</span> is a constant and the changes in <span class="math inline">\(x\)</span> are effecting <span class="math inline">\(y\)</span> at the same rate of <span class="math inline">\(\beta_1\)</span> no matter the rate of change or the level of <span class="math inline">\(x\)</span>; this is called the linearity–one unit change in <span class="math inline">\(x\)</span> has the <em>same</em> effect on <span class="math inline">\(y\)</span> regardless of the initial value of <span class="math inline">\(x\)</span>.</p>
+<section id="assumptions-about-u" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="assumptions-about-u"><span class="header-section-number">3.1.1</span> Assumptions about <span class="math inline">\(u\)</span></h3>
+<p>There is a key assumption about <span class="math inline">\(u\)</span> that we can always make. As long as the intercept <span class="math inline">\(\beta_0\)</span> is included in the equation, we can assume the average value of <span class="math inline">\(u\)</span> in the population is zero: <span class="math display">\[
+E(u) = 0
+\]</span></p>
+<p><strong>zero conditional mean assumption</strong></p>
+<p>The other assumption is regarding how <span class="math inline">\(u\)</span> and <span class="math inline">\(x\)</span> are related. Now we are going to assume <strong>there is no relationship between</strong> <span class="math inline">\(x\)</span> and <span class="math inline">\(u\)</span>. We can check this relation with correlation coefficient but correlation only checks at one level of relationship: it is possible for <span class="math inline">\(u\)</span> to be uncorrelated with <span class="math inline">\(x\)</span> while being correlated with functions of <span class="math inline">\(x\)</span>, such as <span class="math inline">\(x^2\)</span>. A better assumption involves the <em>expected value of u given x</em>:</p>
+<p>Because <span class="math inline">\(u\)</span> and <span class="math inline">\(x\)</span> are random variables, and they are independent from each other, for any <span class="math inline">\(x\)</span> we can obtain the expected(or average) value of <span class="math inline">\(u\)</span> given any value of <span class="math inline">\(x\)</span> <span class="math display">\[
+E(u|x) = E(u) = 0
+\]</span> So <em>zero conditional mean assumption</em> states that for any given value of <span class="math inline">\(x\)</span> the average of the unobservables is the same and therefore must equal to average value of <span class="math inline">\(u\)</span> in the entire population.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Examples of Simple Linear Regression
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+sales = \beta_0 + \beta_1 \times x + u
+\]</span> <span class="math display">\[
+wage = \beta_0 + \beta_1 educ + u
+\]</span></p>
+<p>For example consider the wage regression. To simplify lets assume that wage is effected only by <code>educ</code> and <code>natural ability</code>.Then the assumption <span class="math inline">\(E(u|x) = E(u) = 0\)</span> requires <span class="math inline">\(E(abil|8) = E(ability)=0 = E(abil|16)...\)</span>; the average level of ability is the same regardless of years of education. The average ability must be same for all education levels. If we think that average ability level increases with years of education, then this assumption is false (this would happen if on average, people with more ability choose to become more educated). Now we cannot observe natural ability, we cannot measure it, we cannot take its average. But this is an issue that we must adress before applying SLR analysis.</p>
+</div>
+</div>
+</section>
+<section id="estimating-the-coefficients-deriving-the-ordinary-least-squares-estimates" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="estimating-the-coefficients-deriving-the-ordinary-least-squares-estimates"><span class="header-section-number">3.1.2</span> Estimating the coefficients: Deriving the Ordinary least squares estimates</h3>
+<p>So our simple regression model which we think is true for the population is</p>
+<p><span class="math display">\[
+y_i = \beta_0 + \beta_1 x_i + u_i
+\]</span></p>
+<p>Since <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> is unknown before we can use the above equation to make predictions we must use sample data from the population to estimate coefficients. Let <span class="math inline">\(\{(x_i,y_i), i = 1,\dots,n\}\)</span> denote a random sample of size <span class="math inline">\(n\)</span> from the population.</p>
+<p>And we will get an estimated linear model of</p>
+<p><span class="math display">\[
+\hat{y_i} = \hat{\beta_0} + \hat{\beta_1}x_i
+\]</span></p>
+<p>The formulas for these coefficients are</p>
+<p><span class="math display">\[
+\begin{align}
+\hat{\beta_1} &amp;= \frac{\sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n(x_i - \bar{x})^2}\\
+\hat{\beta_0} &amp;= \bar{y} - \hat{\beta_1}\bar{x}
+\end{align}
+\]</span> These coefficients are colled OLS estimates of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. These estimates come from the approach of minimizing the<em>least squares criterion</em>:</p>
+<p>so we have <span class="math display">\[
+\hat{y_i} = \hat{\beta_0} + \hat{\beta_1} x_i
+\]</span> <span class="math inline">\(y_i\)</span> is the prediction from each observation <span class="math inline">\(x_i\)</span> with OLS coefficients. Now since our OLS estimates are going to be different from the real coefficients, for each observation <span class="math inline">\(x_i\)</span> <span class="math inline">\(y_i\)</span> and <span class="math inline">\(\hat{y_i}\)</span> will be different. This difference is called <strong>residuals</strong>(<span class="math inline">\(\hat{u_i}\)</span>)</p>
+<p><span class="math display">\[
+\hat{u_i} = y_i - \hat{y_i} = y_i - \hat{\beta_0} - \hat{\beta_1}x_i
+\]</span></p>
+<p>These residuals are the distance of each prediction from the actual value of the response. There are <span class="math inline">\(n\)</span> residuals (<span class="math inline">\(\hat{u_i}\)</span>) <mark style="background: #2881FD;color: white">(note that these are not the same as <span class="math inline">\(u_i\)</span>)</mark>. Before going further have a look at the figure below</p>
+<p><img src="fig2.4.w.png" class="img-fluid"> <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta_1}\)</span> formulas come from minimizing the <strong>sum of squared residauls</strong> or residual sum of squares(<em>RSS</em>)</p>
+<p><span class="math display">\[
+RSS = \sum_{i=1}^n\hat{u_i}^2 = \sum_{i=1}^n(y_i - \hat{y_i})^2 = \sum_{i=1}^n(y_i - \hat{\beta_0} - \hat{\beta_1}x_i)^2
+\]</span></p>
+<p>So the OLS comes from the fact that these estiamtes minimize the sum of squared residuals.</p>
+<p>Once we determine the OLS intercept and slope estimates we form the <strong>OLS regression line</strong>, or sometimes refreed to as <strong>sample regression function</strong> (SRF)(since this function is estimated version of population regression function <span class="math inline">\(f(x)\)</span>)</p>
+<p><span class="math display">\[
+\hat{y} = \hat{\beta_0} + \hat{\beta_1} x
+\]</span> (a.2)</p>
+<p>Lets use advertising data to estimate the coefficients, find the residuals, and draw the OLS regression line;</p>
+<p>Our population regression is</p>
+<p><span class="math display">\[
+sales = \beta_0 + \beta_1 TV + u_i
+\]</span> The data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>advertising <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"./data/Advertising.csv"</span>, <span class="at">col_select =</span> <span class="sc">-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 200 Columns: 4
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," dbl
+(4): TV, radio, newspaper, sales
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>advertising</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200 × 4
+      TV radio newspaper sales
+   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+ 1 230.   37.8      69.2  22.1
+ 2  44.5  39.3      45.1  10.4
+ 3  17.2  45.9      69.3   9.3
+ 4 152.   41.3      58.5  18.5
+ 5 181.   10.8      58.4  12.9
+ 6   8.7  48.9      75     7.2
+ 7  57.5  32.8      23.5  11.8
+ 8 120.   19.6      11.6  13.2
+ 9   8.6   2.1       1     4.8
+10 200.    2.6      21.2  10.6
+# ℹ 190 more rows</code></pre>
+</div>
+</div>
+<p>The OLS coefficients</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV, advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="ot">-&gt;</span> lm_result</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>lm_result <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = sales ~ TV, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.3860 -1.9545 -0.1913  2.0671  7.2124 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 7.032594   0.457843   15.36   &lt;2e-16 ***
+TV          0.047537   0.002691   17.67   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.259 on 198 degrees of freedom
+Multiple R-squared:  0.6119,    Adjusted R-squared:  0.6099 
+F-statistic: 312.1 on 1 and 198 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>So our OLS regression is</p>
+<p><span class="math display">\[
+\hat{y_i} = 7.032 + 0.0475 \times TV
+\]</span> This means that additional $1,000 spending on TV will increase sales by 47.5 units on average.</p>
+<p>Here is our <span class="math inline">\(\hat{y}\)</span> values in <code>.fitted</code> column, residuals in <code>.resid</code> column,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lm_result <span class="sc">%&gt;%</span> <span class="fu">augment</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200 × 8
+   sales    TV .fitted .resid    .hat .sigma   .cooksd .std.resid
+   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+ 1  22.1 230.    18.0   4.13  0.00970   3.25 0.00794       1.27  
+ 2  10.4  44.5    9.15  1.25  0.0122    3.27 0.000920      0.387 
+ 3   9.3  17.2    7.85  1.45  0.0165    3.27 0.00169       0.449 
+ 4  18.5 152.    14.2   4.27  0.00501   3.25 0.00434       1.31  
+ 5  12.9 181.    15.6  -2.73  0.00578   3.26 0.00205      -0.839 
+ 6   7.2   8.7    7.45 -0.246 0.0180    3.27 0.0000534    -0.0762
+ 7  11.8  57.5    9.77  2.03  0.0105    3.26 0.00208       0.627 
+ 8  13.2 120.    12.7   0.454 0.00549   3.27 0.0000538     0.140 
+ 9   4.8   8.6    7.44 -2.64  0.0181    3.26 0.00616      -0.818 
+10  10.6 200.    16.5  -5.93  0.00690   3.24 0.0116       -1.83  
+# ℹ 190 more rows</code></pre>
+</div>
+</div>
+<p>So we can calculate <span class="math inline">\(RSS = \sum\hat{u_i}^2 = \sum(y_i - \hat{y_i})^2\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lm_result <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.resid_squared =</span> .resid<span class="sc">^</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(.resid_squared) <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2102.531</code></pre>
+</div>
+</div>
+<p>Lets draw our OLS regression line</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lm_result <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>TV, <span class="at">y =</span> sales) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> lm_result<span class="sc">$</span>coefficients[<span class="dv">1</span>], <span class="at">slope =</span> lm_result<span class="sc">$</span>coefficients[<span class="dv">2</span>], <span class="at">color =</span><span class="st">"#0b53c1"</span>)<span class="sc">+</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> TV, <span class="at">yend =</span> .fitted), <span class="at">color =</span> <span class="st">"#ff0055"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ExerciseLinearModel_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">For the advertising data, the least squares fit for the regression of sales onto TV. The fit is found by minimizing the sum of squared errors. Each red line segment represents a residual, and the fit make a comprimise by averaging their squares. In this case a linear fit captures the essence of the relationship, although it is somewhat deficient in the left of the plot</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -525,7 +779,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation column-page-right">
+<nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
       <a href="./Chapter3.html" class="pagination-link">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Regression</span></span>
