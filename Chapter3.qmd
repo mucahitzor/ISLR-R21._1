@@ -9,9 +9,7 @@ editor_options:
 We will predict quantitative response.
 
 ```{r}
-#| echo: false
-#| warning: false
-#| error: false
+suppressPackageStartupMessages({
 library(ISLR)
 library(tidyverse)
 library(ggthemes)
@@ -19,6 +17,11 @@ library(sjPlot)
 library(corrplot)
 library(tidymodels)
 library(magrittr)
+library(dotwhisker)
+library(hrbrthemes)
+library(patchwork)
+})
+theme_set(theme_ipsum_ps(axis_title_size = 11 , axis_title_just = "c") + theme(axis.line = element_line(color ="black")))
 ```
 
 ```{r}
@@ -257,9 +260,9 @@ data = tibble(
 
 Now lets plot this data points
 
-```{r fig.width=8}
+```{r}
 data %>% 
-  ggplot() + aes(x=x, y=y) + geom_point() + theme_par()
+  ggplot() + aes(x=x, y=y) + geom_point() 
 ```
 
 Now, even though we already know $f$ and population parameters $\beta_0 = 2$ and $\beta_1 = 3$, lets estimate them:
@@ -519,7 +522,28 @@ Lets confirm this
 confint(lm(y~x,data))
 ```
 
+Lets plot this confidence interval
+
+```{r}
+lm(y~x,data) %>% 
+  dwplot(ci = 0.95,dot_args = list(size=2), vline = geom_vline(xintercept = 0, color = "grey50", linetype =2))
+```
+
 Since standard error tells us the range of the $\beta$ values via confidence interval, we can infer that if this range does not include 0, than our $\beta$ values are statistically significant; x is assocaited with y.
+
+
+Lets do this for `advertising` data as well
+
+```{r}
+#| fig-cap: the 95% confidence interval does not include 0; TV is statistically significant
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales ~ TV, advertising) %>% 
+  pluck("fit") %>% 
+  tidy() %>% 
+  dwplot(ci = 0.95,dot_args = list(size=2), vline = geom_vline(xintercept = 0, color = "grey50", linetype =2))
+```
 
 Or we can use standard erros to perform *hypothesis tests* on the coefficients. We usually don't care about the intercept, so lets do the hypothesis test on only $\hat{\beta_1}$.
 
@@ -528,7 +552,8 @@ $$
 H_0 &: \beta_1 = 0 \to \text{there is no relationship between X and Y} \\
 H_1 &: \beta_1 \neq 0 \to \text{there is some relationship between X and Y}
 \end{align}
-$$ If the *null-hypothesis* is true =\> \$ \beta\_1 = 0\$ =\> $Y = \beta_0 + \epsilon$ =\> $X$ is not associated with $Y$.
+$$ 
+If the *null-hypothesis* is true =\> \$ \beta\_1 = 0\$ =\> $Y = \beta_0 + \epsilon$ =\> $X$ is not associated with $Y$.
 
 To test the null-hypothessi, we need to determine whether our estimate $\hat{\beta_1}$ is sufficiently far from zero that we can be confident that $\beta_1$ is non-zero. How far is enough? This depends on the accuracy of $\hat{\beta_1}$--that is it depends on $\text{SE}(\hat{\beta_1})$. If $\text{SE}(\hat{\beta_1})$ is small, then even relatively small values of $\hat{\beta_1}$ may provide strong evidence that $\beta_1 \neq 0$. If $\text{SE}(\hat{\beta_1})$ is large, then $\hat{\beta_1}$ must be large in absolute value in order for us to reject the null hypothessis. In practice we compute a *t-statistic* given by
 
@@ -933,9 +958,9 @@ So we can look at both the RSE and $R^2$.
 
 **Four: Predictions**
 
-After fitting the model we can predict $Y$ => $\hat{y}$ with estimated coefficients. However, there are three sorts of uncertainty associated with this prediction:
+After fitting the model we can predict $Y$ =\> $\hat{y}$ with estimated coefficients. However, there are three sorts of uncertainty associated with this prediction:
 
-1. The coefficient esstimates $\hat{\beta_0}, \hat{\beta_1},\dots,\hat{\beta_p}$ are estimates for $\beta_0, \beta_1, \dots, \beta_p$:
+1.  The coefficient esstimates $\hat{\beta_0}, \hat{\beta_1},\dots,\hat{\beta_p}$ are estimates for $\beta_0, \beta_1, \dots, \beta_p$:
 
     That is, the *least squares plane*
 
@@ -943,23 +968,21 @@ $$
 \hat{y} = \hat{\beta_0} + \hat{\beta_1}x_1 + \dots +  \hat{\beta_p}x_p
 $$
 
-  which is only an estimate for the *true population regression plane*
-$$
+which is only an estimate for the *true population regression plane* $$
 f(X) = \beta_0 + \beta_1x_1 + \dots + \beta_px_p
 $$
 
-So there is an inaccuracy in the coefficient estimates => this is the *reducible error* from Chapter 2. We can compute a *confidence interval* to determine how close $\hat{y}$ will be to $f(X)$.
+So there is an inaccuracy in the coefficient estimates =\> this is the *reducible error* from Chapter 2. We can compute a *confidence interval* to determine how close $\hat{y}$ will be to $f(X)$.
 
-2. Assuming a linear model for $f(X)$ is almost always an aaproximation of reality (usually relationships are not linear), so ther is an additional source of potentially reducible error => this is the *model bias*.
+2.  Assuming a linear model for $f(X)$ is almost always an aaproximation of reality (usually relationships are not linear), so ther is an additional source of potentially reducible error =\> this is the *model bias*.
 
     When we are using a linear model, we are in fact estimating the best linear approximation to the true surface. However, we will ignore this discrepancy and operate as if the linear model is correct
-    
-3. Even if we knew $f(X)$--that is even if we knew the true values of $\beta$--the response value cannot be predicted perfectly because of the random error $\epsilon$ in the model => *irreducable error*. How much will $Y$ vary from $\hat{y}$ => we use *prediction intervals* to answer this question. 
+
+3.  Even if we knew $f(X)$--that is even if we knew the true values of $\beta$--the response value cannot be predicted perfectly because of the random error $\epsilon$ in the model =\> *irreducable error*. How much will $Y$ vary from $\hat{y}$ =\> we use *prediction intervals* to answer this question.
 
     Predicion intervals are always wider than confidence intervals, because they contain both the *reducible error*(error from estimating coefficients of $f(X)$) and irreducible error.
-    
 
-We use a *confidence interval* to quantify the uncertainty surrounding the *average* `sales` over a large number of cities. For example given that \$100,000 is spent on `TV` advertising and \$20,000 is spent on `radio` advertising in each city, the 95% confidence interval is $[10,985, 11,528]$. We interpret this to mean that 95% of intervals of this form will contain the true value of $f(X)$. 
+We use a *confidence interval* to quantify the uncertainty surrounding the *average* `sales` over a large number of cities. For example given that \$100,000 is spent on `TV` advertising and \$20,000 is spent on `radio` advertising in each city, the 95% confidence interval is $[10,985, 11,528]$. We interpret this to mean that 95% of intervals of this form will contain the true value of $f(X)$.
 
 On the other hand, *a prediction interval* can be used to quantify the uncertainty surrounding `sales` for a *particular* city. Given that \$100,000 is spent on `TV` advertising and \$20,000 is spent on `radio` advertising in that city the 95% prediction interval is $[7,930, 14,580]$. We interpret this to mean that 95% of intervals of this form will contain the true value of $Y$ for this city. Note that both intervals are centered at 11,256, but that the prediction intervaş is substantially wider than the confidence interval, reflecting the increased uncertainty about `sales` for a given city in comparison to the average `sales` over many locations.
 
@@ -993,8 +1016,7 @@ x_i =
 1 & \text{if}\space i\text{th} \space\text{person is female} \\
 0 & \text{if}\space i\text{th} \space\text{person is male}
 \end{cases}
-$$
-(3.26)
+$$ (3.26)
 
 and use this variable as a predictor in the regression equation. This results in the model
 
@@ -1004,12 +1026,12 @@ Y_i = \beta_0 + \beta_1x_i + \epsilon_i =
 \beta_0 + \beta_1 + \epsilon_i & i\text{th} \space\text{person is female} \\
 \beta_0 + \epsilon_i & i\text{th} \space\text{person is male}
 \end{cases}
-$$
-(3.27)
+$$ (3.27)
 
 Now $\beta_0$ can be interpreted as the average credit card balance among males, $\beta_0 + \beta_1$ as the average credit card among females, and $\beta_1$ as the average difference in credit card balance between females and males.
 
 Here is the regression results:
+
 ```{r}
 Credit$Gender <- factor(Credit$Gender, levels = c(" Male","Female"))
 linear_reg() %>% 
@@ -1045,6 +1067,7 @@ Credit %>%
   lm(Balance ~ Gender,.) %>% 
   summary()
 ```
+
 Then we would say that estimated average debt for females is \$529.54, and for males is $\$529.52 - \$19.73 = \$509.80$.
 
 Alternatively, instead of 0/1 coding scheme, we could create a dummy variable
@@ -1055,8 +1078,7 @@ x_i =
 1 & \text{if}\space i\text{th}\space \text{person is female} \\
 -1 & \text{if}\space i\text{th}\space \text{person is male}
 \end{cases}
-$$
-and use this variable in the regression equation. This results in the model
+$$ and use this variable in the regression equation. This results in the model
 
 $$
 Y_i = \beta_0 + \beta_1x_i + \epsilon_i = 
@@ -1064,8 +1086,7 @@ Y_i = \beta_0 + \beta_1x_i + \epsilon_i =
 \beta_0 + \beta_1 + \epsilon_i & \text{if}\space i\text{th}\space \text{person is female} \\
 \beta_0 - \beta_1 + \epsilon_i & \text{if}\space i\text{th}\space \text{person is male} 
 \end{cases}
-$$
-Now $\beta_0$ can be interpreted as the overall average credit card balance (ignoring the gender effect), and $\beta_1$ is the amount that females are above the average and males are below the average.
+$$ Now $\beta_0$ can be interpreted as the overall average credit card balance (ignoring the gender effect), and $\beta_1$ is the amount that females are above the average and males are below the average.
 
 ```{r}
 Credit %>% 
@@ -1075,7 +1096,7 @@ Credit %>%
   summary()
 ```
 
-Now $\beta_0$ is \$ 519.670 which is the halfway between the male and female averages of \$509.80 and \$529.53. The estimate for $\beta_1$ is \$9.865, which is half of \$19.74, the average difference between females and males. 
+Now $\beta_0$ is \$ 519.670 which is the halfway between the male and female averages of \$509.80 and \$529.53. The estimate for $\beta_1$ is \$9.865, which is half of \$19.74, the average difference between females and males.
 
 **Qualitative Predictors with More than Two levels**
 
@@ -1095,7 +1116,7 @@ x_{i1} =
 \end{cases}
 $$
 
-and 
+and
 
 $$
 x_{i2} = 
@@ -1114,8 +1135,7 @@ Y_i = \beta_0 + \beta_1x_{i1} + \beta_2x_{i2} + \epsilon_i =
 \beta_0 + \beta_2 + \epsilon_i & \text{if}\space i\text{th}\space \text{person is Caucasian} \\
 \beta_0 + \epsilon_i & \text{if}\space i\text{th}\space \text{person is African American} 
 \end{cases}
-$$
-Now $\beta_0$ can be interpreted as the average credit card balance for African Americans, $\beta_1$ can be interpreted as the difference in the average balance between Asian and African american categories, and $\beta_2$ can be interpreted as the difference in average balance between the Caucasian and African American categories.
+$$ Now $\beta_0$ can be interpreted as the average credit card balance for African Americans, $\beta_1$ can be interpreted as the difference in the average balance between Asian and African american categories, and $\beta_2$ can be interpreted as the difference in average balance between the Caucasian and African American categories.
 
 ```{r}
 linear_reg() %>% 
@@ -1136,22 +1156,21 @@ Using this dummy variable approach presents no difficulties when using both quan
 
 ### Extensions of the Linear Model
 
-Linear regression model is very interpretable and works quite well on many real-world problems. However, it makes several highly restrictive assumptions that are ofthen violated in practice. Two of them ost important assumptions state that the relationship between the predictors and response are *additive* and *linear*. 
+Linear regression model is very interpretable and works quite well on many real-world problems. However, it makes several highly restrictive assumptions that are ofthen violated in practice. Two of them ost important assumptions state that the relationship between the predictors and response are *additive* and *linear*.
 
 The *additive* assumption means that the effect of changes in a predictor $x_j$ on the response $Y$ is independent of the vlaues of the other predictors.
 
-The *linear* assumption means thatt the change in the response $Y$ due to one-unit change in $x_j$ is constant, regardless of the vlaue of $x_j$. 
+The *linear* assumption means thatt the change in the response $Y$ due to one-unit change in $x_j$ is constant, regardless of the vlaue of $x_j$.
 
 We can relax these assumptions. Here some classical approaches to do that
 
 **Removing the Additive Assumption**
 
-From `Advertising` data, we concluded that both `TV` and `radio` seem to be associated with `sales`. Our model was linear; the effect of `TV` and `radio` advertising spending on sales is independent of each other, and their effect is constant no matter the level of spending. 
+From `Advertising` data, we concluded that both `TV` and `radio` seem to be associated with `sales`. Our model was linear; the effect of `TV` and `radio` advertising spending on sales is independent of each other, and their effect is constant no matter the level of spending.
 
 $$
 Y_i = \beta_0 + \beta_1 TV_i + \beta_2 radio_i + \epsilon_i
-$$
-this model means that, the average effect on sales of a one unit increase in tv is always $\beta_1$ regardless of the amount spent on radio.
+$$ this model means that, the average effect on sales of a one unit increase in tv is always $\beta_1$ regardless of the amount spent on radio.
 
 However, this simple model may be incorrect. Suppose that spending money on radio advertising actually increases the effectiveness of TV advertising, so that the slope term for `TV` should increase as `radio` increases. In this situation, given a fixed budget \$100,000, spending half on `radio` and half on `TV` may increase `sales` more than allocating the entire amount to either `TV` or to `radio`. In marketing this is known as the *synergy effect*, in statistics *interaction effect*.
 
@@ -1159,15 +1178,13 @@ Consider the standard linear regression with two variables,
 
 $$
 Y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \epsilon
-$$
-Here if we increaes $x_1$ by one unit, $Y$ will increase by an average of $\beta_1$ units. The presence of $x_2$ does not alter this statement-regardless of the value of $x_2$, a one-unit increase in $x_1$ will lead to $\beta_1$ unit increae in $Y$.
+$$ Here if we increaes $x_1$ by one unit, $Y$ will increase by an average of $\beta_1$ units. The presence of $x_2$ does not alter this statement-regardless of the value of $x_2$, a one-unit increase in $x_1$ will lead to $\beta_1$ unit increae in $Y$.
 
 We can extend this model by allowing interaction effects by including a third predictor, called an *interaction term*, which is constructed by computing the product of $x_1$ and $x_2$:
 
 $$
 Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + \epsilon
-$$
-(3.31)
+$$ (3.31)
 
 We can write this equation
 
@@ -1176,10 +1193,9 @@ $$
 Y &= \beta_0 + (\beta_1 + \beta_3 x_2)x_1 + \beta_2x_2 +\epsilon \\
 &= \beta_0 + \tilde{\beta_1}x_1 + \beta_2x_2 + \epsilon
 \end{align}
-$$
-where $\tilde{\beta_1} = \beta_1 + \beta_3x_2$. Since $\tilde{\beta_1}$ changes with $x_2$, the effect of $x_1$ on $Y$ is no longer constant: adjusting $x_2$ will change the impact of $x_1$ on $Y$.
+$$ where $\tilde{\beta_1} = \beta_1 + \beta_3x_2$. Since $\tilde{\beta_1}$ changes with $x_2$, the effect of $x_1$ on $Y$ is no longer constant: adjusting $x_2$ will change the impact of $x_1$ on $Y$.
 
-::: {.callout-note}
+::: callout-note
 # Productivy of a factory
 
 Suppose that we are interested in studying the productivity of a factory. We want to predict the number of `units` produced on the basis of the number of production `lines` and the total number of `workers`. Probably the effect of increasing `lines` on `units` produced will depend on the number of `workers`, since if no workers are available to operate the lines, then increasing the number of lines will not increase the production. This suggest to include an interaction term between `lines` and `workers` in a linear model to predict `units`.
@@ -1191,9 +1207,7 @@ $$
 units &\approx 1.2 + 3.4 \times lines + 0.22 \times workers + 1.4 \times (lines \times workers) \\
 &= 1.2 + (3.4 + 1.4 \times workers) \times lines + 0.22 \times workers
 \end{align}
-$$
-Adding an addtional line will increase the number of units produced by $3.4 + 1.4 \times workers$. Hence, the more `workers` we have, the stronger will be the effect of `lines`.
-
+$$ Adding an addtional line will increase the number of units produced by $3.4 + 1.4 \times workers$. Hence, the more `workers` we have, the stronger will be the effect of `lines`.
 :::
 
 For the advitising, a linear model that uses `radio`, `TV` and interaction between the two to predict `sales` takes the form
@@ -1203,9 +1217,7 @@ $$
 sales &= \beta_0 + \beta_1 \times TV + \beta_2 \times radio + \beta_3 \times(radio \times TV) + \epsilon \\
 &= \beta_0 + (\beta_1 + \beta_3 \times radio)\times Tv + \beta_2 \times radio + \epsilon
 \end{align}
-$$
-(3.33) 
-We can interpret $\beta_3$ as the increase in the effectiveness of TV advertising for a one unit increse in radio advertising (or vice versa). The coefficients that result from fitting the model (3.33) are
+$$ (3.33) We can interpret $\beta_3$ as the increase in the effectiveness of TV advertising for a one unit increse in radio advertising (or vice versa). The coefficients that result from fitting the model (3.33) are
 
 ```{r}
 linear_reg() %>% 
@@ -1226,7 +1238,7 @@ To interpret the coefficients:
 
 \$1,000 invrease in `radio` advertising results with $\hat{\beta_2} + \hat{\beta_3} \times TV = \$28.9 + \$1.09 \times TV$ increase in sales on average.
 
-All p-values are significant => all three varibles should be included in the model. 
+All p-values are significant =\> all three varibles should be included in the model.
 
 Sometimes interaction term has a very small pvalue but the associated main effects(in this case `TV` and `radio`) do not. The *hieararchial principle states that if we include an interaction in a model, we should also include the main effects, even if the p-values associated with their coefficients are not significant.*
 
@@ -1242,15 +1254,13 @@ balance_i  \approx \beta_0 + \beta_1 \times income_i +
 \end{cases}
 $$
 
-
 $$
 balance_i = \beta_1 \times income + 
 \begin{cases}
 \beta_0 + \beta_2 & \text{if} \space i\text{th} \space \text{person is student} \\
 \beta_0 &\text{if} \space i\text{th} \space \text{person is student}
 \end{cases}
-$$
-(3.34)
+$$ (3.34)
 
 Notice that this amounts to fitting two parallel lines to the data, one for students and one for non-students. The lines for students and non students have different intercepts, $\beta_0 + \beta_2$ versus $\beta_0$, but the slope $\beta_1$ is the same.
 
@@ -1272,7 +1282,7 @@ Credit %>%
 p1
 ```
 
-Notice the since the slopes  are same, two lines are parallel; average effect of income on balance does not depend on whether or not the individual is a student. This is a limitation; change in income may have a very different effect on the credit card balance of a student versus non student.
+Notice the since the slopes are same, two lines are parallel; average effect of income on balance does not depend on whether or not the individual is a student. This is a limitation; change in income may have a very different effect on the credit card balance of a student versus non student.
 
 This limitation can be addressed by adding an interaction varaible, created by multiplying `student` and `income` with the dummy for student. Our model now becomes
 
@@ -1282,15 +1292,13 @@ balance_i \approx \beta_0 + \beta_1 \times income_i +
 \beta_2 + \beta_3 \times income_i & \text{if student} \\
 0 & \text{if not student}
 \end{cases}
-$$
-$$
+$$ $$
 balance_i = 
 \begin{cases}
 (\beta_0 + \beta_2) + (\beta_1 + \beta_3) \times income_i & \text{if student} \\
 \beta_0 + \beta_1 \times income_i & \text{if not student}
 \end{cases}
-$$
-(3.35)
+$$ (3.35)
 
 Again, our intercepts differ based on whether individual is student or not. However, this time slope also differs!
 
@@ -1333,8 +1341,7 @@ Lets merge this two plots together
 gridExtra::grid.arrange(p1,p2, ncol =2)
 ```
 
-Slope for studens is lower than the slope for non-students => increases in income are associated with smaller increases in credit card balance among students as copared to non-students.
-
+Slope for studens is lower than the slope for non-students =\> increases in income are associated with smaller increases in credit card balance among students as copared to non-students.
 
 **Not-linear Relationships**
 
@@ -1351,17 +1358,15 @@ Auto %>% as_tibble() %>%
   geom_smooth(method = "lm", formula = y ~ poly(x,5), color ="#ADE498", se=F) + theme_blank() 
 ```
 
-It is obvious that there is relationship between `mpg` and `horsepower`. But it seems like this relationship is not linear: the data suggest a curved relationship. 
+It is obvious that there is relationship between `mpg` and `horsepower`. But it seems like this relationship is not linear: the data suggest a curved relationship.
 
 A simple approach for incorporating non linear associations in a linear model is to include transformed versions of the predictors in the model. For example figure above seem to have a *quadratic* shape, suggesting that a model of the form
 
 $$
 mpg = \beta_0 + \beta_1 \times horsepower + \beta_2 \times horsepower^2 + \epsilon
-$$
-May be a better fit. Equation
+$$ May be a better fit. Equation
 
-You can do it in  different ways:
-1.
+You can do it in different ways: 1.
 
 ```{r}
 Auto %>% 
@@ -1370,23 +1375,24 @@ Auto %>%
   summary()
 ```
 
-2. 
+2.  
 
 ```{r}
 summary(lm(mpg ~ horsepower + I(horsepower^2), Auto))
 ```
 
-
-3.
+3.  
 
 ```{r}
 summary(lm(mpg ~ poly(horsepower,2, raw=T), Auto))
 ```
 
-4.
+4.  
+
 ```{r}
 summary(nls(mpg ~a + b * horsepower + c * horsepower^2, data = Auto, start = c(a=0,b=0,c=0)))
 ```
+
 --
 
 ```{r}
@@ -1396,7 +1402,6 @@ summary(lm(mpg ~ horsepower, Auto))
 ```{r}
 summary(lm(mpg ~ horsepower + I(horsepower^2),Auto))
 ```
-
 
 The $R^2$ of the quadratic fit is 0.688, compared to 0.606 for the linear fit. And the p-value is highly significant for quadratic model.
 
@@ -1408,7 +1413,7 @@ Lets estimate the green curve on the previous plot
 summary(lm(horsepower ~ poly(horsepower,5, raw=T),Auto))
 ```
 
-The green fit seems unnecassasrliy wiggly- that is it is unclear includig the additional terms really has led to a better fit to the data. 
+The green fit seems unnecassasrliy wiggly- that is it is unclear includig the additional terms really has led to a better fit to the data.
 
 The approach we have just described for extending the linear model to accomodate non-linear relationships is known as *polynomial regression*, since we have included polynomial functions of the predictors in the regression model. Check out Chapter 7.
 
@@ -1416,17 +1421,17 @@ The approach we have just described for extending the linear model to accomodate
 
 When we fit a linear regression model to a particular data set, many problems may occur. Most common among these are the following
 
-1. *Non-linearity of the response-predictor relationships*.
+1.  *Non-linearity of the response-predictor relationships*.
 
-2. *Correalation of error terms*
+2.  *Correalation of error terms*
 
-3. *Non-constant variance of error terms*
+3.  *Non-constant variance of error terms*
 
-4. *Outliers*
+4.  *Outliers*
 
-5. *High-leverage points*
+5.  *High-leverage points*
 
-6. *Collinearity*
+6.  *Collinearity*
 
 Lets breifly discuss each
 
@@ -1436,18 +1441,15 @@ Linear regression assumes there is a straight line relationship between the pred
 
 *Residual plots* are a useful graphical tool for identifying non-linearity.
 
-We can plot the residuals $e_i = y_i - \hat{y_i}$ versus $x_i$ for Simple linear regression. 
+We can plot the residuals $e_i = y_i - \hat{y_i}$ versus $x_i$ for Simple linear regression.
 
 For multiple linear regression since we have lost of $x_i$ we plot residuals versus predicted values($e_i$ vs $\hat{y_i}$).
 
-We want to have *no visible pattern*. If there is a pattern => problem!
+We want to have *no visible pattern*. If there is a pattern =\> problem!
 
-
-So what do we expect a plot of "fitted" vs "resid"; if the relationship is linear as the "fitted"  values increase "resid" should not increase or decrease, should swing with no relationship: linear.
+So what do we expect a plot of "fitted" vs "resid"; if the relationship is linear as the "fitted" values increase "resid" should not increase or decrease, should swing with no relationship: linear.
 
 If the relationship is not linear then we expect ot see a pattern because as the fitted values increase the resiudls will increase.
-
-
 
 ```{r}
 linear_reg() %>% 
@@ -1457,7 +1459,6 @@ linear_reg() %>%
   pluck("fit") %>% 
   augment() 
 ```
-
 
 ```{r}
 linear_reg() %>% 
@@ -1493,7 +1494,7 @@ linear_reg() %>%
   ggplot() + aes(x=.fitted, y=.resid) + geom_point() + geom_smooth(se=F) + geom_hline(yintercept = 0, linetype = "dashed") + theme_light(), ncol=2)
 ```
 
-Here is the plots. On the left fitted vs resid for regressing horsepower onto mpg, on the right regressing horsepower and horsepower^2 onto mpg. 
+Here is the plots. On the left fitted vs resid for regressing horsepower onto mpg, on the right regressing horsepower and horsepower\^2 onto mpg.
 
 Blue line is a smooth fit to the residuals to identify trends easily. The residuals on the left panel exhibit a clear U shape, which is a strong indication that the true relationship is not linear.
 
@@ -1503,40 +1504,35 @@ If the residual plot indicates that there are non-linear associations in the dat
 
 **2.Correlation of Error Terms**
 
-An important assumption of the linear regression is that error terms $\epsilon_1, \epsilon_2, \dots, \epsilon_n$ are uncorrelated. This means that $\epsilon_{i+1} \neq f(\epsilon_i)$. The standard errors that are computed for the estimated regression coeffieints or the fitted values are based on this assumption. If there is correaltion among the error terms, the estimated standard errors will tend to underestimate the true standard errors => confidence and prediction intervals will be narrower than they should be. P-values will be lower as well, causing false discoveries perhaps.
+An important assumption of the linear regression is that error terms $\epsilon_1, \epsilon_2, \dots, \epsilon_n$ are uncorrelated. This means that $\epsilon_{i+1} \neq f(\epsilon_i)$. The standard errors that are computed for the estimated regression coeffieints or the fitted values are based on this assumption. If there is correaltion among the error terms, the estimated standard errors will tend to underestimate the true standard errors =\> confidence and prediction intervals will be narrower than they should be. P-values will be lower as well, causing false discoveries perhaps.
 
 Usually correlation among error terms occur in *time series* data. In many cases, observations that are obtained at adjacent time points will have positevely correalated errors. To test this we can plot the residuals from our model as a function of time. If the errors are uncorrelated, then we expect no pattern. If the error terms are positevly correlated, then we may see *tracking* in the residuals--*adjacent residuals may have similar values*.
 
-![](fig3.10.png)
-Check out Figure 3.10. In the top panel, we see the residuals from a linear regression fit to data generated with uncorrelated errors. Adjacent years don't take similar values; there is no evidence of a time-related trend in the residuals. But in the bottom panel, we see plotted residuals which have correlation 0.9 with time: now there is a clear pattern in the residuals--adjacent residuals tend to take on similar values. Finally, the center panel illustrates a more moderate case in which residuals had a correlation of 0.5. There is still evidence of tracking, but the pattern is less clear.
+![](fig3.10.png) Check out Figure 3.10. In the top panel, we see the residuals from a linear regression fit to data generated with uncorrelated errors. Adjacent years don't take similar values; there is no evidence of a time-related trend in the residuals. But in the bottom panel, we see plotted residuals which have correlation 0.9 with time: now there is a clear pattern in the residuals--adjacent residuals tend to take on similar values. Finally, the center panel illustrates a more moderate case in which residuals had a correlation of 0.5. There is still evidence of tracking, but the pattern is less clear.
 
-Correlation among the error terms can also occur outside of time series data. For instance, consider a study where we predict people's hights from their weights. The assumption of uncorrelated errors could be violated if some of the individauls in the study are members of the same family, or eat the same diet, or have been exposed to same environmental factors. 
-
+Correlation among the error terms can also occur outside of time series data. For instance, consider a study where we predict people's hights from their weights. The assumption of uncorrelated errors could be violated if some of the individauls in the study are members of the same family, or eat the same diet, or have been exposed to same environmental factors.
 
 **3.Non-constant Variance of Error Terms**
 
-Another important assumption of the linear regression model is that error terms have a constant variance, $\text{Var}(\epsilon_i) = \sigma^2$. The standard errors, confidence intervals, and hypothesis tests rely upon this assumption. 
+Another important assumption of the linear regression model is that error terms have a constant variance, $\text{Var}(\epsilon_i) = \sigma^2$. The standard errors, confidence intervals, and hypothesis tests rely upon this assumption.
 
-Unfortunately, often variances of the error terms are non-constant => *heteroscedasticity*. For instance, variances of the error terms may increase with the value of the response. We can identify non-constant variances in the errors from the presence of a *funnel shape* in the residual plot.
+Unfortunately, often variances of the error terms are non-constant =\> *heteroscedasticity*. For instance, variances of the error terms may increase with the value of the response. We can identify non-constant variances in the errors from the presence of a *funnel shape* in the residual plot.
 
-![](fig3.11.png)
-On the left panel magnitude of the residuals tends to increase with the fitted values. When faced with this problem, one possible solution is to transform the response $Y$ using a concave function such as $\log Y$ or $\sqrt{Y}$. Such a transformation results in a greater amount of shrinkage of the larger responses, leading to a reduction in heteroscedasticity.  On the right hand panel we see that residuals apper to have constant variance.
-
+![](fig3.11.png) On the left panel magnitude of the residuals tends to increase with the fitted values. When faced with this problem, one possible solution is to transform the response $Y$ using a concave function such as $\log Y$ or $\sqrt{Y}$. Such a transformation results in a greater amount of shrinkage of the larger responses, leading to a reduction in heteroscedasticity. On the right hand panel we see that residuals apper to have constant variance.
 
 **4.Outliers**
 
-An *outlier* is a point for which $y_i$ is far from the vlaue predicted by the model. 
+An *outlier* is a point for which $y_i$ is far from the vlaue predicted by the model.
 
 ![](fig3.12.png)
 
-The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the outlier. In this case, removing the outlier has little effect on the least squares line: it leads to almost no change in the slope, and a minuscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when outlier is included, but it is only 0.77 when excluded => RSE is used to calculate all confidence intervals, p values => bias. $R^2$ also decreases from 0.829 to 0.805 when included outlier.
+The red point (observation 20) in the left-hand panel of Figure 3.12 illustrates a typical outlier. The red solid line is the least squares regression fit, while the blue dashed line is the least squares fit after removel of the outlier. In this case, removing the outlier has little effect on the least squares line: it leads to almost no change in the slope, and a minuscule reduction in the intercept. This is normal. However, it can cause other problems: RSE is 1.09 when outlier is included, but it is only 0.77 when excluded =\> RSE is used to calculate all confidence intervals, p values =\> bias. $R^2$ also decreases from 0.829 to 0.805 when included outlier.
 
-Residual plots can be used to identify outliers => center panel of Figure 3.12. But it can be difficult to decide how large a residual needs to before we consider the point to be an outlier. To address this problem instead of plotting the residuals we can plot the *studentized residuals* computed by dividing each residuls $e_i$ by its estimated standard error.
+Residual plots can be used to identify outliers =\> center panel of Figure 3.12. But it can be difficult to decide how large a residual needs to before we consider the point to be an outlier. To address this problem instead of plotting the residuals we can plot the *studentized residuals* computed by dividing each residuls $e_i$ by its estimated standard error.
 
 $$
 e_i^*=\frac{e_i}{sd(e_i)} = \frac{e_i}{\sqrt{MSE(1-h_{ii})}}
-$$
-$h_{ii}$ is leverage point.
+$$ $h_{ii}$ is leverage point.
 
 Observations whose studentized residuals are greater than 3 in absolute value are possible outliers. In the right-hand panel of Figure 3.12 the outlier's studentized residual exceeds 6; while all other observations have studentized residauls between -2 and 2.
 
@@ -1555,14 +1551,15 @@ linear_reg() %>%
 ```
 
 or
+
 ```{r}
 plot(lm(sales ~ TV + radio,advertising), which = 3)
 ```
 
-
 We have spotted that 6th and 131 are possible outliers.
 
 Here is all the data regression result:
+
 ```{r}
 linear_reg() %>% 
   set_mode("regression") %>% 
@@ -1583,7 +1580,7 @@ linear_reg() %>%
   summary()
 ```
 
-$R^2$ has increased, residual standard errors has decreased, standard errors of estimates decreased and coefficients has changed. 
+$R^2$ has increased, residual standard errors has decreased, standard errors of estimates decreased and coefficients has changed.
 
 **5.High Leverage Points**
 
@@ -1591,17 +1588,17 @@ Outliers are observations for which the response $y_i$ is unusual given the pred
 
 ![](fig3.13.png)
 
-For example observation 41 in the left-hand panel of Figure 3.13 has high leverage => predictor value for this observation is large relative to other observations. The red solid line is the least squares fit to the data, the blue dashed line is the fit when obs 41 is removed.
+For example observation 41 in the left-hand panel of Figure 3.13 has high leverage =\> predictor value for this observation is large relative to other observations. The red solid line is the least squares fit to the data, the blue dashed line is the fit when obs 41 is removed.
 
 Removing the high leverage observation has a much more substantial impact on the least squares line than removing an outlier. High leverage obss have a big impact on the estiamted regression line. It is important to identify them.
 
-For SLR => look at the range of $x_i$ and spot the out of range observations. 
+For SLR =\> look at the range of $x_i$ and spot the out of range observations.
 
-MLR => it is possible to have an observation that is well within the range of each individual predictor's values, but that is unusual in terms of the full set of predictors.
+MLR =\> it is possible to have an observation that is well within the range of each individual predictor's values, but that is unusual in terms of the full set of predictors.
 
-Have a look at the center panel in Figure 3.13. Most of the observations' predictor values fall within the blue dashed ellipse, but the red observation is well outside of this range. But neither its value for $x_1$ nor $x_2$ is unusual. 
+Have a look at the center panel in Figure 3.13. Most of the observations' predictor values fall within the blue dashed ellipse, but the red observation is well outside of this range. But neither its value for $x_1$ nor $x_2$ is unusual.
 
-We can quantify an observation's leverage using the *leverage statistic*. A large value indicates a high leverage. 
+We can quantify an observation's leverage using the *leverage statistic*. A large value indicates a high leverage.
 
 For SLR:
 
@@ -1611,13 +1608,11 @@ h_i &= \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i'=1}^n(x_{i'} - \bar{x})^2}
 &1/n \leq h_i \leq 1 \\
 &\bar{h_i} = (p+1)/n
 \end{align}
-$$
-as $x_i$ increases its distance from $\bar{x}$ $h_i$ increases. 
+$$ as $x_i$ increases its distance from $\bar{x}$ $h_i$ increases.
 
 $h_i$ is always between $1/n$ and $1$, and the average leverage for all the observations is always equal to $(p+1)/n$. If an observation has a $h$ that greatly exceeds $(p+1)/n$ then we may suspect of high leverage.
 
-
-Right hand panel of Figure 3.13 shows studentized residuals versus $h_i$. Obs 41 stands out as having a very high leverage statistic as well as a high studentized residual => It is an outlier as well as a high leverage observaiton. This is very dangerous. This plot also shows the reason that obs 20 had relatively little effect on the least sqaures fit in Figure 3.12: it has low leverage.
+Right hand panel of Figure 3.13 shows studentized residuals versus $h_i$. Obs 41 stands out as having a very high leverage statistic as well as a high studentized residual =\> It is an outlier as well as a high leverage observaiton. This is very dangerous. This plot also shows the reason that obs 20 had relatively little effect on the least sqaures fit in Figure 3.12: it has low leverage.
 
 ```{r}
 linear_reg() %>% 
@@ -1634,11 +1629,9 @@ leverages are shown in `.hat` here.
 plot(lm(sales~TV,advertising), which = 5)
 ```
 
-
 **6.Collinearity**
 
-*Collinearity* refers to the situation in which two or more predictor variables are closely related to one another. 
-
+*Collinearity* refers to the situation in which two or more predictor variables are closely related to one another.
 
 ```{r}
 #| fig-cap: Figure 3.14
@@ -1649,17 +1642,14 @@ gridExtra::grid.arrange(
 )
 ```
 
+In the left panel of Figure 3.14 we see no relationship, but on the right hand panel predicors are highly correlated: they are *collinear* =\> it is difficult to seperate out the individual effects of colliniar varaibles on the response.
 
-
-
-In the left panel of Figure 3.14 we see no relationship, but on the right hand panel predicors are highly correlated: they are *collinear* => it is difficult to seperate out the individual effects of colliniar varaibles on the response. 
-
-Collinearity reduces the accuracy of the estiamtes of the regression coefficients, it causes the standard error for $\hat{\beta_j}$ to grow. t-statistic for each predictor is calculated by dividing $\hat{\beta_j}$ by its standard error => collinearity declines the t-statistics => we may fail to reject $H_0:\beta_j = 0$. 
+Collinearity reduces the accuracy of the estiamtes of the regression coefficients, it causes the standard error for $\hat{\beta_j}$ to grow. t-statistic for each predictor is calculated by dividing $\hat{\beta_j}$ by its standard error =\> collinearity declines the t-statistics =\> we may fail to reject $H_0:\beta_j = 0$.
 
 Lets do two regressions:
 
-* model1: balance regressed onto age and limit which has no collinearity
-* model2: balance regressed onto rating and limit which are collinear.
+-   model1: balance regressed onto age and limit which has no collinearity
+-   model2: balance regressed onto rating and limit which are collinear.
 
 ```{r}
 linear_reg() %>% 
@@ -1677,23 +1667,22 @@ linear_reg() %>%
   tidy() %>% mutate(model =2)
   )
 ```
-In the first model both `age` and `limit` are statistically significant. In the second, collinearity between `limit` and `raiting` has caused standard error for the limit coefficient estimate to increase by a factor of 12 and p-value to increase to 0.701. The importance of the limit variable has been masked due to presence of collinearity. 
+
+In the first model both `age` and `limit` are statistically significant. In the second, collinearity between `limit` and `raiting` has caused standard error for the limit coefficient estimate to increase by a factor of 12 and p-value to increase to 0.701. The importance of the limit variable has been masked due to presence of collinearity.
 
 A simple way to detect collinearity is to look at the correlation matrix of the predictors. Correlation matrix shows the relatinship of two variables but, it is possible for colşinearty to exist between three or more varaibles even if no pair of variables has a particularly high correlation. This situation is called *multicollinaerity*.
 
-Instead of inspecting the correlatino matrix, better way to assess multicollinaerity is to compute the *variance inflation factor* (VIF). The VIF is the raio of the variance of $\hat{\beta_j}$ when fitting the model divided by the variance of $\hat{\beta_j}$ if fit on its own. 
+Instead of inspecting the correlatino matrix, better way to assess multicollinaerity is to compute the *variance inflation factor* (VIF). The VIF is the raio of the variance of $\hat{\beta_j}$ when fitting the model divided by the variance of $\hat{\beta_j}$ if fit on its own.
 
 $$
 1 \leq VIF
-$$
-Smallest possible value of VIF is 1: complete absence of collinearity. Usuall there is always some degree of collinearity among the predictors. A VIF that exceeds 5 or 10 indicates a problematic amount of collinaerity. 
+$$ Smallest possible value of VIF is 1: complete absence of collinearity. Usuall there is always some degree of collinearity among the predictors. A VIF that exceeds 5 or 10 indicates a problematic amount of collinaerity.
 
 The VIF for each vairable can be computed using the formula
 
 $$
 VIF(\hat{\beta_j}) = \frac{1}{1-R^2_{x_j | x_{-j}}}
-$$
-$R^2_{x_j | x_{-j}}$ is the $R^2$ from a regression of $x_j$ onto all of the other predictors. If $R^2_{x_j | x_{-j}}$ is close to one, then collinearity is present, so VIF will be large.
+$$ $R^2_{x_j | x_{-j}}$ is the $R^2$ from a regression of $x_j$ onto all of the other predictors. If $R^2_{x_j | x_{-j}}$ is close to one, then collinearity is present, so VIF will be large.
 
 ```{r}
 linear_reg() %>% 
@@ -1706,15 +1695,8 @@ linear_reg() %>%
 
 A regression of balance on age, rating, and limit indicates that the predictors have VIF Values of 1.01, 160.67, 160.59. There is considerable collinearity in the data.
 
-When faced with collinearity, two simple solutions exist: 
-* drop one of the problematic variables from the regression
-* combine collinear variables together into a single predictor. We might take the average of standardized versions of limit and rating in order to create a new varaible that measures *credit worthiness*.
+When faced with collinearity, two simple solutions exist: \* drop one of the problematic variables from the regression \* combine collinear variables together into a single predictor. We might take the average of standardized versions of limit and rating in order to create a new varaible that measures *credit worthiness*.
 
 ```{r}
 lm(sales~TV + radio + newspaper,advertising) %>% summary()
 ```
-
-
-
-
-

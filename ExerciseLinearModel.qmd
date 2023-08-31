@@ -4,21 +4,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-
 ```{r}
 #| echo: false
 suppressPackageStartupMessages({
   library(tidymodels)
   library(tidyverse)
   library(patchwork)
-  library(hrbrthemes)}
+  library(hrbrthemes)
+  library(dotwhisker)}
 )
 
 theme_set(theme_ipsum_ps(axis_title_size = 11 , axis_title_just = "c") + theme(axis.line = element_line(color ="black")))
 ```
 
 # Summary: Linear Regression
-
 
 ## Simple Linear Regression
 
@@ -27,7 +26,6 @@ We have an idea in mind: we want to explain one response variable $y$ varies wit
 We assume a linear relationship between $X$ and $Y$ and we need to write a model for it.
 
 Now, we know that $y$ is not effected only by $x$--it would not make any sense-- there are some variables also effecting $y$. That is, even if we knew the true relationship between $x$ and $y$--$f(x)$ we would not perfectly explain the variations in $y$ with the changes in $x$ solely. So we would have the following equation
-
 
 $$
 \begin{align}
@@ -51,25 +49,21 @@ For **SLR** case we make several assumptions. The most important one is the form
 
 $$
 y_i = \beta_0 + \beta_1 x_i + u_i
-$$
-or
+$$ or
 
 $$
 y = \beta_0 + \beta_1 x + u
-$$
-(a.1)
+$$ (a.1)
 
 $u$ here captures all the effects except the $x$'s, so we refer it as *unobserved*. If other factors in $u$ is zero, $\Delta u = 0$, then $x$ has a *linear* effect on y:
 
 $$
 \Delta y = \beta_1 \Delta x, \space \text{if} \space \Delta u = 0
-$$
-So, the change in $y$ is equal to change in $x$ multiplied by $\beta_1$. Now notice that this $\beta_1$ is a constant and the changes in $x$ are effecting $y$ at the same rate of $\beta_1$ no matter the rate of change or the level of $x$; this is called the linearity--one unit change in $x$ has the *same* effect on $y$ regardless of the initial value of $x$.
+$$ So, the change in $y$ is equal to change in $x$ multiplied by $\beta_1$. Now notice that this $\beta_1$ is a constant and the changes in $x$ are effecting $y$ at the same rate of $\beta_1$ no matter the rate of change or the level of $x$; this is called the linearity--one unit change in $x$ has the *same* effect on $y$ regardless of the initial value of $x$.
 
 ### Assumptions about $u$
 
-There is a key assumption about $u$ that we can always make. As long as the intercept $\beta_0$ is included in the equation, we can assume the average value of $u$ in the population is zero: 
-$$
+There is a key assumption about $u$ that we can always make. As long as the intercept $\beta_0$ is included in the equation, we can assume the average value of $u$ in the population is zero: $$
 E(u) = 0
 $$
 
@@ -77,19 +71,16 @@ $$
 
 The other assumption is regarding how $u$ and $x$ are related. Now we are going to assume **there is no relationship between** $x$ and $u$. We can check this relation with correlation coefficient but correlation only checks at one level of relationship: it is possible for $u$ to be uncorrelated with $x$ while being correlated with functions of $x$, such as $x^2$. A better assumption involves the *expected value of u given x*:
 
-Because $u$ and $x$ are random variables, and they are independent from each other, for any $x$ we can obtain the expected(or average) value of $u$ given any value of $x$
-$$
+Because $u$ and $x$ are random variables, and they are independent from each other, for any $x$ we can obtain the expected(or average) value of $u$ given any value of $x$ $$
 E(u|x) = E(u) = 0
-$$
-So *zero conditional mean assumption* states that for any given value of $x$ the average of the unobservables is the same and therefore must equal to average value of $u$ in the entire population.
+$$ So *zero conditional mean assumption* states that for any given value of $x$ the average of the unobservables is the same and therefore must equal to average value of $u$ in the entire population.
 
-::: {.callout-note}
+::: callout-note
 # Examples of Simple Linear Regression
 
 $$
 sales = \beta_0 + \beta_1 \times x + u
-$$
-$$
+$$ $$
 wage = \beta_0 + \beta_1 educ + u
 $$
 
@@ -104,7 +95,7 @@ $$
 y_i = \beta_0 + \beta_1 x_i + u_i
 $$
 
-Since $\beta_0$ and $\beta_1$ is unknown before we can use the above equation to make predictions we must use sample data from the population  to estimate coefficients. Let $\{(x_i,y_i), i = 1,\dots,n\}$ denote a random sample of size $n$ from the population.
+Since $\beta_0$ and $\beta_1$ is unknown before we can use the above equation to make predictions we must use sample data from the population to estimate coefficients. Let $\{(x_i,y_i), i = 1,\dots,n\}$ denote a random sample of size $n$ from the population.
 
 And we will get an estimated linear model of
 
@@ -119,14 +110,11 @@ $$
 \hat{\beta_1} &= \frac{\sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n(x_i - \bar{x})^2}\\
 \hat{\beta_0} &= \bar{y} - \hat{\beta_1}\bar{x}
 \end{align}
-$$
-These coefficients are colled OLS estimates of $\beta_0$ and $\beta_1$. These estimates come from the approach of minimizing the*least squares criterion*:
+$$ These coefficients are colled OLS estimates of $\beta_0$ and $\beta_1$. These estimates come from the approach of minimizing the*least squares criterion*:
 
-so we have 
-$$
+so we have $$
 \hat{y_i} = \hat{\beta_0} + \hat{\beta_1} x_i
-$$
-$y_i$ is the prediction from each observation $x_i$ with OLS coefficients. Now since our OLS estimates are going to be different from the real coefficients, for each observation $x_i$ $y_i$ and $\hat{y_i}$ will be different. This difference is called **residuals**($\hat{u_i}$)
+$$ $y_i$ is the prediction from each observation $x_i$ with OLS coefficients. Now since our OLS estimates are going to be different from the real coefficients, for each observation $x_i$ $y_i$ and $\hat{y_i}$ will be different. This difference is called **residuals**($\hat{u_i}$)
 
 $$
 \hat{u_i} = y_i - \hat{y_i} = y_i - \hat{\beta_0} - \hat{\beta_1}x_i
@@ -134,8 +122,7 @@ $$
 
 These residuals are the distance of each prediction from the actual value of the response. There are $n$ residuals ($\hat{u_i}$) <mark style ="background: #2881FD;color: white">(note that these are not the same as $u_i$)</mark>. Before going further have a look at the figure below
 
-![](fig2.4.w.png)
-$\hat{\beta_0}$ and $\hat{\beta_1}$ formulas come from minimizing the **sum of squared residauls** or residual sum of squares(*RSS*)
+![](fig2.4.w.png) $\hat{\beta_0}$ and $\hat{\beta_1}$ formulas come from minimizing the **sum of squared residauls** or residual sum of squares(*RSS*)
 
 $$
 RSS = \sum_{i=1}^n\hat{u_i}^2 = \sum_{i=1}^n(y_i - \hat{y_i})^2 = \sum_{i=1}^n(y_i - \hat{\beta_0} - \hat{\beta_1}x_i)^2
@@ -147,8 +134,7 @@ Once we determine the OLS intercept and slope estimates we form the **OLS regres
 
 $$
 \hat{y} = \hat{\beta_0} + \hat{\beta_1} x
-$$
-(a.2)
+$$ (a.2)
 
 Lets use advertising data to estimate the coefficients, find the residuals, and draw the OLS regression line;
 
@@ -156,14 +142,15 @@ Our population regression is
 
 $$
 sales = \beta_0 + \beta_1 TV + u_i
-$$
-The data:
+$$ The data:
+
 ```{r}
 advertising = read_csv("./data/Advertising.csv", col_select = -1)
 advertising
 ```
 
 The OLS coefficients
+
 ```{r}
 linear_reg() %>% 
   set_mode("regression") %>% 
@@ -177,10 +164,10 @@ So our OLS regression is
 
 $$
 \hat{y_i} = 7.032 + 0.0475 \times TV
-$$
-This means that additional  \$1,000 spending on TV will increase sales by 47.5 units on average.
+$$ This means that additional \$1,000 spending on TV will increase sales by 47.5 units on average.
 
 Here is our $\hat{y}$ values in `.fitted` column, residuals in `.resid` column,
+
 ```{r}
 lm_result %>% augment()
 ```
@@ -201,7 +188,230 @@ Lets draw our OLS regression line
 lm_result %>% 
   augment() %>% 
   ggplot() + aes(x=TV, y = sales) + geom_point() + geom_abline(intercept = lm_result$coefficients[1], slope = lm_result$coefficients[2], color ="#0b53c1")+ 
-  geom_segment(aes(xend = TV, yend = .fitted), color = "#ff0055")
+  geom_segment(aes(xend = TV, yend = .fitted), color = "#ff0055") 
 ```
+
+for each $x_i$ we will have $\hat{u_i} = \sum_{i=1}^n y_i-\hat{y_i}$. For some $j$ $\hat{u_j} > 0$ (over predicting) for some $k$ $\hat{u_k} <0$ (under predicting), nevertheless this sum, will be zero:
+
+```{r}
+lm_result %>% 
+  augment() %>% 
+  pull(.resid) %>% sum() 
+```
+
+So $\hat{\beta_0}$ and $\hat{\beta_1}$ is *choosen* to make the residuals add up to zero for any data set.
+
+The point $(\bar{x}, \bar{y})$ is always in the OLS regression line
+
+### Assessing the Accuracy of the Coefficient Estimates: Goodness-of-Fit
+
+We assumed that the *true* relationship is linear: $Y = f(x) + u$; we dont know $f$, and $u$ is a mena-zero random error term.
+
+We said $f$ is approximately linear, so that $f(x) = \beta_0 + \beta_1 x$; which means $$
+y = \beta_0 + \beta_1 x + u
+$$ The error term captures
+
+-   the true relationship may not be linear
+-   other variables that effect $y$
+-   measurement error
+
+The error term is independent of $x$.
+
+$Y = \beta_0 + \beta_1 x + u$ is the *population regression line*: the best linear approximation to the true relationship between $X$ and $Y$.
+
+$\hat{y} = \hat{\beta_0} + \hat{\beta_1}x$ is the OLS regression line or *least squares line*. 
+
+Population regression line and OLS regression lines are different; also we don't actually know the population regression line; we are estimating it using a sample which gives us the OLS regression line.
+
+But what if we did know the true population regression line? We can simulate a data to see:
+
+-   First we create random x values from 1000 random numbers
+
+```{r}
+set.seed(1)
+x = sample(seq(-2,2,length.out = 100),replace =F,size =100)
+x[1:10]
+```
+
+Lets lets say our true function is
+
+$$
+y = f(x) + f(z)
+$$
+So $y$ is not only affected by $x$ but also affected by $z$. Lets define these realationships
+
+$$
+y = 10 + 4x -2z
+$$
+
+We need to create z values as well
+
+```{r}
+set.seed(1)
+z = rnorm(100,0,4)
+z[1:10]
+```
+
+```{r}
+y = 10 + 4 * x - 2*z
+y[1:10]
+```
+This means our true population function $f$ is 
+
+$$
+f(x) = 10 + 4x
+$$
+Now we only have data on $x$ and $y$ we do not have data on $z$. Lets create our original data set
+
+```{r}
+data = tibble(y=y,x=x)
+data
+```
+Lets draw a sample from this data:
+```{r}
+data %>% sample_frac(0.6) %>% print() ->dataSample1
+```
+
+
+Lets do a scatterplot
+```{r}
+dataSample1 %>% 
+  ggplot() + aes(x=x,y=y) + geom_point()
+```
+
+Now lets do our estimation
+```{r}
+
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(y~x,dataSample1) %>% 
+  pluck("fit") -> lm_result
+lm_result %>% summary()
+```
+
+So our estimations turned out to be 
+$$
+\hat{y_i} = 8.46 + 4.37 x
+$$
+These are different from our true population parameters of $\beta_0 = 10, \beta_1 = 4$.
+
+Lets plot the estimation result:
+
+```{r}
+dataSample1 %>% 
+  ggplot() + aes(x=x, y =y) + geom_point() +
+  geom_abline(intercept = lm_result$coefficients[1], slope = lm_result$coefficients[2], color = "lightblue1", size=1) -> p1
+p1
+```
+
+We know that these estimates are choosen such that $\sum u = 0$.
+```{r}
+lm_result %>% 
+  augment() %>% 
+  pull(.resid) %>% sum
+```
+
+Now lets also add the true population regression line to the plot
+
+```{r}
+p1 + 
+  geom_abline(intercept = 10, slope =4, color ="darkred", size =1, linetype="dashed") -> p2
+p2
+```
+
+They are different, this is because we are using a sample data to estimate the true population parameters. If we were to have another sample data other estimates of parameters would result with different OLS regression lines
+
+```{r}
+# draw another sample
+data %>% sample_frac(0.6) -> dataSample2
+# make the estimation
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(y~x,dataSample2) %>% 
+  pluck("fit") -> lm_result2
+lm_result2 %>% summary()
+```
+
+Lets add these results to our plot
+```{r}
+p2 + geom_abline(intercept = lm_result2$coefficients[1], slope = lm_result2$coefficients[2], color ="orange") -> p3
+p3
+```
+
+This time we get another OLS regression line from another sample. This is because we are using samples and estimating the characteristics of population. Usually these characteristics are different, but generally sample characteristics provide a good estimate to the population characteristics. If we repat the process we will have lots of different OLS regression lines and estimates. Some will overestimate and some will underestimate the true population parameters.
+
+And if we take the average of all these estimates the average of the estimates we expect them to be equal to the population estimates if the estimator is *unbiased estimator.* An unbiased estimator does not systematically over-or under-estimate the true parameter.
+
+Okay, but how close $\hat{\beta_0}$ and $\hat{\beta_1}$ are to the true values $\beta_0$ and $\beta_1$. Standard error tells us the average amount of estimate differs from the actual value. So we want to compute the standard errors of $\hat{\beta_0}$ and $\hat{\beta_1}$ to understand on average how far off our estimates are to the true population parameters.
+
+$$
+\text{SE}(\hat{\beta_0})^2 = \sigma^2\left[\frac{1}{n}+\frac{\bar{x}^2}{\sum_{i=1}^n(x_i - \bar{x})^2}\right]
+$$
+$$
+\text{SE}(\hat{\beta_1})^2 = \frac{\sigma^2}{\sum_{i=1}^n(x_i - \bar{x})^2}
+$$
+Where $\sigma^2 = \text{Var}(u)$.
+
+Notice that $\text{SE}(\hat{\beta_1})$ is smaller when $x_i$ are more spread out; intutively we have more leverage to estimate a slope when this is the case. We want $x$ values to be spread out as much as they can
+
+In general $\sigma^2$ is not known, but can be estimated from the data. The estimate of $\sigma$ is known as the *residual standard error*, and given by the formula
+
+$$
+\sigma = \text{RSE} = \sqrt{RSS/(n-2)}
+$$
+Where $RSS = \sum_{i=1}^n u_i^2$. So, when $\sigma^2$ is estimated from the data we should write $\hat{\text{SE}}(\hat{\beta_1})$ to indicate an estiamte has been made, but usually we drop this extra hat. 
+
+Standard errors are useful to compute the *confidence intervals*. A 95% confidence interval is defined as a range of values such that with 95% probability, the range will contain the true unknown value of the parameters. From the samples drawn from the population parameter 95% of them will contain the true parameter. So for linear regresion, the 95% confidence interval for $\beta_1$ is approximately
+
+$$
+\hat{\beta_1} \pm 1.96 \times \text{SE}(\hat{\beta_1})
+$$
+Same is true for $\hat{\beta_0}$
+
+$$
+\hat{\beta_0} \pm 1.96 \times \text{SE}(\hat{\beta_0})
+$$
+
+These statistics are avaible to us in R
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales~TV, advertising) %>% 
+  pluck("fit") -> lm_result
+  lm_result %>% tidy()
+```
+
+We see that $\text{SE}(\hat{\beta_0}) = 0.458, \space \text{SE}(\hat{\beta_1}) = 0.0269$. On average our $\hat{\beta1}$ has a dinstance with $\beta_1$ 0.00269. This is not that helpful to interpret since the magnitute of standard errors depend on the nominal value of variables. We can however, get the confidence interval to interpret the results
+
+```{r}
+confint(lm_result)
+```
+
+```{r}
+lm_result %>% tidy() %>% mutate(confint_lower = estimate - 1.96 * std.error, confint_upper = estimate + 1.96 * std.error) %>% select(term, estimate,confint_lower, confint_upper)
+```
+
+We can say that <mark style ="background: #FDE5EC;color: black">there is a 95% probability that the true linear regression line of the population parameter $\beta_1$ will lie within $[0.0423,\space0.0529]$</mark>.
+
+These confidence intervals can be visualized using the `dotwhisker` package
+
+```{r}
+#| fig-cap: the 95% confidence interval does not include 0; TV is statistically significant
+lm_result %>% tidy() %>% 
+  dwplot(ci = 0.95,dot_args = list(size=2), vline = geom_vline(xintercept = 0, color = "grey50", linetype =2))
+```
+
+Since we really don't care about the $\beta_0$ it is not included. 
+
+Standard erors tells us the range of the $\beta$ values via confidence intervals. We can infer that if this range does not include 0, than our $\beta$ values are statistically significant; $x$ is associated with $y$. 
+
+Another way to show the statistical significance is to do a hypothesis tests on the coefficients. Since we don't care about the intercept, lets do a hypothesis test on only $\beta_1$
+
+
+
 
 
