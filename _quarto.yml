@@ -13,6 +13,7 @@ book:
     - index.qmd
     - Chapter2.qmd
     - Chapter3.qmd
+    - analysis.qmd
 
 bibliography: references.bib
 

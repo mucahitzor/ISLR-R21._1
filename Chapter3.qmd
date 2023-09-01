@@ -567,6 +567,18 @@ which measures the number of standard deviations that $\hat{\beta_1}$ is away fr
 summary(lm(sales ~ TV, advertising))
 ```
 
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales~TV,advertising) %>% 
+  pluck("fit") %>% 
+  confint() %>% 
+  kableExtra::kable(format = "latex")
+
+```
+
 Here we see that t statistics are very high, and p values are very low =\> reject the null hypothesis for both $\beta$ values; they are statistically significant.
 
 ### Assessing the Accuracy of the Model

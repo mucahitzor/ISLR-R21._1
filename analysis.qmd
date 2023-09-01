@@ -1,0 +1,332 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(tidymodels)
+  library(hrbrthemes)
+  library(patchwork)
+  library(magrittr)
+  library(corrplot)
+})
+theme_set(theme_ipsum_ps(axis_title_size = 11 , axis_title_just = "c") + theme(axis.line = element_line(color ="black")))
+```
+
+# Exercise
+
+## SLR
+
+```{r}
+data = MASS::Boston
+data %<>% as_tibble() %>% print()
+```
+
+We are going to predict `medv`(median house value) in Boston, using 13 predictors such as `rm`(average number of rooms per house), `age`(avarege age of houses), and `lstat` (percent of household with low socioeconomics status).
+
+Do a linear regression of `lstat` on `medv`
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat, data) %>%
+  pluck("fit") -> slr_res 
+
+slr_res %>% summary()
+```
+
+
+```{r}
+slr_res %>% names()
+```
+
+Get the confidence intervals
+```{r}
+slr_res %>% confint() %>% print()
+
+slr_res %>% dotwhisker::dwplot()
+```
+
+Lets do some predictions from this model. Lets create predictions for cases when `lstat` is equal to 5,10, and 15. We can use `predict` function for this. Here is a confidence interval for our p
+
+```{r}
+slr_res %>% 
+  predict(., tibble(lstat = c(5,10,15)), interval = "confidence")
+```
+
+```{r}
+slr_res %>% 
+  predict(., tibble(lstat = c(5,10,15)), interval = "prediction")
+```
+
+Lets plot `medv` and `lstat` along with the least squares regression line.
+
+We can either:
+```{r}
+plot(data$medv, data$lstat)
+abline(slr_res)
+```
+
+```{r}
+slr_res %>% augment %>% print() %>% 
+  ggplot() + aes(x = lstat, y = medv) + 
+  geom_point() + 
+  geom_abline(intercept = slr_res$coefficients[1], slope = slr_res$coefficients[2], size =1.1)
+```
+
+This looks like not a linear relationship actually; lets confirm this with our residual plot. Since this is a SLR i can plot $x$ vs $e_i$.
+```{r}
+slr_res %>% augment %>% print() %>% 
+  ggplot() + aes(x = .fitted, y = .resid) + geom_point() + geom_smooth(se=F) -> p1
+
+slr_res %>% augment %>% print() %>% 
+  ggplot() + aes(x = .fitted, y = .std.resid) + geom_point() + geom_smooth(se=F) -> p2
+
+p1 + p2
+```
+
+Our suspicions are true, it looks like there may not be a linear relationship, this shows a quadratic relationship.
+
+Our leverage statistics are given in the `.hat` column, but we can also get them using `hatvalues`
+```{r}
+plot(hatvalues(slr_res))
+```
+
+```{r}
+which.max(hatvalues(slr_res))
+```
+
+Lets check the outliers by plotting standardized residuals vs fitted
+
+```{r}
+
+slr_res %>% 
+  augment() %>% 
+  mutate(id = 1:506) %>% 
+  filter(abs(.std.resid) > 3) %>% 
+  select(id,.std.resid) %>% print() %>% 
+  pull("id") -> outliers
+
+# visualize the outliers
+
+slr_res %>% 
+  augment() %>% 
+  mutate(id = 1:506) %>% 
+  ggplot() + aes(y =.std.resid, x = .fitted, color = ifelse(abs(.std.resid) > 3, F,T)) + geom_point(size =2, show.legend = F) + geom_hline(yintercept = 0, linetype = "dashed") +
+  ggrepel::geom_text_repel(aes(label = ifelse(abs(.std.resid) > 3,id,"")), max.overlaps = 100, show.legend = F) + scale_color_ipsum()
+```
+
+
+Leverage points: we plot std res vs leverage
+
+```{r}
+
+slr_res %>% 
+  augment() %>% mutate(id = 1:506) %>% 
+  filter(.hat > 0.02) %>% 
+  select(id, .std.resid,.hat) %>% 
+  print() %>% pull("id") -> highlevgs
+
+# high leverage points
+
+slr_res %>% 
+  augment() %>% mutate(id = 1:506) %>% 
+  ggplot() + aes(x=.hat, y = .std.resid, color = ifelse(.hat > 0.02,F,T)) + geom_point(show.legend = F) + geom_hline(yintercept =0, linetype = "dashed") + 
+  ggrepel::geom_text_repel(aes(label = ifelse(.hat > 0.02,id,"")), show.legend = F) +scale_color_ipsum()
+```
+
+
+```{r}
+slr_res %>% summary() %>% print()
+
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat, data[-c(outliers,highlevgs),]) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+Removing high leverages and outliers improeves our result.
+
+## Multiple linear Regression
+
+$$
+medv = \beta_0 + \beta_1 lstat + \beta_2 age 
+$$
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat + age, data) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+
+Lets do a regression including all varaibles
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv~., data) %>% 
+  pluck("fit") -> mlr
+mlr %>% summary()
+```
+
+Lets calculate the VIF values
+
+```{r}
+mlr %>% car::vif()
+```
+
+`age` has the highest p-value, lets remove that from the regression
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv~. - age, data) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+
+### Interaction Terms
+
+following model
+
+$$
+medv = \beta_0 + \beta_1 lstat + \beta_2 age + \beta_3 lstat \cdot age + \epsilon
+$$
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat * age, data) %>%  # short for fit(medv~ lstat + age + lstat * age)
+  pluck("fit") %>% 
+  summary()
+```
+
+### Non-linaer Transformation of the predictors
+
+$$
+medv = \beta_0 + \beta_1 lstat + \beta_2 lstat^2 + \epsilon
+$$
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat + I(lstat^2), data) %>% 
+  pluck("fit") %>% 
+  summary()
+
+```
+
+The coefficient of the quadratic term is statistically significant: model is improved.
+
+We use `anova` function to further quantify the extent to which quadratic fit is superior to linear fit. We It takes models as its arguments. We want to compare two models, lets create them again and compare them
+
+```{r}
+
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat, data) %>% 
+  pluck("fit") -> modelLin
+
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat + I(lstat^2), data) %>% 
+  pluck("fit") -> modelQuad
+
+anova(modelLin, modelQuad)
+```
+
+The annova function performs a hypothesis test comparing the two models. The null hypothesis is that the two models fit the data equally well, and the alternative hypothesis is that the full model is superior. Here we reject $H_0$; and the model indcludes quadratic term is superior to the linaer odel. This is not a suprise to us, because we already suspected this.
+
+Lets do the plots again
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat, data) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  ggplot() + aes(x = .fitted, y =.resid) + geom_point() + geom_smooth(se =F) + ggtitle("Linear model residual plot") -> p1
+
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ lstat + I(lstat^2), data) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  ggplot() + aes(x = .fitted, y =.resid) + geom_point() + geom_smooth(se =F) + ggtitle("Quadratic model residual plot") -> p2
+
+p1 + p2
+```
+
+Now on the quadratic model it looks like there is still some pattern in the residuals. Should we create a cubic fit? Now what we can do is actually insert like 10 polynomial terms and check whether they are significant or not
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ poly(lstat,10),data) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+We see that up to 5 polynomial terms are statistically significant
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ poly(lstat,5),data) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ poly(lstat,5),data) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  ggplot() + aes(x = .fitted, y =.resid) + geom_point() + geom_smooth(se =F) + ggtitle("poly 5 model residual plot")  -> p3
+
+p1 + p2 + p3
+```
+
+
+Instead of adding the polynomial transformations, we could try log transformation
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ log(lstat),data) %>% 
+  pluck("fit") %>% 
+  augment() %>% 
+  ggplot() + aes(x = .fitted, y =.resid) + geom_point() + geom_smooth(se =F) + ggtitle("log model residual plot") 
+```
+
+This is actually very nice.
+
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv ~ log(rm),data) %>% 
+  pluck("fit") %>% 
+  summary()
+```
+
+
