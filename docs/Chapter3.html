@@ -179,7 +179,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple Linear Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exercise</span></span></a>
   </div>
 </li>
     </ul>
@@ -208,6 +208,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#qualitative-predictors" id="toc-qualitative-predictors" class="nav-link" data-scroll-target="#qualitative-predictors"><span class="header-section-number">2.3.1</span> Qualitative Predictors</a></li>
   <li><a href="#extensions-of-the-linear-model" id="toc-extensions-of-the-linear-model" class="nav-link" data-scroll-target="#extensions-of-the-linear-model"><span class="header-section-number">2.3.2</span> Extensions of the Linear Model</a></li>
   <li><a href="#potential-problems" id="toc-potential-problems" class="nav-link" data-scroll-target="#potential-problems"><span class="header-section-number">2.3.3</span> Potential Problems</a></li>
+  </ul></li>
+  <li><a href="#selecting-best-regression-varaibles" id="toc-selecting-best-regression-varaibles" class="nav-link" data-scroll-target="#selecting-best-regression-varaibles"><span class="header-section-number">3</span> Selecting best regression varaibles</a>
+  <ul class="collapse">
+  <li><a href="#identifying-influential-observations" id="toc-identifying-influential-observations" class="nav-link" data-scroll-target="#identifying-influential-observations"><span class="header-section-number">3.0.1</span> Identifying Influential observations</a></li>
+  <li><a href="#testing-residuals-for-autocorrelation" id="toc-testing-residuals-for-autocorrelation" class="nav-link" data-scroll-target="#testing-residuals-for-autocorrelation"><span class="header-section-number">3.1</span> testing residuals for autocorrelation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2482,14 +2487,40 @@ Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962
 F-statistic: 859.6 on 2 and 197 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>Here is regression result after removing outliers</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb185"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb185-2"><a href="#cb185-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb185-3"><a href="#cb185-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb185-4"><a href="#cb185-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">131</span>),]) <span class="sc">%&gt;%</span> </span>
+<span id="cb185-4"><a href="#cb185-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising) <span class="sc">%&gt;%</span> </span>
 <span id="cb185-5"><a href="#cb185-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb185-6"><a href="#cb185-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb185-6"><a href="#cb185-6" aria-hidden="true" tabindex="-1"></a>  car<span class="sc">::</span><span class="fu">outlierTest</span>()<span class="ot">-&gt;</span> outs</span>
+<span id="cb185-7"><a href="#cb185-7" aria-hidden="true" tabindex="-1"></a>outs <span class="co"># 131th value is outlier</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     rstudent unadjusted p-value Bonferroni p
+131 -5.714235         4.0499e-08   8.0998e-06</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb187"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb187-2"><a href="#cb187-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-3"><a href="#cb187-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-4"><a href="#cb187-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-5"><a href="#cb187-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb187-6"><a href="#cb187-6" aria-hidden="true" tabindex="-1"></a>  car<span class="sc">::</span><span class="fu">outlierTest</span>(., <span class="at">cutoff =</span> <span class="fl">0.30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     rstudent unadjusted p-value Bonferroni p
+131 -5.714235         4.0499e-08   8.0998e-06
+6   -3.295069         1.1678e-03   2.3356e-01</code></pre>
+</div>
+</div>
+<p>Here is regression result after removing outliers</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb189"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb189-2"><a href="#cb189-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-3"><a href="#cb189-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-4"><a href="#cb189-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">131</span>),]) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-5"><a href="#cb189-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb189-6"><a href="#cb189-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -2533,12 +2564,12 @@ h_i &amp;= \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i'=1}^n(x_{i'} - \bar{x}
 <p><span class="math inline">\(h_i\)</span> is always between <span class="math inline">\(1/n\)</span> and <span class="math inline">\(1\)</span>, and the average leverage for all the observations is always equal to <span class="math inline">\((p+1)/n\)</span>. If an observation has a <span class="math inline">\(h\)</span> that greatly exceeds <span class="math inline">\((p+1)/n\)</span> then we may suspect of high leverage.</p>
 <p>Right hand panel of Figure 3.13 shows studentized residuals versus <span class="math inline">\(h_i\)</span>. Obs 41 stands out as having a very high leverage statistic as well as a high studentized residual =&gt; It is an outlier as well as a high leverage observaiton. This is very dangerous. This plot also shows the reason that obs 20 had relatively little effect on the least sqaures fit in Figure 3.12: it has low leverage.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb187"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb187-2"><a href="#cb187-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb187-3"><a href="#cb187-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb187-4"><a href="#cb187-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising) <span class="sc">%&gt;%</span> </span>
-<span id="cb187-5"><a href="#cb187-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb187-6"><a href="#cb187-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb191"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb191-2"><a href="#cb191-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb191-3"><a href="#cb191-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb191-4"><a href="#cb191-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio, advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb191-5"><a href="#cb191-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb191-6"><a href="#cb191-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 200 × 9
    sales    TV radio .fitted  .resid    .hat .sigma   .cooksd .std.resid
@@ -2558,23 +2589,23 @@ h_i &amp;= \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i'=1}^n(x_{i'} - \bar{x}
 </div>
 <p>leverages are shown in <code>.hat</code> here.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb189"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">lm</span>(sales<span class="sc">~</span>TV,advertising), <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb193"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">lm</span>(sales<span class="sc">~</span>TV,advertising), <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Chapter3_files/figure-html/unnamed-chunk-104-1.png" class="img-fluid" width="672"></p>
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-106-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><strong>6.Collinearity</strong></p>
 <p><em>Collinearity</em> refers to the situation in which two or more predictor variables are closely related to one another.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb190"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb190-1"><a href="#cb190-1" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
-<span id="cb190-2"><a href="#cb190-2" aria-hidden="true" tabindex="-1"></a>  Credit <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>Limit, <span class="at">y =</span> Age) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span><span class="st">"red"</span>, <span class="at">alpha =</span><span class="fl">0.4</span>),</span>
-<span id="cb190-3"><a href="#cb190-3" aria-hidden="true" tabindex="-1"></a>  Credit <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>Limit, <span class="at">y=</span> Rating) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span><span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>),</span>
-<span id="cb190-4"><a href="#cb190-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol=</span><span class="dv">2</span></span>
-<span id="cb190-5"><a href="#cb190-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb194"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb194-1"><a href="#cb194-1" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
+<span id="cb194-2"><a href="#cb194-2" aria-hidden="true" tabindex="-1"></a>  Credit <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>Limit, <span class="at">y =</span> Age) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span><span class="st">"red"</span>, <span class="at">alpha =</span><span class="fl">0.4</span>),</span>
+<span id="cb194-3"><a href="#cb194-3" aria-hidden="true" tabindex="-1"></a>  Credit <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>Limit, <span class="at">y=</span> Rating) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span><span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>),</span>
+<span id="cb194-4"><a href="#cb194-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol=</span><span class="dv">2</span></span>
+<span id="cb194-5"><a href="#cb194-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Chapter3_files/figure-html/unnamed-chunk-105-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-107-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">Figure 3.14</figcaption>
 </figure>
 </div>
@@ -2588,20 +2619,20 @@ h_i &amp;= \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i'=1}^n(x_{i'} - \bar{x}
 <li>model2: balance regressed onto rating and limit which are collinear.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb191"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb191-2"><a href="#cb191-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-3"><a href="#cb191-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-4"><a href="#cb191-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Age <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-5"><a href="#cb191-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-6"><a href="#cb191-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-7"><a href="#cb191-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(</span>
-<span id="cb191-8"><a href="#cb191-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb191-9"><a href="#cb191-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-10"><a href="#cb191-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-11"><a href="#cb191-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Rating <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-12"><a href="#cb191-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb191-13"><a href="#cb191-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span><span class="dv">2</span>)</span>
-<span id="cb191-14"><a href="#cb191-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb195"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb195-2"><a href="#cb195-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-3"><a href="#cb195-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-4"><a href="#cb195-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Age <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-5"><a href="#cb195-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-6"><a href="#cb195-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-7"><a href="#cb195-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb195-8"><a href="#cb195-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb195-9"><a href="#cb195-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-10"><a href="#cb195-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-11"><a href="#cb195-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Rating <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-12"><a href="#cb195-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb195-13"><a href="#cb195-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span><span class="dv">2</span>)</span>
+<span id="cb195-14"><a href="#cb195-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 6
   term         estimate std.error statistic   p.value model
@@ -2625,12 +2656,12 @@ h_i &amp;= \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i'=1}^n(x_{i'} - \bar{x}
 VIF(\hat{\beta_j}) = \frac{1}{1-R^2_{x_j | x_{-j}}}
 \]</span> <span class="math inline">\(R^2_{x_j | x_{-j}}\)</span> is the <span class="math inline">\(R^2\)</span> from a regression of <span class="math inline">\(x_j\)</span> onto all of the other predictors. If <span class="math inline">\(R^2_{x_j | x_{-j}}\)</span> is close to one, then collinearity is present, so VIF will be large.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb193"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb193-2"><a href="#cb193-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb193-3"><a href="#cb193-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb193-4"><a href="#cb193-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Age <span class="sc">+</span> Rating <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
-<span id="cb193-5"><a href="#cb193-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb193-6"><a href="#cb193-6" aria-hidden="true" tabindex="-1"></a>  car<span class="sc">::</span><span class="fu">vif</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb197"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb197-2"><a href="#cb197-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb197-3"><a href="#cb197-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb197-4"><a href="#cb197-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Balance <span class="sc">~</span> Age <span class="sc">+</span> Rating <span class="sc">+</span> Limit, Credit) <span class="sc">%&gt;%</span> </span>
+<span id="cb197-5"><a href="#cb197-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb197-6"><a href="#cb197-6" aria-hidden="true" tabindex="-1"></a>  car<span class="sc">::</span><span class="fu">vif</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       Age     Rating      Limit 
   1.011385 160.668301 160.592880 </code></pre>
@@ -2639,7 +2670,7 @@ VIF(\hat{\beta_j}) = \frac{1}{1-R^2_{x_j | x_{-j}}}
 <p>A regression of balance on age, rating, and limit indicates that the predictors have VIF Values of 1.01, 160.67, 160.59. There is considerable collinearity in the data.</p>
 <p>When faced with collinearity, two simple solutions exist: * drop one of the problematic variables from the regression * combine collinear variables together into a single predictor. We might take the average of standardized versions of limit and rating in order to create a new varaible that measures <em>credit worthiness</em>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb195"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper,advertising) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb199"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb199-1"><a href="#cb199-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper,advertising) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -2663,6 +2694,311 @@ Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8956
 F-statistic: 570.3 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<p>To get a anova table;</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb201"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb201-1"><a href="#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper,advertising))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: sales
+           Df Sum Sq Mean Sq   F value Pr(&gt;F)    
+TV          1 3314.6  3314.6 1166.7308 &lt;2e-16 ***
+radio       1 1545.6  1545.6  544.0501 &lt;2e-16 ***
+newspaper   1    0.1     0.1    0.0312 0.8599    
+Residuals 196  556.8     2.8                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb203"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper,advertising))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> (Intercept)           TV        radio    newspaper 
+ 2.938889369  0.045764645  0.188530017 -0.001037493 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb205"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper,advertising) <span class="sc">%&gt;%</span> <span class="fu">confint</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  2.5 %     97.5 %
+(Intercept)  2.32376228 3.55401646
+TV           0.04301371 0.04851558
+radio        0.17154745 0.20551259
+newspaper   -0.01261595 0.01054097</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb207"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vcov</span>(<span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper,advertising))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              (Intercept)            TV         radio     newspaper
+(Intercept)  0.0972867479 -2.657273e-04 -1.115489e-03 -5.910212e-04
+TV          -0.0002657273  1.945737e-06 -4.470395e-07 -3.265950e-07
+radio       -0.0011154895 -4.470395e-07  7.415335e-05 -1.780062e-05
+newspaper   -0.0005910212 -3.265950e-07 -1.780062e-05  3.446875e-05</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="selecting-best-regression-varaibles" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Selecting best regression varaibles</h1>
+<p>You are creating a new regression mdoel or improving an exiting model. You have many regression varaibles and you want to select the vest subset of those varaibles.</p>
+<p>The <code>step</code> function can perform stepwise regression, either forward or backward. Backward stepwise regression starts with many varaibles and removes the underperformeners:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb209"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb209-1"><a href="#cb209-1" aria-hidden="true" tabindex="-1"></a>lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(sales <span class="sc">~</span> TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper, advertising) <span class="co"># full model</span></span>
+<span id="cb209-2"><a href="#cb209-2" aria-hidden="true" tabindex="-1"></a>stats<span class="sc">::</span><span class="fu">step</span>(lm, <span class="at">direction =</span> <span class="st">"backward"</span>) <span class="sc">%&gt;%</span> <span class="fu">summary</span>() <span class="co"># best model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Start:  AIC=212.79
+sales ~ TV + radio + newspaper
+
+            Df Sum of Sq    RSS    AIC
+- newspaper  1      0.09  556.9 210.82
+&lt;none&gt;                    556.8 212.79
+- radio      1   1361.74 1918.6 458.20
+- TV         1   3058.01 3614.8 584.90
+
+Step:  AIC=210.82
+sales ~ TV + radio
+
+        Df Sum of Sq    RSS    AIC
+&lt;none&gt;                556.9 210.82
+- radio  1    1545.6 2102.5 474.52
+- TV     1    3061.6 3618.5 583.10</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7977 -0.8752  0.2422  1.1708  2.8328 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.92110    0.29449   9.919   &lt;2e-16 ***
+TV           0.04575    0.00139  32.909   &lt;2e-16 ***
+radio        0.18799    0.00804  23.382   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.681 on 197 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
+F-statistic: 859.6 on 2 and 197 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>backward stepwise regression is the easiest approach.</p>
+<p>Backward stepwise is easy but sometimes its not feasible to start with everything because you have too many candidate variables. In that case use forward stepwise regression; which will start with nothing and incrementatlly add variables that improve regression. It stops when no further improvement is possible</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb212"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb212-1"><a href="#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales <span class="sc">~</span> <span class="dv">1</span>,advertising)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ 1, data = advertising)
+
+Coefficients:
+(Intercept)  
+      14.02  </code></pre>
+</div>
+</div>
+<p>we start with minimum model. We must tell step which candidate varaibels are available for inclusing in the model. We use <code>scope</code> argument for that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb214"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb214-1"><a href="#cb214-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span><span class="dv">1</span>,advertising) <span class="sc">%&gt;%</span> stats<span class="sc">::</span><span class="fu">step</span>(<span class="at">direction =</span> <span class="st">"forward"</span>, <span class="at">scope =</span> (<span class="sc">~</span> TV <span class="sc">+</span> radio <span class="sc">+</span> newspaper), <span class="at">trace =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="fu">summary</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7977 -0.8752  0.2422  1.1708  2.8328 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.92110    0.29449   9.919   &lt;2e-16 ***
+TV           0.04575    0.00139  32.909   &lt;2e-16 ***
+radio        0.18799    0.00804  23.382   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.681 on 197 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
+F-statistic: 859.6 on 2 and 197 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>we have the same result with backward, in reality these results may differ.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb216"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb216-1"><a href="#cb216-1" aria-hidden="true" tabindex="-1"></a>stats<span class="sc">::</span><span class="fu">step</span>(lm, <span class="at">direction =</span> <span class="st">"both"</span>) <span class="sc">%&gt;%</span> <span class="fu">summary</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Start:  AIC=212.79
+sales ~ TV + radio + newspaper
+
+            Df Sum of Sq    RSS    AIC
+- newspaper  1      0.09  556.9 210.82
+&lt;none&gt;                    556.8 212.79
+- radio      1   1361.74 1918.6 458.20
+- TV         1   3058.01 3614.8 584.90
+
+Step:  AIC=210.82
+sales ~ TV + radio
+
+            Df Sum of Sq    RSS    AIC
+&lt;none&gt;                    556.9 210.82
++ newspaper  1      0.09  556.8 212.79
+- radio      1   1545.62 2102.5 474.52
+- TV         1   3061.57 3618.5 583.10</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7977 -0.8752  0.2422  1.1708  2.8328 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.92110    0.29449   9.919   &lt;2e-16 ***
+TV           0.04575    0.00139  32.909   &lt;2e-16 ***
+radio        0.18799    0.00804  23.382   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.681 on 197 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
+F-statistic: 859.6 on 2 and 197 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb219"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb219-1"><a href="#cb219-1" aria-hidden="true" tabindex="-1"></a>MASS<span class="sc">::</span><span class="fu">boxcox</span>(lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-119-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Detecting the outliers :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb220"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb220-1"><a href="#cb220-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">outlierTest</span>(lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     rstudent unadjusted p-value Bonferroni p
+131 -5.757983          3.267e-08    6.534e-06</code></pre>
+</div>
+</div>
+<p><img src="rcook1.png" class="img-fluid"></p>
+<p><img src="rcook2.png" class="img-fluid"></p>
+<section id="identifying-influential-observations" class="level3" data-number="3.0.1">
+<h3 data-number="3.0.1" class="anchored" data-anchor-id="identifying-influential-observations"><span class="header-section-number">3.0.1</span> Identifying Influential observations</h3>
+<p>You want to identify the observatipons that are having the ost influence on the regression model, this is useful for diagnosing possible porblems with the data.</p>
+<p><strong>Solution</strong></p>
+<p>The <code>influence.measures</code> function reports several useful statistics for identifying inflıuentioal obs. and it flags the significant ones with an asterisk(*).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb222"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb222-1"><a href="#cb222-1" aria-hidden="true" tabindex="-1"></a>lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> newspaper,advertising)</span>
+<span id="cb222-2"><a href="#cb222-2" aria-hidden="true" tabindex="-1"></a>lm <span class="sc">%&gt;%</span> <span class="fu">summary</span>() <span class="sc">%&gt;%</span> <span class="fu">print</span>() <span class="co"># r2 is 0.6422</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + newspaper, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.6231 -1.7346 -0.0948  1.8926  8.4512 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 5.774948   0.525338  10.993  &lt; 2e-16 ***
+TV          0.046901   0.002581  18.173  &lt; 2e-16 ***
+newspaper   0.044219   0.010174   4.346 2.22e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.121 on 197 degrees of freedom
+Multiple R-squared:  0.6458,    Adjusted R-squared:  0.6422 
+F-statistic: 179.6 on 2 and 197 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb224"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb224-1"><a href="#cb224-1" aria-hidden="true" tabindex="-1"></a>inf <span class="ot">=</span> <span class="fu">influence.measures</span>(lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We need to filter for columns which has at least one true:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb225"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb225-1"><a href="#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(inf<span class="sc">$</span>is.inf) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb225-2"><a href="#cb225-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">obs =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">200</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb225-3"><a href="#cb225-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">if_any</span>(<span class="fu">everything</span>(), <span class="sc">~</span>. <span class="sc">==</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> <span class="fu">print</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb225-4"><a href="#cb225-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="st">"obs"</span>) <span class="ot">-&gt;</span> infss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 8
+   dfb.1_ dfb.TV dfb.nwsp dffit cov.r cook.d hat     obs
+   &lt;lgl&gt;  &lt;lgl&gt;  &lt;lgl&gt;    &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;  &lt;lgl&gt; &lt;int&gt;
+ 1 FALSE  FALSE  FALSE    FALSE FALSE FALSE  FALSE     1
+ 2 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE     3
+ 3 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE     6
+ 4 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE    13
+ 5 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  TRUE     17
+ 6 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE    26
+ 7 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  TRUE     76
+ 8 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  TRUE    102
+ 9 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   119
+10 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   129
+11 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   132
+12 FALSE  FALSE  FALSE    TRUE  TRUE  FALSE  FALSE   166
+13 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   179</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb227"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb227-1"><a href="#cb227-1" aria-hidden="true" tabindex="-1"></a>infss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]   1   3   6  13  17  26  76 102 119 129 132 166 179</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb229"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb229-1"><a href="#cb229-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> newspaper,advertising[<span class="sc">-</span>infss,]) <span class="sc">%&gt;%</span> <span class="fu">summary</span>() <span class="co"># r^2 improves!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + newspaper, data = advertising[-infss, 
+    ])
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.2432 -1.6062 -0.0775  1.9088  6.9490 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 5.348561   0.512438   10.44  &lt; 2e-16 ***
+TV          0.047992   0.002574   18.65  &lt; 2e-16 ***
+newspaper   0.058656   0.011501    5.10  8.4e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.918 on 184 degrees of freedom
+Multiple R-squared:  0.6866,    Adjusted R-squared:  0.6832 
+F-statistic: 201.6 on 2 and 184 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb231"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb231-1"><a href="#cb231-1" aria-hidden="true" tabindex="-1"></a>lm12 <span class="ot">&lt;-</span><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> newspaper,advertising[<span class="sc">-</span>infss,])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="testing-residuals-for-autocorrelation" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="testing-residuals-for-autocorrelation"><span class="header-section-number">3.1</span> testing residuals for autocorrelation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb232"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb232-1"><a href="#cb232-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: zoo</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'zoo'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    as.Date, as.Date.numeric</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb236"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb236-1"><a href="#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dwtest</span>(lm) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Durbin-Watson test
+
+data:  lm
+DW = 1.9685, p-value = 0.4097
+alternative hypothesis: true autocorrelation is greater than 0</code></pre>
+</div>
+</div>
+<p>if $ p &gt; 0.05$ no evidence of correaltion.</p>
 
 
 </section>
@@ -3025,7 +3361,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./analysis.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simple Linear Regression</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exercise</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

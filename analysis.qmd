@@ -329,4 +329,39 @@ linear_reg() %>%
   summary()
 ```
 
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(medv~.,data) %>% 
+  pluck("fit") -> lmm
+```
+
+```{r}
+lmm %>% anova()
+
+lmm %>% anova()
+```
+
+```{r}
+lmm %>% stats::step(direction = "backward") %>% summary()
+```
+
+```{r}
+lmm %>% stats::step(direction = "forward") %>% summary()
+
+```
+
+
+```{r}
+lmm %>% stats::step(direction = "both") %>% summary()
+
+```
+
+```{r}
+lmm
+```
+
+
+
 

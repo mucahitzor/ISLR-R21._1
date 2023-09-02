@@ -1581,6 +1581,26 @@ linear_reg() %>%
   summary()
 ```
 
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales ~ TV + radio, advertising) %>% 
+  pluck("fit") %>% 
+  car::outlierTest()-> outs
+outs # 131th value is outlier
+```
+
+```{r}
+linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("lm") %>% 
+  fit(sales ~ TV + radio, advertising) %>% 
+  pluck("fit") %>% 
+  car::outlierTest(., cutoff = 0.30)
+```
+
+
 Here is regression result after removing outliers
 
 ```{r}
@@ -1712,3 +1732,118 @@ When faced with collinearity, two simple solutions exist: \* drop one of the pro
 ```{r}
 lm(sales~TV + radio + newspaper,advertising) %>% summary()
 ```
+
+
+To get a anova table;
+```{r}
+anova(lm(sales~TV + radio + newspaper,advertising))
+```
+
+```{r}
+coef(lm(sales~TV + radio + newspaper,advertising))
+```
+
+```{r}
+lm(sales~TV + radio + newspaper,advertising) %>% confint()
+```
+
+
+```{r}
+vcov(lm(sales~TV + radio + newspaper,advertising))
+```
+
+# Selecting best regression varaibles
+
+You are creating a new regression mdoel or improving an exiting model. You have many regression varaibles and you want to select the vest subset of those varaibles.
+
+The `step` function can perform stepwise regression, either forward or backward. Backward stepwise regression starts with many varaibles and removes the underperformeners:
+
+```{r}
+lm <- lm(sales ~ TV + radio + newspaper, advertising) # full model
+stats::step(lm, direction = "backward") %>% summary() # best model
+```
+
+backward stepwise regression is the easiest approach.
+
+Backward stepwise is easy but sometimes its not feasible to start with everything because you have too many candidate variables. In that case use forward stepwise regression; which will start with nothing and incrementatlly add variables that improve regression. It stops when no further improvement is possible
+
+
+```{r}
+lm(sales ~ 1,advertising)
+```
+
+we start with minimum model. We must tell step which candidate varaibels are available for inclusing in the model. We use `scope` argument for that.
+
+
+```{r}
+lm(sales~1,advertising) %>% stats::step(direction = "forward", scope = (~ TV + radio + newspaper), trace = 0) %>% summary() 
+```
+we have the same result with backward, in reality these results may differ.
+```{r}
+stats::step(lm, direction = "both") %>% summary() 
+```
+
+```{r}
+MASS::boxcox(lm)
+```
+
+Detecting the outliers :
+
+```{r}
+car::outlierTest(lm)
+```
+
+
+![](rcook1.png)
+
+
+
+
+![](rcook2.png)
+
+
+### Identifying Influential observations
+
+You want to identify the observatipons that are having the ost influence on the regression model, this is useful for diagnosing possible porblems with the data.
+
+**Solution**
+
+The `influence.measures` function reports several useful statistics for identifying inflıuentioal obs. and it flags the significant ones with an asterisk(*).
+
+```{r}
+lm <- lm(sales~TV + newspaper,advertising)
+lm %>% summary() %>% print() # r2 is 0.6422
+
+inf = influence.measures(lm)
+```
+
+We need to filter for columns which has at least one true:
+```{r}
+as.data.frame(inf$is.inf) %>% as_tibble() %>% 
+  mutate(obs = 1:200) %>% 
+  filter(if_any(everything(), ~. == TRUE)) %>% print() %>% 
+  pull("obs") -> infss
+infss
+```
+
+```{r}
+lm(sales~TV + newspaper,advertising[-infss,]) %>% summary() # r^2 improves!
+lm12 <-lm(sales~TV + newspaper,advertising[-infss,])
+```
+
+
+## testing residuals for autocorrelation
+
+```{r}
+library(lmtest)
+dwtest(lm) 
+```
+
+if $ p > 0.05$ no evidence of correaltion.
+
+
+
+
+
+
+
