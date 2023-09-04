@@ -1,0 +1,421 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+suppressPackageStartupMessages({
+library(ISLR)
+library(tidyverse)
+library(ggthemes)
+library(sjPlot)
+library(corrplot)
+library(tidymodels)
+library(magrittr)
+library(dotwhisker)
+library(hrbrthemes)
+library(patchwork)
+})
+theme_set(theme_ipsum_ps(axis_title_size = 11 , axis_title_just = "c") + theme(axis.line = element_line(color ="black")))
+```
+
+# Classification
+
+For many cases the response variable is *qualitative*, or *categorical*.
+
+Clasification is the process for predicting qualitative responses; we are classifying an observation. 
+
+There are three main classifiers,*classification techniques*, mainly:
+
+-   *Logistic regression*
+-   *Linear discriminant analysis*
+-   *K-nearest neighbors*
+
+We discuss more computer intensive methods is later chapters such as GAM(ch 7), trees, random forests, and boosting(ch 8), and support vector machines (ch 9).
+
+
+## An overview of Classsification
+
+Here some clasffication problems
+
+1. A person arrives at the emergency room with a set of symptoms that could possible be attributed to one f three medical conditions. Which of the three conditions does the individual have?
+
+2. An online banking service must be able to determine whether or not a transaction being performed on the site is fraudulent, on the basis of the user's IP adress, past transaction history and so forth.
+
+3. In the bais of DNA sequence data for a number of patients with and without a given disease, a biologist would like to figure out which DNA mutations are disease causing and which are not.
+
+Just like in LR , in the classification setting we have a set of training observations $(x_1,y_1), \dots, (x_n,y_n)$ what we can use to build a classfier. We want our classifier to perform not only on th training data, but also on test observations that are not used to train the classier.
+
+> We are going to use `Default` data set.
+
+```{r}
+default = read_csv("./data/Default.csv")
+default %<>% 
+  mutate_if(is.character, ~as.factor(.)) %>% 
+  print()
+```
+
+We are interested in predicting whether an individual will default on his or her credit card balance. 
+
+```{r}
+skimr::skim(default)
+```
+
+```{r}
+GGally::ggpairs(mapping = aes(color = default), data = default)
+```
+
+```{r}
+default %>% 
+  ggplot() + aes(x = balance, y = income, color = default, shape = default) + geom_point() + scale_color_manual(values = c("#6CA2C9","#BD5E2A")) + scale_shape_manual(values = c(1,3)) -> p1
+
+default %>% 
+  ggplot() + aes(x = default, y = balance, fill = default) + geom_boxplot() + 
+  scale_fill_manual(values = c("#6CA2C9","#BD5E2A")) -> p2
+
+default %>% 
+  ggplot() + aes(x = default, y = income, fill = default) + geom_boxplot() + 
+  scale_fill_manual(values = c("#6CA2C9","#BD5E2A")) -> p3
+
+# gridExtra::grid.arrange(p1,p2,p3, nrow=1)
+gridExtra::grid.arrange(p1,p2,p3, nrow=3)
+# Top: The aanual incomes and montly credit card balances of a number of individuals. The individuals who defaulted on their credit card payments are shown in orange, and those who did not are shown in blue. Center: boxplots of balances as a function of default status. Bottom: boxplots of income as a functino of default status.
+
+```
+
+people who default tend to have high credit card balances compared to not defaulted.
+
+```{r}
+default %>% 
+  count(default) %>% 
+  mutate(port = n/sum(n))
+# default rate is 3%
+```
+
+```{r}
+default %>% 
+  group_by(student,default) %>% 
+  summarise(count = n()) %>% 
+  mutate(port = count/sum(count))
+
+# student are 2 times more likely to default
+```
+
+In this chapter we laern how to build a model to predict `default`($y$), for any given value of balance ($x_1$), and income ($x_2$). Since $Y$ is not quantitative, SLR is not appropriate.
+
+## Why Not Linear Regression?
+
+Why is LR not appropriate here?
+
+Suppose that we are trying to predict the mdeical condition of a patient in the emergency room on the basis of her symptoms. In this simplified example, therea rea three possible diagnoses: `stroke`, `drug overdose`, `epileptic seizure`. We could consider encoding these values as a quantitative respose variable $Y$:
+
+$$
+Y = 
+\begin{cases}
+1 & \text{if stroke}; \\
+2 & \text{if drug overdose}; \\
+3 & \text{if epileptic seizure}.
+\end{cases}
+$$
+
+ We can now predict $Y$ using $x_1, \dots, \x_p$. However, this coding implies an ordering on the outcomes, putting `drug overdose` in between `stroke` and `epileptic seizure` and insisting that the difference between `stroke` and `drug overdose` is the same as the difference between `drug overdose` and `epileptic seizure`. In practice there is no particular reason that this needs to be the case. We could have ordered the cases differently, i.e. stroke to the 3 etc. Which implies a totally different relationship among the three conditions.  All these combinations would produce different linear models that would lead to different set of predictions on test observations.
+ 
+ However, if the response variable's values  take on a natural ordering, such as *mild, moderate, and severe*, and we felt the gap between mild and moderate was similar to the gap between moderate and sever, then a 1,2,3 coding would be reasonable. **Unfortunaltely, in general there is no natural way to convert a qualitative response variable with more than two levels into a quantittative response that is ready for linear regression*.
+ 
+ For a *binary(two level)* qualitative response, the situation is easier. For instance consider only two possiblities for $Y$:
+ 
+ $$
+ Y = 
+ \begin{cases}
+ 0 & \text{if stroke} \\
+ 1 & \text{if drug overdose}
+ \end{cases}
+ $$
+ 
+ we can create a dummy varaible and fit a linar regression to this binary response and predict `drug overdose` if $\hat{y}>0.5$ and `stroke` otherwise. However, if we use a linear regression our estimates might be outside of $[0,1]$, aking them hard to interpret as probabilities.
+ 
+ The dummy varaible approach coonot be easliy extended to accommodate qualitative responses with more than two levels. We prefer classification methods:
+ 
+ ## Logistic Regression
+ 
+ Our `default` variable can have two values: `Yes` or `No`. Rather than modeling this response $Y$ directly, logistic regression models the *probability* that $Y$ belongs to a particular category. 
+
+For the `default` data logistic regression models the probability of default. For example, the probability of default given balance can be written as 
+
+$$
+Pr(default = Yes | balance)
+$$
+The values of $Pr(default = Yes|balance)$, which we abbreviate $p(balance)$, will range between 0 and 1. Then for any given value of `balance`, a prediction can be made for `default`. For example, we can predict $default = Yes$ or any individaul for whom $p(balance)>0.5$. Alternatively, if a company wishes to be conservative in predicting individuals who are at risk for default, then they may choose to use a lower threshold, such as $p(balance)>0.1$.
+
+### The Logistic Model
+
+How should we model the relationship between $p(x) = Pr(y = 1| x)$ and $x$? (when we coded 0/1 for response values)
+
+In section 4.2 we talked of using a linear regression model to represent these probabilities:
+
+$$
+p(x) = \beta_0 + \beta_1 x
+$$
+(4.1)
+
+![](fig4.2.png)
+
+
+```{r}
+default %>% 
+  mutate(default = ifelse(default == "Yes",1,0)) %>% 
+  print() %>% 
+  lm(default~balance,.) %>% 
+  summary()
+```
+
+```{r}
+default %>% 
+  mutate(default = ifelse(default == "Yes",1,0)) %>% 
+  lm(default~balance,.) -> lm_res
+
+default %>% 
+  mutate(default = ifelse(default == "Yes",1,0)) %>% 
+  ggplot() + aes(x = balance, y = default) + geom_point(shape = 4, color = "brown4") + 
+  geom_abline(intercept = lm_res$coefficients[1], slope = lm_res$coefficients[2], color = "blue") + scale_y_continuous(expand = c(0,0.25), breaks = seq(-0.2,1,by=0.2) )
+```
+
+The plot above is the same as plot on the left pane of 4.2. Here we see the problem with this approach, for balances close to zero, we predict a negative probability of default and if we predict for very large balances we would get values bigger than 1. These predictions are not sensible. This always happen for any time a straight line is fit to a binary response that is coded as 0 or 1, in pricpile we can always predict $p(x)<0$ for some values of $x$ and $p(x)>1$ for others.
+
+To avoid this problem we must model $p(x)$ using a function that gives outputs between 0 and 1 for all values of $x$. Many functions meet this description, however in logistis regression, we use *logistic function*
+
+$$
+p(x) = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}}
+$$
+(4.2)
+
+To fit the mode (4.2) we use a method called *maximum likelihood*, which we discuss in the next section. The right-hand panel of Figure 4.2 sows then fit of the logistic regression model to the `default`data.
+
+Notice that for low balances we now predict the probability of default as close to , but never below zero. Likewise for high balances we predict a default probability close to, but never above, one. 
+
+The logistic function will always produce an *S-shaped* curve of this form, and so regardless of the value of $X$ we will obtain a sensible prediction.
+
+After a bit of manipulation of (4.2) we find that
+
+
+$$
+\begin{align}
+p(x) &= \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}} \\
+
+1-p(x) &= 1- \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}} \\
+
+1- p(x) &= \frac{1}{1 + e^{\beta_0 + \beta_1 x}}  \\
+
+1- p(x) \cdot e^{\beta_0 + \beta_1x} &= \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}}\\
+
+1-p(x) \cdot e^{\beta_0 + \beta_1 x} &= p(x) \\
+
+\frac{p(x)}{1-p(x)} &= e^{\beta_0 + \beta_1} \space \space \space \space \space \space \space \space \space \space (4.3)
+
+\end{align}
+$$
+
+the quantity $p(x)/(1 - p(x))$ is called the *odds*, and can take on any value between 0 and $\infty$.  Values of the odds close to 0 and $\infty$ indicate very low and very high probabilities of default, respectively. 
+
+For example, on average 1 in 4 people with an odds of 1/4 will default since $p(x) = 0.2$ implies an ods of $\frac{0.2}{1-0.2} = 1/4$. Likewise on average 9/10 wpeople with an odds of 9 will default since $p(x) = 0.9$ implies an odds of $\frac{0.9}{1-0.9} = 9$. 
+
+By taking the lograithm of both sides of (4.3) we arrive at
+
+$$
+\log(\frac{p(x)}{1-p(x)}) = \beta_0 + \beta_1 x
+$$
+(4.4)
+
+the left-hand side is called the *log-odds-* or *logit*. We see that the logistic regression model (4.2) has a logit that is linear in $X$. 
+
+Here increasing $x$ by one unit changes the log odds by $\beta_1$ (4.4), or it multiplies the odds by $e^{\beta_1}$. But because the relationship between $p(x)$ and $x$ in (4.2) is not a straight line, $\beta_1$ does not correspond to the change in $p(x)$ associated with a one-unit increase in $x$. The amount that $p(x)$ changes due to a one-unit change in $x$ will depend on the current value of $x$. But regardless of the value of $x$, if $\beta_1$ is positive, then increasing $x$ will be associated with increasing $p(x)$, vice versa. We can see that in the right hand panel of Figure 4.2.
+
+### Estiamting the Regression Coefficients
+
+$$
+p(x) = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1}}
+$$
+(4.2)
+The coefficients of $\beta_0$ and $\beta_1$ are unknown, must be estimated based on the available training data. We are going to use *maximum likelyhood* method. The basic intuition begind using maximum likelihood to fit a logistic regression model is as follows: we seek estimates for $\beta_0$ and $\beta_1$ such that the predicted probability $\hat{p}(x_i)$} of default for each individual, using (4.2), corresponds as closely as possible to the individual's observed default status. In other words, we try to find $\hat{\beta_0}$ and $\hat{\beta_1}$ such that plugging these estimates into the model for $p(x)$,given in (4.2), yields a number close to 1 for all individuals who defaulted, and a number close to zero for all individuals who did not. We can formalize this mathematical equation with *likelihood function*
+
+$$
+
+l(\beta_0, \beta_1) = \prod_{i:y_i = 1}p(x_i) \prod_{i':y_{i'} = 0}(1-p(x_{i'}))
+$$
+(4.5)
+
+The estimates $\hat{\beta_0$ and $\hat{\beta_1}$ are chosen to *maximize* this likelihood function.
+
+```{r}
+# initialize model
+logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification") -> log_model
+log_model
+```
+
+```{r}
+# setup the recipe 
+default_recipe <- recipe(default ~ balance, data = default)
+default_recipe
+```
+
+```{r}
+# set up the workflow
+workflow() %>% 
+  add_model(log_model) %>% 
+  add_recipe(default_recipe) -> default_workflow
+default_workflow
+```
+
+```{r}
+## fit model
+default_workflow %>% 
+  fit(data = default) %>%
+  tidy(conf.int = T)
+
+# for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.
+```
+
+
+
+```{r}
+default_workflow %>% 
+  fit(data = default) %>% 
+  augment(new_data = default) %>% 
+  ggplot() + aes(x = balance, y = default, color = .pred_class) + geom_point() + scale_color_ipsum()
+```
+
+Lets have a look at the Logistic Regression results again:
+
+```{r}
+## fit model
+default_workflow %>% 
+  fit(data = default) %>%
+  tidy(conf.int = T)
+
+# for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.
+```
+
+We can measure the accuracy of the coefficient estimates by computing their standard errors. The *z-*statistic in the above plays the same role as *t* statistic in linear regression output. They are calculated from $\hat{\beta_i} / \text{SE}(\hat{\beta_i})$, and so a large(absolute) value of the z-statistic indicates evidence against the null hypothesis $H_0: \beta_1 = 0$. This null hypothesis implies that $p(x) = \frac{e^{\beta_0}}{1 + e^{\beta_0}}$. In other words, that the probability of default does not depend on blaance. p value is very low, we can reject $H_0$; there is relationship between balance and probability of default. Intercept is not important here.
+
+### Making predictions
+
+Once the coefficients have been estimated, we can compute the probability of default for any given credit card balance. 
+
+$$
+\hat{p}(x) = \frac{e^{\hat{\beta_0} + \hat{\beta_1}x}}{1 +e^{\hat{\beta_0} + \hat{\beta_1}x}} = \frac{e^{-10.6513 + 0.0055 x}}{1 + e^{-10.6513 + 0.0055 x}}
+$$
+
+
+
+so for example given income \$1,000 the predicted possiblity of default is 
+```{r}
+exp(-10.6513 + 0.0055 * 1000) / (1 + exp(-10.6513 + 0.0055 * 1000))
+```
+
+which is below 1%. What about the probability of default for a person with \$2,000 balance
+
+```{r}
+exp(-10.6513 + 0.0055 * 2000) / (1 + exp(-10.6513 + 0.0055 * 2000))
+```
+
+much higher 58%.
+
+We can get all the predictions for our training data set form
+
+```{r}
+default_workflow %>% 
+  fit(data=default) %>% 
+  augment(new_data = default) %>% print() %>% 
+  count(.pred_class)
+# we classified 142 cases to default 
+
+# originally 
+default %>% 
+  count(default)
+
+# 333 cases are actually default
+```
+
+We can implement qualitative predictors to the logistic regression using the dummy variable approach.. Lets predict default by only `student` variable
+
+$$
+x = 
+\begin{cases}
+1 & \text{if student} \\
+0 & \text{if not student}
+\end{cases}
+$$
+```{r}
+logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification") -> log_model
+
+default_recipe <- recipe(default ~ student, data = default)
+workflow() %>% 
+  add_model(log_model) %>% 
+  add_recipe(default_recipe) -> default_workflow
+default_workflow %>% 
+  fit(data = default) %>% 
+  tidy(conf.int = T)
+```
+
+The coefficient is positive and the p value is statistically significant. This indicates that students tend to have higher default probabilities than non student:
+
+$$
+\widehat{Pr}(default = Yes | student = Yes) = \frac{e^{-50 + 0.4049 \times 1}}{1 + e^{-50 + 0.4049 \times 1}} = 0.0431
+$$
+
+$$
+\widehat{Pr}(default = Yes | student = No) = \frac{e^{-50 + 0.4049 \times 0}}{1 + e^{-50 + 0.4049 \times 0}} = 0.0292
+$$
+
+### Multiple Logistic Regression
+
+We now consider the problem of predicting a binary response using a multiple predictors. We can generalize (4.4) as follows:
+
+$$
+\log\left(\frac{p(x)}{1-p(x)}\right) = \beta_0 + \beta_1x_1 + \dots + \beta_p x_p
+$$
+(4.6)
+
+(4.6) can be written as
+
+$$
+p(x) = \frac{e^{\beta_0 + \beta_1x_1 + \dots + \beta_p x_p}}{1 + e^{\beta_0 + \beta_1x_1 + \dots + \beta_p x_p}}
+$$
+(4.7)
+
+We again use maximum likelihood method to estimate $\beta_0, \beta_1, \dots, \beta_p$.
+
+Lets use all of our variables in our model
+
+```{r}
+logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification") -> log_model
+
+recipe(default ~ balance + income + student, data = default) -> default_recipe
+
+workflow() %>% 
+  add_model(log_model) %>% 
+  add_recipe(default_recipe) -> default_workflow
+
+default_workflow %>% 
+  fit(data = default) %>% 
+  tidy()
+```
+
+
+
+
+
+
+
+
+![](fig4.2.png)
+
+
+ 

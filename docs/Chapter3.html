@@ -213,6 +213,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#identifying-influential-observations" id="toc-identifying-influential-observations" class="nav-link" data-scroll-target="#identifying-influential-observations"><span class="header-section-number">3.0.1</span> Identifying Influential observations</a></li>
   <li><a href="#testing-residuals-for-autocorrelation" id="toc-testing-residuals-for-autocorrelation" class="nav-link" data-scroll-target="#testing-residuals-for-autocorrelation"><span class="header-section-number">3.1</span> testing residuals for autocorrelation</a></li>
+  <li><a href="#the-marketing-plan" id="toc-the-marketing-plan" class="nav-link" data-scroll-target="#the-marketing-plan"><span class="header-section-number">3.2</span> The Marketing Plan</a></li>
+  <li><a href="#comparison-of-linear-regression-with-k-nearest-neighbors" id="toc-comparison-of-linear-regression-with-k-nearest-neighbors" class="nav-link" data-scroll-target="#comparison-of-linear-regression-with-k-nearest-neighbors"><span class="header-section-number">3.3</span> Comparison of Linear Regression with K-Nearest Neighbors</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2999,6 +3001,165 @@ alternative hypothesis: true autocorrelation is greater than 0</code></pre>
 </div>
 </div>
 <p>if $ p &gt; 0.05$ no evidence of correaltion.</p>
+</section>
+<section id="the-marketing-plan" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="the-marketing-plan"><span class="header-section-number">3.2</span> The Marketing Plan</h2>
+<p>Lets go back to our 7 questions about the <code>advertising</code>data:</p>
+<ol type="1">
+<li><em>Is there a relationship between advertising sales and budget?</em></li>
+</ol>
+<pre><code>To get an answer to this question, we regress `sales` onto our budget related varaibles `TV`, `radio`, and `newspaper` and test the hypothesis $H_0: \beta_{TV}=\beta_{radio}=\beta_{newspaper} = 0$ with F-statistic.</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb239"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb239-1"><a href="#cb239-1" aria-hidden="true" tabindex="-1"></a>advertising <span class="sc">%&lt;&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="st">"sales_hat"</span>)</span>
+<span id="cb239-2"><a href="#cb239-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb239-3"><a href="#cb239-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb239-4"><a href="#cb239-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb239-5"><a href="#cb239-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sales <span class="sc">~</span>., advertising) <span class="sc">%&gt;%</span> </span>
+<span id="cb239-6"><a href="#cb239-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"fit"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb239-7"><a href="#cb239-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = sales ~ ., data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.8277 -0.8908  0.2418  1.1893  2.8292 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.938889   0.311908   9.422   &lt;2e-16 ***
+TV           0.045765   0.001395  32.809   &lt;2e-16 ***
+radio        0.188530   0.008611  21.893   &lt;2e-16 ***
+newspaper   -0.001037   0.005871  -0.177     0.86    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.686 on 196 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8956 
+F-statistic: 570.3 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>In this case the p-value corresponding to the F-statistic is very low, indicating a clear evidence of a relationship between advertising and sales.</p>
+<ol start="2" type="1">
+<li><p><em>How strong is the relationship?</em></p>
+<p>This is about model accuracy. We can check <span class="math inline">\(R^2\)</span>; the predictors explain almost 90% of the variance in <code>sales</code>.</p></li>
+<li><p><em>Which media contribute to sales?</em></p>
+<p>We check p values of the coefficients. newspaper is not statistically significant; only <code>TV</code> and <code>radio</code> are realated to sales.</p></li>
+<li><p><em>How large is the effect of each medium on sales?</em></p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb241"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb241-1"><a href="#cb241-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>.,advertising) <span class="sc">%&gt;%</span></span>
+<span id="cb241-2"><a href="#cb241-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dwplot</span>(<span class="at">ci =</span> <span class="fl">0.95</span>,<span class="at">dot_args =</span> <span class="fu">list</span>(<span class="at">size=</span><span class="dv">2</span>), <span class="at">vline =</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"grey50"</span>, <span class="at">linetype =</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-126-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<pre><code>We use standard errors to construct confidence intervals for the coefficients. If any of the confidence intervals include 0 that predictor is not statistically significant. Collinearty can result in very wide standard errors; making confint to include zero. Was the collineary the reason that confint of newspaper to be so wide? Lets check VIF scores</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb243"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb243-1"><a href="#cb243-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">vif</span>(<span class="fu">lm</span>(sales<span class="sc">~</span>.,advertising))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       TV     radio newspaper 
+ 1.004611  1.144952  1.145187 </code></pre>
+</div>
+</div>
+<p>No all the VIF scores suggest no evidence of collinearity.</p>
+<ol start="5" type="1">
+<li><p><em>How accurately can we predict future sales?</em></p>
+<p>After deciding on our model</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb245"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb245-1"><a href="#cb245-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV<span class="sc">+</span>radio <span class="sc">+</span> TV <span class="sc">*</span> radio, advertising) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + radio + TV * radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.3366 -0.4028  0.1831  0.5948  1.5246 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 6.750e+00  2.479e-01  27.233   &lt;2e-16 ***
+TV          1.910e-02  1.504e-03  12.699   &lt;2e-16 ***
+radio       2.886e-02  8.905e-03   3.241   0.0014 ** 
+TV:radio    1.086e-03  5.242e-05  20.727   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9435 on 196 degrees of freedom
+Multiple R-squared:  0.9678,    Adjusted R-squared:  0.9673 
+F-statistic:  1963 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<pre><code>The accuracy of our estimation depends on whether we wish to predict an individual response, $Y = f(X) + \epsilon$, or the average response, $f(X)$. If the former we use a prediction interval, and if the latter, we use a confidecen interval. Prediction intervals will always be wider than confidence intervals because they account for the uncertainty assocaited with $\epsilon$, the irreducible error.</code></pre>
+<ol start="6" type="1">
+<li><p><em>Is the relationship linear?</em></p>
+<p>We can use residual plots to identify non-linearity: the plot will show a pattern.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb248"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb248-1"><a href="#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio, advertising) <span class="sc">%&gt;%</span> <span class="fu">augment</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb248-2"><a href="#cb248-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> .hat, <span class="at">y =</span> .fitted) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">se =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Chapter3_files/figure-html/unnamed-chunk-129-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>the model seems okay. If we had encountered a non-linearity we would have to make transformations to the predictors.</p>
+<ol start="7" type="1">
+<li><p><em>Is there synergy among the advertising media?</em></p>
+<p>LR assumes additive relationship. When we account for interacation term our model is improved and the interaction term was statistically significant.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb250"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb250-1"><a href="#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(sales<span class="sc">~</span>TV <span class="sc">+</span> radio <span class="sc">+</span> radio <span class="sc">*</span> TV, advertising) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sales ~ TV + radio + radio * TV, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.3366 -0.4028  0.1831  0.5948  1.5246 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 6.750e+00  2.479e-01  27.233   &lt;2e-16 ***
+TV          1.910e-02  1.504e-03  12.699   &lt;2e-16 ***
+radio       2.886e-02  8.905e-03   3.241   0.0014 ** 
+TV:radio    1.086e-03  5.242e-05  20.727   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9435 on 196 degrees of freedom
+Multiple R-squared:  0.9678,    Adjusted R-squared:  0.9673 
+F-statistic:  1963 on 3 and 196 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="comparison-of-linear-regression-with-k-nearest-neighbors" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="comparison-of-linear-regression-with-k-nearest-neighbors"><span class="header-section-number">3.3</span> Comparison of Linear Regression with K-Nearest Neighbors</h2>
+<p>Linear regression is a parametric approach because it assumes a linear functinoal form for <span class="math inline">\(f(x)\)</span>. Parametric approaches are easy to fit, coefficients have simple interpretations and test of statistical significance can be easily performed. But they make strong assumptions about the form of <span class="math inline">\(f(X)\)</span>. If the assumed functional for is not correct, and the prediciton is our goal, then we see a poor performance of fit.</p>
+<p>In contrast, <em>non-parametric</em> methods do not explicity assume a parametric for of <span class="math inline">\(f(X)\)</span>, so they provide a more flexible approach for performing regression. One of a non-parametric method is <em>K-nearest neighbors regressin</em> (KNN regression) .</p>
+<p>The KNN regression method is closely related to the KNN classifier in Chapter 2. Given a value for <em>K</em> and a prediciton point <span class="math inline">\(x_0\)</span>, KNN regression first identifies the <em>K</em> traiinng observations that are closest to <span class="math inline">\(x_0\)</span> represented by <span class="math inline">\(N_0\)</span>. It then estimates <span class="math inline">\(f(x_0)\)</span> using the average of all the training responses in <span class="math inline">\(N_0\)</span>. In other words:</p>
+<p><span class="math display">\[
+\hat{f}(x_0) = \frac{1}{K}\sum_{x \in N_0} y_i
+\]</span></p>
+<p>The optimal <span class="math inline">\(K\)</span> value will depend on the <em>bias-variance tradeoff</em>. A small value for <span class="math inline">\(K\)</span> provides the most flexile fit, which will have low bias but high variance. This variance is due to the fact that the prediciton in a given region is entirely dependent on just one obsrvation. In contrast, larger values of <span class="math inline">\(K\)</span> will provide a smoother and less variable fit; the prediction in a region is an average of several points, and so changing one observation has a smaller effect. However, the smoothing may cause bias by masking some of the structure in <span class="math inline">\(f(x)\)</span>. Chapter 5 will introduce several approaches for estiamting test error rates which can be used to identify the optimal <span class="math inline">\(K\)</span> in KNN regression.</p>
+<p><em>The parametric approach will outperform the non-parametric approach if the parametric form that has been selected is close to the true for of <span class="math inline">\(f\)</span>.</em></p>
+<p><img src="fig3.17.png" class="img-fluid"></p>
+<p>in Figure one true relationship is linear, represented by the black line. Blue curves response to the KNN fits using <span class="math inline">\(K=1\)</span> and <span class="math inline">\(K=9\)</span>. <span class="math inline">\(K=9\)</span> is much closer to <span class="math inline">\(f(x)\)</span>. However, since the true relationship is linear, KNN approach cannot compete with a linear regression; a non-parametric approach incurs a cost in variance that is not offset by reduction in bias.</p>
+<p><img src="fig3.18.png" class="img-fluid"></p>
+<p>The blue dashed line is the OLS regression which outperfroms KNN for this data. Green sloid line, plotted as a function of <span class="math inline">\(1/K\)</span> represents the test set mean squared error(MSE) for KNN. The KNN errors are wlell above the black dashed line, which is the test MSE for linear regression. When K is large KNN performs only a little worse that least squares regression in terms of MSE. It performs far worse when K is small.</p>
+<p>In practice true relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is rarely exactly linear.</p>
+<p><img src="fig3.19.png" class="img-fluid"></p>
+<p>Fig 3.10 examines the relative performances of OLS regression and KNN under increasing levels of non-linearity in the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. In the top row, the true relationship is nearly linear. In this case we see that test MSE for linear regression is still superior to that of KNN for low values of K. However, fro <span class="math inline">\(4 \leq K\)</span> KNN outperforms linear regression. The secodn row has more non-linearity. In this case KNN is better for all valeus of K.</p>
+<p>So, KNN performs slightly worse than linear regression when the relationship is linear, but much better for non-linear situations. Does this mean we should favour KNN In relaity because the relationships are rarely linear? No, in relaity, even when the true relationship is highly non linear, KNN may still provide inferior resutls to linear regression. Fig 3-18 and 19 had <span class="math inline">\(p=1\)</span>, but for larger <span class="math inline">\(p\)</span> KNN often performs worse than linear regression.</p>
+<p><img src="fig3.20.png" class="img-fluid"></p>
+<p>Fig 20 shows a strong non-linear situation. When <span class="math inline">\(p=1\)</span>or <span class="math inline">\(p=2\)</span> KNN is better, but for <span class="math inline">\(p=3\)</span> results are mixed, for <span class="math inline">\(4\leqp\)</span> LR is superior. <em>This decrease in performance as the dimensions increases is a common problem for KNN</em></p>
+<p>As a general rule parametric methods will tend to outperform non-parametric approaches when there is small number of observations per predictor.</p>
 
 
 </section>
