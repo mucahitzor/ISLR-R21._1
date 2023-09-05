@@ -16,6 +16,7 @@ library(magrittr)
 library(dotwhisker)
 library(hrbrthemes)
 library(patchwork)
+library(GGally)
 })
 theme_set(theme_ipsum_ps(axis_title_size = 11 , axis_title_just = "c") + theme(axis.line = element_line(color ="black")))
 ```
@@ -240,7 +241,6 @@ $$
 The coefficients of $\beta_0$ and $\beta_1$ are unknown, must be estimated based on the available training data. We are going to use *maximum likelyhood* method. The basic intuition begind using maximum likelihood to fit a logistic regression model is as follows: we seek estimates for $\beta_0$ and $\beta_1$ such that the predicted probability $\hat{p}(x_i)$} of default for each individual, using (4.2), corresponds as closely as possible to the individual's observed default status. In other words, we try to find $\hat{\beta_0}$ and $\hat{\beta_1}$ such that plugging these estimates into the model for $p(x)$,given in (4.2), yields a number close to 1 for all individuals who defaulted, and a number close to zero for all individuals who did not. We can formalize this mathematical equation with *likelihood function*
 
 $$
-
 l(\beta_0, \beta_1) = \prod_{i:y_i = 1}p(x_i) \prod_{i':y_{i'} = 0}(1-p(x_{i'}))
 $$
 (4.5)
@@ -365,11 +365,11 @@ default_workflow %>%
 The coefficient is positive and the p value is statistically significant. This indicates that students tend to have higher default probabilities than non student:
 
 $$
-\widehat{Pr}(default = Yes | student = Yes) = \frac{e^{-50 + 0.4049 \times 1}}{1 + e^{-50 + 0.4049 \times 1}} = 0.0431
+\widehat{Pr}(default = Yes | student = Yes) = \frac{e^{-3.50 + 0.4049 \times 1}}{1 + e^{-3.50 + 0.4049 \times 1}} = 0.0431
 $$
 
 $$
-\widehat{Pr}(default = Yes | student = No) = \frac{e^{-50 + 0.4049 \times 0}}{1 + e^{-50 + 0.4049 \times 0}} = 0.0292
+\widehat{Pr}(default = Yes | student = No) = \frac{e^{-3.50 + 0.4049 \times 0}}{1 + e^{-3.50 + 0.4049 \times 0}} = 0.0292
 $$
 
 ### Multiple Logistic Regression
@@ -397,25 +397,239 @@ logistic_reg() %>%
   set_engine("glm") %>% 
   set_mode("classification") -> log_model
 
-recipe(default ~ balance + income + student, data = default) -> default_recipe
+recipe <- recipe(default ~ balance + income + student, data = default)
 
 workflow() %>% 
   add_model(log_model) %>% 
-  add_recipe(default_recipe) -> default_workflow
+  add_recipe(recipe) -> default_workflow
 
 default_workflow %>% 
   fit(data = default) %>% 
-  tidy()
+  tidy() 
 ```
 
 
+|term        |    estimate| std.error|  statistic|   p.value|
+|:-----------|-----------:|---------:|----------:|---------:|
+|(Intercept) | -10.8690452| 0.4922555| -22.080088| 0.0000000|
+|balance     |   0.0057365| 0.0002319|  24.737563| 0.0000000|
+|income      |   0.0000030| 0.0000082|   0.369815| 0.7115203|
+|studentYes  |  -0.6467758| 0.2362525|  -2.737646| 0.0061881|
+
+Here there is a suprising result. According to the p-values balance and student variables are associted with the probability of default. However, coefficient for stundet dummy is negative; indicating that students are less likely to default than non-students. But this coefficint was positive in our previous analysis when we regressed probability of default by student: results showed that probability of default is twice as likely for students compared to non students. 
+
+![](fig4.3.png)
+
+Check out the fig 4.3. The orange and blue lines show the average default rates for students and non students, respectively, as a function of credit card balance. The nagive coefficient for student in the multiple logistic regression indicates that **for a fixed value of balance and income** a student is less likely to default than a non-student. We observe from the left hand panel that the student default ratge is at or below that of the nun student default rate for every value of balance. But the horizontal broken lines near the base of the plot, which show the default rates for students and non students averaged over all values of balance and income, suggest the opposite effect: the overall student default rate is higher than non student default rate. Consequently there is a positive coefficient for student in the single variable logistic regression output.
+
+The right hand panel provies an explanation for this discrepancy: the varaibles student and blaance are correlated. Students tend to hold higher levels of debt, which is in turn assocaited with higer probability of default. In other words, students are more likely to have large credit card balances, which as we know from the left hand panel of figure 4.3 tend to be assocaited with high default rates. Thus, even though an individual student with a given credit card balance will tend to have a lower probability of default than a non student with the same credit card balance, the fact that students on the whole tend to have higher credit card balances means that overall students tend to default at a higher rate than non students. This is an important distinction. A student is riskier than a non student if no information about the student's credit card balance is available. However, that student is less risky than a non student with the same credit card balance.
+
+This simple example illustrates the dangers and subtleties assocaited with performing regressions involving only a single predictor when other predictors may als obe relevant.  The results obtained using one predictor may be quite different from those obtained using multiple predictors, especially when there is correlation among the predictors. In general, the phenomenon seen in Figure 4.3 is known as *confounding*.
+
+Lets put the estimates to our estimated probability function
+
+$$
+\hat{p}(x) = \frac{
+e^{-10.86 + 0.00574 \cdot balance + 3e-6 \cdot income - 0.646 Student}
+}
+
+{
+1 + e^{-10.86 + 0.00574 \cdot balance + 3e-6 \cdot income - 0.646 Student}
+}
+$$
+We can make predictions: a student with a credit card balnce of \$1,500 and an income of \$40,000 has an estimated probability of default:
+
+$$
+\hat{p}(x)=\frac{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 1}
+}
+{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 1}
+} = 0.05780859
+$$
+
+A non student with the same balance and income has an estiamted probability of default of 
+
+$$
+\hat{p}(x)=\frac{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
+}
+{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
+} = 0.1048655
+$$
+```{r}
+default_workflow %>% 
+  fit(data = default) %>% 
+  augment(new_data = tibble(income = 40000, balance = 1500, student = c("Yes","No")))
+```
+
+### Logistic Regression for > 2 Response Classes
+
+What if our response variable has more than two classes. Like medical condition in the emergency room: `stroke`, `drug overdose`, `epileptic seizure`. In this setting we wish to model both $Pr(Y = stroke | x)$ and $Pr(Y = drug \space overdose | x)$, with the remaining $Pr(Y = epileptic \space seizure |x) = 1 - Pr(Y= stroke | x) - Pr(Y = drug \space overdose | x)$. We can do it my extending logistic regression but *Linear Discriminant Analysis* is much suitable for this task
+
+## Linear Discriminant Analysis
+
+Logistic regression involves directly modeling $Pr(Y = k | X = x)$ using the logistic function, given by (4.7) for the case of two response classes. In statistical jargon, we model the conditional distribution of the response $Y$, given the predictor(s) $X$.
+
+We now consider an alternative and less direct approach to estimating these probabilities. In this alternative approach, we model the distribution of the predictors $X$ separately in each of the response classes (i.e. given $Y$), and then use Bayes' theorem to flip these around into estimates for $Pr(Y = k | X = x)$. When these distributions are assumed to be normal, it turns out that the model is very similar in form to logistic regression.
 
 
+Why do we need another method when we have logistic regression?
+
+-   When the classes are well separated, the parameter estimates for the logistic regression model are surprisingly unstable. Linear discrimnant analysis does not suffer from this problem.
+
+-   If *n* is small and the distribution of the predictors $X$ is approximately normal in each of the classes the linear discriminant model is again more stable than th elogistic regression model
+
+- LDA is popular when we have more than two response classes.
+
+### Using Bayes' Theorem for Classification
+
+We want to classify an observation into one of $K$ classes, where $2 \leq K$. So $Y$ can take on $K$ possible distinct and unordered values. Let $\pi_k$ represent the overall or *prior* probability that a randomly chosen observation comes from the $k$th class.; this is the probability that a given observation is associated with the *k*th category of the response variable $Y$. Let $f_k(x) \equiv Pr(X = x | Y = k)$ denote the *density* function of $X$ for an observation that comes from the *k* th class. In other words $f_k(x)$ is relatively large if there is a high probability that an observation in the *k* th class has $X \approx x$, and $f_k(x)$ is small if it is very unlikely that an observation in the *k*th class has $X \approx x$. Then *Bayes's theorem* states that
+
+$$
+Pr(Y = k | X = x) = \frac{
+\pi_k\,f_k(x)
+}
+{
+\sum^K_{l = 1}\,\pi_l\,f_l(x)
+}
+$$
+(4.10)
 
 
+We will use the abbreviation $p_k(X) = Pr(Y = k | X)$. This suggests that instead of directly computing $p_k(X)$ as Section 4.3.1, we can simply plug in estimates of $\pi_k$ and $f_k(X)$ into (4.10). In general, estimating $\pi_k$ is easy if we have a random sample of $Y$s from the population: we simply compute the fraction of the training observations that belong to the *k*th class. However, etimating $f_k(X)$ tends to be more challenging, unless we assume some simple forms for these densities. We refer to $p_k(x)$ as the *posterior* probability than an observation $X=x$ belongs to the *k*th class. That is, it is the probability that the observation belongs to the *k*th class, *given* the predictor value for that observation.
+
+We know from Ch.2 that the Bayes classifier, which classifies an observation to the class for which $p_k(X)$ is largest, has the lowest possible error rate out of all classifiers. Therefore, if we can find a way to estimate $f_k(X)$ then we can develop a classifier that approximates the bayes classifier:
+
+### Linear Discriminant Analysis for p=1
+
+Assume we have one predictor. We would like to obtain an estimate for $f_k(x)$ that we can plug into (4.10) in order to estimate $p_k(x)$. We will then classify an observation to the class for which $p_k(x)$ is greatests. In order to estimate $f_k(x)$ we will first make some assumptions about this form.
+
+Suppose we assume $f_k(x)$ is *normal* or *Gaussian*. In the one dimensional setting, the normal density takes the form
+
+$$
+f_k(x) = \frac{
+1
+}
+{
+\sqrt{2\pi}\,\sigma_k
+}\,exp\,\left(-\frac{1}{2\sigma^2_k}(x - \mu_k)^2\right)
+$$
+(4.11)
+
+where $\mu_k$ and $\sigma^2_k$ are the mean and variance parameters for the *k*th class. For now, let us further assume that $\sigma_1^2=\dots=\sigma^2_K$: that is, there is shared variance term across all $K$ classes, which for simplicty we can denote by $\sigma^2$. Plugging (4.11) into (4.10) we find that
+
+$$
+p_k(x) = \frac{
+\pi_k\,\frac{1}{\sqrt{2\pi}\,\sigma}\,exp(-\frac{1}{2\sigma^2}(x - \mu_k)^2)
+}
+{
+\sum_{l=1}^K \pi_l \frac{1}{\sqrt{2\pi}\sigma}\,exp(-\frac{1}{2\sigma^2}(x - \mu_l)^2)
+}
+$$
+(4.12)
+
+The bayes classifier involves assigning an observation $X=x$ to the class for which (4.12) is largest. Taking the log of (4.12) and rearranging the terms, it is not hard to show that this is equivalent to assigning the observation to the class for which
+
+$$
+\delta_k(x) = x \cdot \frac{\mu_k}{\sigma^2} \,- \frac{\mu_k^2}{2\sigma^2}\,+ \log(\pi_k)
+$$
+(4.13)
+
+is largest. For instance if $K = 2$ and $\pi_1 = \pi_2$, then the Bayes clasffier assigns an obsetvation to classs 1 if $2x(\mu_1 - \mu_2) > \mu_1^2 - \mu_2^2$, ann to class 2 otherwise. In this case, the Bayes desicion boundary corresponds to the point where 
+
+$$
+x = \frac{\mu_1^2 - \mu_2^2}{2(\mu_1 - \mu_2)}=  \frac{\mu_1 + \mu_2}{2}
+
+$$
+(4.14)
+
+An example is shown in the left hand panel of fig 4.4
+
+![](fig4.4.png)
+
+The two normal density functions that are displayed, $f_1(x)$ and $f_2(x)$, represent two distinct classes. The mean and the variance parameters for the two desity functions are $\mu_1 = -1.25, \space \mu_2 = 1.25$, and $\sigma_1^2 = \sigma_2^2 = 1$. The two densities overlap, and so given that $X=x$, there is some uncertainty about the class to which observation belongs. If we assume that an observation is equally likely to come from either class--that is $\pi_1 = \pi_2 = 0.5$-- then by inspection of (4.14), we see that the Bayes classfier assigns the observation to class 1 if $x<0$ and class 2 otherwise. Note that in this case, we can compute the Bayes classfier because we know that $X$ is drawn from a gaussian distribution within each class, and we know all of the parameters involved. In a real-life situation we are not able to calcualte Bayes classifier.
+
+In practice, even if we are quite certain of our assumption that $X$ is drawn from a Gaussian distribution within each class, we still have to estimate the parameters $\mu_1, \dots, \mu_K,\space \pi_1,\dots, \pi_K,$ and $\sigma^2$. The *linear discriminant analysis* (LDA) method approximates the bayes classfier vy plugging estimates fro $\pi_k, \mu_k$ and $\sigma^2$ into (4.13). In particular the following estimates are used.:
+
+$$
+\begin{align}
+\hat{\mu}_k &= \frac{1}{n_k}\sum_{i:y_i=k} x_i \\
+
+\hat{\sigma}^2 &= \frac{1}{n-K}\sum^K_{k=1} \sum_{i:y_i =k}(x_i - \hat{\mu}_k)^2
+
+\end{align}
+$$
+(4.15)
+**Important**
 
 
-![](fig4.2.png)
+where *n* is the total number of training observations, and *n_k* is the number of training observations in the *k*th class. The estimate for $\mu_k$ is simply the average of all the training observations from the *k*th class, while $\hat{\sigma}^2$ can be seen as a weighted average of the sample variances for each of the $K$ classes. Sometimes we have knowledge of the class membership probabilities $\pi_1, \dots, \pi_K$, which can be used directly. In the absence of any additional information, LDA estimates $\pi_K$ using the proportion of the training observations that belong to the *k*th class. In other words,
+
+$$
+\pi_k = n_k /n
+$$
+The LDA classifer plugs the estimates given in (4.15) and (4.16) into (4.13), and assigns an observation $X=x$ to the class for which
+
+$$
+\hat{\delta}(x) = x \cdot \,\frac{\hat{u}_k}{\hat{\sigma}^2} \,-\,\frac{\hat{u}^2_k}{2\,\hat{\sigma}^2}\,+\,\log(\hat{\pi}_k)
+$$
+(4.17)
+
+is largest. The word *linear* in classfier's name stems from the fact that *discriminant functions* $\hat{\delta}_k(x)$ in (4.17) are linear functions of $x$.
+
+The right hand panel of Fig 4.4 displays a histogram of a random sample $n=20$ observations from each class. To implement LDA, we behan by estimating $\pi_k, \mu_k, \sigma^2$ using (4.15) and (4.16). We then computed the desicion boundy, shown as a black solid line, that results from assigning an observation to the clas for which (4.17) is largest.
+
+```{r}
+set.seed(12)
+a = rnorm(n=20, mean = -1.25, sd =1)
+b = rnorm(n=20, mean=1.25, sd =1)
+d = rbind(tibble(x = a, class = 1),tibble(x = b, class =2))
+
+d %>% ggplot() + aes(x = x, color = class, group = class) + geom_density(show.legend = F) 
+```
+
+```{r}
+d %>% 
+  group_by(class) %>% 
+  summarise(mean_hat = mean(x), var_hat = sd(x)^2) 
+```
+
+```{r}
+d %>% 
+  group_by(class) %>% 
+  summarise(count = n()) %>% 
+  mutate(pi_hat = count/sum(count))
+```
+
+```{r}
+d %>% 
+  mutate(d_k_c1 = x * (-1.58/0.751) - (-1.58^2/(2*0.751)) + log(0.5),
+         d_k_c2 = x * (1.35 / 0.781) - (1.35^2/(2*0.781)) + log(0.5)) %>% 
+  mutate(pred.class = factor(ifelse(d_k_c1 > d_k_c2,1,2)), class = factor(class)) %>% 
+  conf_mat(truth = class, estimate = pred.class) %>% 
+  autoplot(type = "heatmap")
+```
 
 
- 
+```{r}
+library(discrim)
+d %>% mutate(class = factor(class)) -> d
+
+discrim_linear() %>% 
+  set_mode("classification") %>% 
+  set_engine("MASS") -> lda_spec
+
+lda_recipe <- recipe(class~x,data =d)
+
+workflow() %>% 
+  add_model(lda_spec) %>% 
+  add_recipe(lda_recipe) -> lda_workflow
+
+lda_workflow %>% 
+  fit(data = d) %>% 
+  augment(new_data=d) 
+```
+
+

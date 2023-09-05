@@ -204,6 +204,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#estiamting-the-regression-coefficients" id="toc-estiamting-the-regression-coefficients" class="nav-link" data-scroll-target="#estiamting-the-regression-coefficients"><span class="header-section-number">4.2.2</span> Estiamting the Regression Coefficients</a></li>
   <li><a href="#making-predictions" id="toc-making-predictions" class="nav-link" data-scroll-target="#making-predictions"><span class="header-section-number">4.2.3</span> Making predictions</a></li>
   <li><a href="#multiple-logistic-regression" id="toc-multiple-logistic-regression" class="nav-link" data-scroll-target="#multiple-logistic-regression"><span class="header-section-number">4.2.4</span> Multiple Logistic Regression</a></li>
+  <li><a href="#logistic-regression-for-2-response-classes" id="toc-logistic-regression-for-2-response-classes" class="nav-link" data-scroll-target="#logistic-regression-for-2-response-classes"><span class="header-section-number">4.2.5</span> Logistic Regression for &gt; 2 Response Classes</a></li>
+  </ul></li>
+  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">4.3</span> Linear Discriminant Analysis</a>
+  <ul class="collapse">
+  <li><a href="#using-bayes-theorem-for-classification" id="toc-using-bayes-theorem-for-classification" class="nav-link" data-scroll-target="#using-bayes-theorem-for-classification"><span class="header-section-number">4.3.1</span> Using Bayes’ Theorem for Classification</a></li>
+  <li><a href="#linear-discriminant-analysis-for-p1" id="toc-linear-discriminant-analysis-for-p1" class="nav-link" data-scroll-target="#linear-discriminant-analysis-for-p1"><span class="header-section-number">4.3.2</span> Linear Discriminant Analysis for p=1</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -240,8 +246,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dotwhisker)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hrbrthemes)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_ipsum_ps</span>(<span class="at">axis_title_size =</span> <span class="dv">11</span> , <span class="at">axis_title_just =</span> <span class="st">"c"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span><span class="st">"black"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_ipsum_ps</span>(<span class="at">axis_title_size =</span> <span class="dv">11</span> , <span class="at">axis_title_just =</span> <span class="st">"c"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span><span class="st">"black"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For many cases the response variable is <em>qualitative</em>, or <em>categorical</em>.</p>
 <p>Clasification is the process for predicting qualitative responses; we are classifying an observation.</p>
@@ -444,11 +451,6 @@ dbl (2): balance, income
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> default), <span class="at">data =</span> default)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Registered S3 method overwritten by 'GGally':
-  method from   
-  +.gg   ggplot2</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -459,29 +461,29 @@ dbl (2): balance, income
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> income, <span class="at">color =</span> default, <span class="at">shape =</span> default) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6CA2C9"</span>,<span class="st">"#BD5E2A"</span>)) <span class="sc">+</span> <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)) <span class="ot">-&gt;</span> p1</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> default, <span class="at">y =</span> balance, <span class="at">fill =</span> default) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6CA2C9"</span>,<span class="st">"#BD5E2A"</span>)) <span class="ot">-&gt;</span> p2</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> default, <span class="at">y =</span> income, <span class="at">fill =</span> default) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6CA2C9"</span>,<span class="st">"#BD5E2A"</span>)) <span class="ot">-&gt;</span> p3</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gridExtra::grid.arrange(p1,p2,p3, nrow=1)</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1,p2,p3, <span class="at">nrow=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> income, <span class="at">color =</span> default, <span class="at">shape =</span> default) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6CA2C9"</span>,<span class="st">"#BD5E2A"</span>)) <span class="sc">+</span> <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)) <span class="ot">-&gt;</span> p1</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> default, <span class="at">y =</span> balance, <span class="at">fill =</span> default) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6CA2C9"</span>,<span class="st">"#BD5E2A"</span>)) <span class="ot">-&gt;</span> p2</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> default, <span class="at">y =</span> income, <span class="at">fill =</span> default) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6CA2C9"</span>,<span class="st">"#BD5E2A"</span>)) <span class="ot">-&gt;</span> p3</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gridExtra::grid.arrange(p1,p2,p3, nrow=1)</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1,p2,p3, <span class="at">nrow=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Chapter4_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Top: The aanual incomes and montly credit card balances of a number of individuals. The individuals who defaulted on their credit card payments are shown in orange, and those who did not are shown in blue. Center: boxplots of balances as a function of default status. Bottom: boxplots of income as a functino of default status.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Top: The aanual incomes and montly credit card balances of a number of individuals. The individuals who defaulted on their credit card payments are shown in orange, and those who did not are shown in blue. Center: boxplots of balances as a function of default status. Bottom: boxplots of income as a functino of default status.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>people who default tend to have high credit card balances compared to not defaulted.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(default) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">port =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(default) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">port =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 3
   default     n   port
@@ -489,13 +491,13 @@ dbl (2): balance, income
 1 No       9667 0.967 
 2 Yes       333 0.0333</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># default rate is 3%</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># default rate is 3%</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(student,default) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">port =</span> count<span class="sc">/</span><span class="fu">sum</span>(count))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(student,default) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">port =</span> count<span class="sc">/</span><span class="fu">sum</span>(count))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'student'. You can override using the
 `.groups` argument.</code></pre>
@@ -510,7 +512,7 @@ dbl (2): balance, income
 3 Yes     No       2817 0.957 
 4 Yes     Yes       127 0.0431</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># student are 2 times more likely to default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># student are 2 times more likely to default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In this chapter we laern how to build a model to predict <code>default</code>(<span class="math inline">\(y\)</span>), for any given value of balance (<span class="math inline">\(x_1\)</span>), and income (<span class="math inline">\(x_2\)</span>). Since <span class="math inline">\(Y\)</span> is not quantitative, SLR is not appropriate.</p>
 </section>
@@ -553,11 +555,11 @@ p(x) = \beta_0 + \beta_1 x
 \]</span> (4.1)</p>
 <p><img src="fig4.2.png" class="img-fluid"></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">ifelse</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(default<span class="sc">~</span>balance,.) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">ifelse</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(default<span class="sc">~</span>balance,.) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10,000 × 4
    default student balance income
@@ -596,14 +598,14 @@ F-statistic:  1397 on 1 and 9998 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">ifelse</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(default<span class="sc">~</span>balance,.) <span class="ot">-&gt;</span> lm_res</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">ifelse</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> default) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"brown4"</span>) <span class="sc">+</span> </span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> lm_res<span class="sc">$</span>coefficients[<span class="dv">1</span>], <span class="at">slope =</span> lm_res<span class="sc">$</span>coefficients[<span class="dv">2</span>], <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.25</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.2</span>,<span class="dv">1</span>,<span class="at">by=</span><span class="fl">0.2</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">ifelse</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(default<span class="sc">~</span>balance,.) <span class="ot">-&gt;</span> lm_res</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">ifelse</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> default) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"brown4"</span>) <span class="sc">+</span> </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> lm_res<span class="sc">$</span>coefficients[<span class="dv">1</span>], <span class="at">slope =</span> lm_res<span class="sc">$</span>coefficients[<span class="dv">2</span>], <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.25</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.2</span>,<span class="dv">1</span>,<span class="at">by=</span><span class="fl">0.2</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Chapter4_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -645,15 +647,16 @@ p(x) &amp;= \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}} \\
 <p><span class="math display">\[
 p(x) = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1}}
 \]</span> (4.2) The coefficients of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are unknown, must be estimated based on the available training data. We are going to use <em>maximum likelyhood</em> method. The basic intuition begind using maximum likelihood to fit a logistic regression model is as follows: we seek estimates for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> such that the predicted probability <span class="math inline">\(\hat{p}(x_i)\)</span>} of default for each individual, using (4.2), corresponds as closely as possible to the individual’s observed default status. In other words, we try to find <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta_1}\)</span> such that plugging these estimates into the model for <span class="math inline">\(p(x)\)</span>,given in (4.2), yields a number close to 1 for all individuals who defaulted, and a number close to zero for all individuals who did not. We can formalize this mathematical equation with <em>likelihood function</em></p>
-<p>$$</p>
-<p>l(<em>0, <em>1) = </em>{i:y_i = 1}p(x_i) </em>{i’:y_{i’} = 0}(1-p(x_{i’})) $$ (4.5)</p>
+<p><span class="math display">\[
+l(\beta_0, \beta_1) = \prod_{i:y_i = 1}p(x_i) \prod_{i':y_{i'} = 0}(1-p(x_{i'}))
+\]</span> (4.5)</p>
 <p>The estimates <span class="math inline">\(\hat{\beta_0\)</span> and <span class="math inline">\(\hat{\beta_1}\)</span> are chosen to <em>maximize</em> this likelihood function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize model</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="ot">-&gt;</span> log_model</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>log_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize model</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="ot">-&gt;</span> log_model</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>log_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model Specification (classification)
 
@@ -661,9 +664,9 @@ Computational engine: glm </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># setup the recipe </span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>default_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(default <span class="sc">~</span> balance, <span class="at">data =</span> default)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>default_recipe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># setup the recipe </span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>default_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(default <span class="sc">~</span> balance, <span class="at">data =</span> default)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>default_recipe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code></code></pre>
 </div>
@@ -685,11 +688,11 @@ predictor: 1</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the workflow</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_model) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(default_recipe) <span class="ot">-&gt;</span> default_workflow</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>default_workflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the workflow</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_model) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(default_recipe) <span class="ot">-&gt;</span> default_workflow</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>default_workflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
 Preprocessor: Recipe
@@ -705,10 +708,10 @@ Computational engine: glm </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="do">## fit model</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="do">## fit model</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   term         estimate std.error statistic   p.value  conf.low conf.high
@@ -716,23 +719,23 @@ Computational engine: glm </code></pre>
 1 (Intercept) -10.7      0.361        -29.5 3.62e-191 -11.4      -9.97   
 2 balance       0.00550  0.000220      25.0 1.98e-137   0.00508   0.00594</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data =</span> default) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> default, <span class="at">color =</span> .pred_class) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">scale_color_ipsum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data =</span> default) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> default, <span class="at">color =</span> .pred_class) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">scale_color_ipsum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Chapter4_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Lets have a look at the Logistic Regression results again:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="do">## fit model</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="do">## fit model</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   term         estimate std.error statistic   p.value  conf.low conf.high
@@ -740,7 +743,7 @@ Computational engine: glm </code></pre>
 1 (Intercept) -10.7      0.361        -29.5 3.62e-191 -11.4      -9.97   
 2 balance       0.00550  0.000220      25.0 1.98e-137   0.00508   0.00594</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can measure the accuracy of the coefficient estimates by computing their standard errors. The <em>z-</em>statistic in the above plays the same role as <em>t</em> statistic in linear regression output. They are calculated from <span class="math inline">\(\hat{\beta_i} / \text{SE}(\hat{\beta_i})\)</span>, and so a large(absolute) value of the z-statistic indicates evidence against the null hypothesis <span class="math inline">\(H_0: \beta_1 = 0\)</span>. This null hypothesis implies that <span class="math inline">\(p(x) = \frac{e^{\beta_0}}{1 + e^{\beta_0}}\)</span>. In other words, that the probability of default does not depend on blaance. p value is very low, we can reject <span class="math inline">\(H_0\)</span>; there is relationship between balance and probability of default. Intercept is not important here.</p>
 </section>
@@ -752,14 +755,14 @@ Computational engine: glm </code></pre>
 \]</span></p>
 <p>so for example given income $1,000 the predicted possiblity of default is</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">1000</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">1000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">1000</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">1000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.005758518</code></pre>
 </div>
 </div>
 <p>which is below 1%. What about the probability of default for a person with $2,000 balance</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">2000</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">2000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">2000</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">10.6513</span> <span class="sc">+</span> <span class="fl">0.0055</span> <span class="sc">*</span> <span class="dv">2000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5863023</code></pre>
 </div>
@@ -767,10 +770,10 @@ Computational engine: glm </code></pre>
 <p>much higher 58%.</p>
 <p>We can get all the predictions for our training data set form</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data=</span>default) <span class="sc">%&gt;%</span> </span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data =</span> default) <span class="sc">%&gt;%</span> <span class="fu">print</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(.pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data=</span>default) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data =</span> default) <span class="sc">%&gt;%</span> <span class="fu">print</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(.pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10,000 × 7
    default student balance income .pred_class .pred_No .pred_Yes
@@ -794,11 +797,11 @@ Computational engine: glm </code></pre>
 1 No           9858
 2 Yes           142</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we classified 142 cases to default </span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># originally </span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(default)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we classified 142 cases to default </span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># originally </span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>default <span class="sc">%&gt;%</span> </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(default)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
   default     n
@@ -806,7 +809,7 @@ Computational engine: glm </code></pre>
 1 No       9667
 2 Yes       333</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 333 cases are actually default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 333 cases are actually default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can implement qualitative predictors to the logistic regression using the dummy variable approach.. Lets predict default by only <code>student</code> variable</p>
 <p><span class="math display">\[
@@ -817,17 +820,17 @@ x =
 \end{cases}
 \]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="ot">-&gt;</span> log_model</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>default_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(default <span class="sc">~</span> student, <span class="at">data =</span> default)</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_model) <span class="sc">%&gt;%</span> </span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(default_recipe) <span class="ot">-&gt;</span> default_workflow</span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span> </span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="ot">-&gt;</span> log_model</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>default_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(default <span class="sc">~</span> student, <span class="at">data =</span> default)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_model) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(default_recipe) <span class="ot">-&gt;</span> default_workflow</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   term        estimate std.error statistic  p.value conf.low conf.high
@@ -838,10 +841,10 @@ x =
 </div>
 <p>The coefficient is positive and the p value is statistically significant. This indicates that students tend to have higher default probabilities than non student:</p>
 <p><span class="math display">\[
-\widehat{Pr}(default = Yes | student = Yes) = \frac{e^{-50 + 0.4049 \times 1}}{1 + e^{-50 + 0.4049 \times 1}} = 0.0431
+\widehat{Pr}(default = Yes | student = Yes) = \frac{e^{-3.50 + 0.4049 \times 1}}{1 + e^{-3.50 + 0.4049 \times 1}} = 0.0431
 \]</span></p>
 <p><span class="math display">\[
-\widehat{Pr}(default = Yes | student = No) = \frac{e^{-50 + 0.4049 \times 0}}{1 + e^{-50 + 0.4049 \times 0}} = 0.0292
+\widehat{Pr}(default = Yes | student = No) = \frac{e^{-3.50 + 0.4049 \times 0}}{1 + e^{-3.50 + 0.4049 \times 0}} = 0.0292
 \]</span></p>
 </section>
 <section id="multiple-logistic-regression" class="level3" data-number="4.2.4">
@@ -857,19 +860,19 @@ p(x) = \frac{e^{\beta_0 + \beta_1x_1 + \dots + \beta_p x_p}}{1 + e^{\beta_0 + \b
 <p>We again use maximum likelihood method to estimate <span class="math inline">\(\beta_0, \beta_1, \dots, \beta_p\)</span>.</p>
 <p>Lets use all of our variables in our model</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="ot">-&gt;</span> log_model</span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="fu">recipe</span>(default <span class="sc">~</span> balance <span class="sc">+</span> income <span class="sc">+</span> student, <span class="at">data =</span> default) <span class="ot">-&gt;</span> default_recipe</span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_model) <span class="sc">%&gt;%</span> </span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(default_recipe) <span class="ot">-&gt;</span> default_workflow</span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span> </span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="ot">-&gt;</span> log_model</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(default <span class="sc">~</span> balance <span class="sc">+</span> income <span class="sc">+</span> student, <span class="at">data =</span> default)</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_model) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(recipe) <span class="ot">-&gt;</span> default_workflow</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
   term            estimate  std.error statistic   p.value
@@ -880,7 +883,251 @@ p(x) = \frac{e^{\beta_0 + \beta_1x_1 + \dots + \beta_p x_p}}{1 + e^{\beta_0 + \b
 4 studentYes   -0.647      0.236         -2.74  6.19e-  3</code></pre>
 </div>
 </div>
-<p><img src="fig4.2.png" class="img-fluid"></p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-10.8690452</td>
+<td style="text-align: right;">0.4922555</td>
+<td style="text-align: right;">-22.080088</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">balance</td>
+<td style="text-align: right;">0.0057365</td>
+<td style="text-align: right;">0.0002319</td>
+<td style="text-align: right;">24.737563</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">income</td>
+<td style="text-align: right;">0.0000030</td>
+<td style="text-align: right;">0.0000082</td>
+<td style="text-align: right;">0.369815</td>
+<td style="text-align: right;">0.7115203</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">studentYes</td>
+<td style="text-align: right;">-0.6467758</td>
+<td style="text-align: right;">0.2362525</td>
+<td style="text-align: right;">-2.737646</td>
+<td style="text-align: right;">0.0061881</td>
+</tr>
+</tbody>
+</table>
+<p>Here there is a suprising result. According to the p-values balance and student variables are associted with the probability of default. However, coefficient for stundet dummy is negative; indicating that students are less likely to default than non-students. But this coefficint was positive in our previous analysis when we regressed probability of default by student: results showed that probability of default is twice as likely for students compared to non students.</p>
+<p><img src="fig4.3.png" class="img-fluid"></p>
+<p>Check out the fig 4.3. The orange and blue lines show the average default rates for students and non students, respectively, as a function of credit card balance. The nagive coefficient for student in the multiple logistic regression indicates that <strong>for a fixed value of balance and income</strong> a student is less likely to default than a non-student. We observe from the left hand panel that the student default ratge is at or below that of the nun student default rate for every value of balance. But the horizontal broken lines near the base of the plot, which show the default rates for students and non students averaged over all values of balance and income, suggest the opposite effect: the overall student default rate is higher than non student default rate. Consequently there is a positive coefficient for student in the single variable logistic regression output.</p>
+<p>The right hand panel provies an explanation for this discrepancy: the varaibles student and blaance are correlated. Students tend to hold higher levels of debt, which is in turn assocaited with higer probability of default. In other words, students are more likely to have large credit card balances, which as we know from the left hand panel of figure 4.3 tend to be assocaited with high default rates. Thus, even though an individual student with a given credit card balance will tend to have a lower probability of default than a non student with the same credit card balance, the fact that students on the whole tend to have higher credit card balances means that overall students tend to default at a higher rate than non students. This is an important distinction. A student is riskier than a non student if no information about the student’s credit card balance is available. However, that student is less risky than a non student with the same credit card balance.</p>
+<p>This simple example illustrates the dangers and subtleties assocaited with performing regressions involving only a single predictor when other predictors may als obe relevant. The results obtained using one predictor may be quite different from those obtained using multiple predictors, especially when there is correlation among the predictors. In general, the phenomenon seen in Figure 4.3 is known as <em>confounding</em>.</p>
+<p>Lets put the estimates to our estimated probability function</p>
+<p>$$ (x) = </p>
+<p>{ 1 + e^{-10.86 + 0.00574 balance + 3e-6 income - 0.646 Student} } $$ We can make predictions: a student with a credit card balnce of $1,500 and an income of $40,000 has an estimated probability of default:</p>
+<p><span class="math display">\[
+\hat{p}(x)=\frac{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 1}
+}
+{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 1}
+} = 0.05780859
+\]</span></p>
+<p>A non student with the same balance and income has an estiamted probability of default of</p>
+<p><span class="math display">\[
+\hat{p}(x)=\frac{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
+}
+{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
+} = 0.1048655
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>default_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> default) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data =</span> <span class="fu">tibble</span>(<span class="at">income =</span> <span class="dv">40000</span>, <span class="at">balance =</span> <span class="dv">1500</span>, <span class="at">student =</span> <span class="fu">c</span>(<span class="st">"Yes"</span>,<span class="st">"No"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  income balance student .pred_class .pred_No .pred_Yes
+   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;fct&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+1  40000    1500 Yes     No             0.942    0.0579
+2  40000    1500 No      No             0.895    0.105 </code></pre>
+</div>
+</div>
+</section>
+<section id="logistic-regression-for-2-response-classes" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="logistic-regression-for-2-response-classes"><span class="header-section-number">4.2.5</span> Logistic Regression for &gt; 2 Response Classes</h3>
+<p>What if our response variable has more than two classes. Like medical condition in the emergency room: <code>stroke</code>, <code>drug overdose</code>, <code>epileptic seizure</code>. In this setting we wish to model both <span class="math inline">\(Pr(Y = stroke | x)\)</span> and <span class="math inline">\(Pr(Y = drug \space overdose | x)\)</span>, with the remaining <span class="math inline">\(Pr(Y = epileptic \space seizure |x) = 1 - Pr(Y= stroke | x) - Pr(Y = drug \space overdose | x)\)</span>. We can do it my extending logistic regression but <em>Linear Discriminant Analysis</em> is much suitable for this task</p>
+</section>
+</section>
+<section id="linear-discriminant-analysis" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="linear-discriminant-analysis"><span class="header-section-number">4.3</span> Linear Discriminant Analysis</h2>
+<p>Logistic regression involves directly modeling <span class="math inline">\(Pr(Y = k | X = x)\)</span> using the logistic function, given by (4.7) for the case of two response classes. In statistical jargon, we model the conditional distribution of the response <span class="math inline">\(Y\)</span>, given the predictor(s) <span class="math inline">\(X\)</span>.</p>
+<p>We now consider an alternative and less direct approach to estimating these probabilities. In this alternative approach, we model the distribution of the predictors <span class="math inline">\(X\)</span> separately in each of the response classes (i.e.&nbsp;given <span class="math inline">\(Y\)</span>), and then use Bayes’ theorem to flip these around into estimates for <span class="math inline">\(Pr(Y = k | X = x)\)</span>. When these distributions are assumed to be normal, it turns out that the model is very similar in form to logistic regression.</p>
+<p>Why do we need another method when we have logistic regression?</p>
+<ul>
+<li><p>When the classes are well separated, the parameter estimates for the logistic regression model are surprisingly unstable. Linear discrimnant analysis does not suffer from this problem.</p></li>
+<li><p>If <em>n</em> is small and the distribution of the predictors <span class="math inline">\(X\)</span> is approximately normal in each of the classes the linear discriminant model is again more stable than th elogistic regression model</p></li>
+<li><p>LDA is popular when we have more than two response classes.</p></li>
+</ul>
+<section id="using-bayes-theorem-for-classification" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="using-bayes-theorem-for-classification"><span class="header-section-number">4.3.1</span> Using Bayes’ Theorem for Classification</h3>
+<p>We want to classify an observation into one of <span class="math inline">\(K\)</span> classes, where <span class="math inline">\(2 \leq K\)</span>. So <span class="math inline">\(Y\)</span> can take on <span class="math inline">\(K\)</span> possible distinct and unordered values. Let <span class="math inline">\(\pi_k\)</span> represent the overall or <em>prior</em> probability that a randomly chosen observation comes from the <span class="math inline">\(k\)</span>th class.; this is the probability that a given observation is associated with the <em>k</em>th category of the response variable <span class="math inline">\(Y\)</span>. Let <span class="math inline">\(f_k(x) \equiv Pr(X = x | Y = k)\)</span> denote the <em>density</em> function of <span class="math inline">\(X\)</span> for an observation that comes from the <em>k</em> th class. In other words <span class="math inline">\(f_k(x)\)</span> is relatively large if there is a high probability that an observation in the <em>k</em> th class has <span class="math inline">\(X \approx x\)</span>, and <span class="math inline">\(f_k(x)\)</span> is small if it is very unlikely that an observation in the <em>k</em>th class has <span class="math inline">\(X \approx x\)</span>. Then <em>Bayes’s theorem</em> states that</p>
+<p><span class="math display">\[
+Pr(Y = k | X = x) = \frac{
+\pi_k\,f_k(x)
+}
+{
+\sum^K_{l = 1}\,\pi_l\,f_l(x)
+}
+\]</span> (4.10)</p>
+<p>We will use the abbreviation <span class="math inline">\(p_k(X) = Pr(Y = k | X)\)</span>. This suggests that instead of directly computing <span class="math inline">\(p_k(X)\)</span> as Section 4.3.1, we can simply plug in estimates of <span class="math inline">\(\pi_k\)</span> and <span class="math inline">\(f_k(X)\)</span> into (4.10). In general, estimating <span class="math inline">\(\pi_k\)</span> is easy if we have a random sample of <span class="math inline">\(Y\)</span>s from the population: we simply compute the fraction of the training observations that belong to the <em>k</em>th class. However, etimating <span class="math inline">\(f_k(X)\)</span> tends to be more challenging, unless we assume some simple forms for these densities. We refer to <span class="math inline">\(p_k(x)\)</span> as the <em>posterior</em> probability than an observation <span class="math inline">\(X=x\)</span> belongs to the <em>k</em>th class. That is, it is the probability that the observation belongs to the <em>k</em>th class, <em>given</em> the predictor value for that observation.</p>
+<p>We know from Ch.2 that the Bayes classifier, which classifies an observation to the class for which <span class="math inline">\(p_k(X)\)</span> is largest, has the lowest possible error rate out of all classifiers. Therefore, if we can find a way to estimate <span class="math inline">\(f_k(X)\)</span> then we can develop a classifier that approximates the bayes classifier:</p>
+</section>
+<section id="linear-discriminant-analysis-for-p1" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="linear-discriminant-analysis-for-p1"><span class="header-section-number">4.3.2</span> Linear Discriminant Analysis for p=1</h3>
+<p>Assume we have one predictor. We would like to obtain an estimate for <span class="math inline">\(f_k(x)\)</span> that we can plug into (4.10) in order to estimate <span class="math inline">\(p_k(x)\)</span>. We will then classify an observation to the class for which <span class="math inline">\(p_k(x)\)</span> is greatests. In order to estimate <span class="math inline">\(f_k(x)\)</span> we will first make some assumptions about this form.</p>
+<p>Suppose we assume <span class="math inline">\(f_k(x)\)</span> is <em>normal</em> or <em>Gaussian</em>. In the one dimensional setting, the normal density takes the form</p>
+<p><span class="math display">\[
+f_k(x) = \frac{
+1
+}
+{
+\sqrt{2\pi}\,\sigma_k
+}\,exp\,\left(-\frac{1}{2\sigma^2_k}(x - \mu_k)^2\right)
+\]</span> (4.11)</p>
+<p>where <span class="math inline">\(\mu_k\)</span> and <span class="math inline">\(\sigma^2_k\)</span> are the mean and variance parameters for the <em>k</em>th class. For now, let us further assume that <span class="math inline">\(\sigma_1^2=\dots=\sigma^2_K\)</span>: that is, there is shared variance term across all <span class="math inline">\(K\)</span> classes, which for simplicty we can denote by <span class="math inline">\(\sigma^2\)</span>. Plugging (4.11) into (4.10) we find that</p>
+<p><span class="math display">\[
+p_k(x) = \frac{
+\pi_k\,\frac{1}{\sqrt{2\pi}\,\sigma}\,exp(-\frac{1}{2\sigma^2}(x - \mu_k)^2)
+}
+{
+\sum_{l=1}^K \pi_l \frac{1}{\sqrt{2\pi}\sigma}\,exp(-\frac{1}{2\sigma^2}(x - \mu_l)^2)
+}
+\]</span> (4.12)</p>
+<p>The bayes classifier involves assigning an observation <span class="math inline">\(X=x\)</span> to the class for which (4.12) is largest. Taking the log of (4.12) and rearranging the terms, it is not hard to show that this is equivalent to assigning the observation to the class for which</p>
+<p><span class="math display">\[
+\delta_k(x) = x \cdot \frac{\mu_k}{\sigma^2} \,- \frac{\mu_k^2}{2\sigma^2}\,+ \log(\pi_k)
+\]</span> (4.13)</p>
+<p>is largest. For instance if <span class="math inline">\(K = 2\)</span> and <span class="math inline">\(\pi_1 = \pi_2\)</span>, then the Bayes clasffier assigns an obsetvation to classs 1 if <span class="math inline">\(2x(\mu_1 - \mu_2) &gt; \mu_1^2 - \mu_2^2\)</span>, ann to class 2 otherwise. In this case, the Bayes desicion boundary corresponds to the point where</p>
+<p>$$ x = = </p>
+<p>$$ (4.14)</p>
+<p>An example is shown in the left hand panel of fig 4.4</p>
+<p><img src="fig4.4.png" class="img-fluid"></p>
+<p>The two normal density functions that are displayed, <span class="math inline">\(f_1(x)\)</span> and <span class="math inline">\(f_2(x)\)</span>, represent two distinct classes. The mean and the variance parameters for the two desity functions are <span class="math inline">\(\mu_1 = -1.25, \space \mu_2 = 1.25\)</span>, and <span class="math inline">\(\sigma_1^2 = \sigma_2^2 = 1\)</span>. The two densities overlap, and so given that <span class="math inline">\(X=x\)</span>, there is some uncertainty about the class to which observation belongs. If we assume that an observation is equally likely to come from either class–that is <span class="math inline">\(\pi_1 = \pi_2 = 0.5\)</span>– then by inspection of (4.14), we see that the Bayes classfier assigns the observation to class 1 if <span class="math inline">\(x&lt;0\)</span> and class 2 otherwise. Note that in this case, we can compute the Bayes classfier because we know that <span class="math inline">\(X\)</span> is drawn from a gaussian distribution within each class, and we know all of the parameters involved. In a real-life situation we are not able to calcualte Bayes classifier.</p>
+<p>In practice, even if we are quite certain of our assumption that <span class="math inline">\(X\)</span> is drawn from a Gaussian distribution within each class, we still have to estimate the parameters <span class="math inline">\(\mu_1, \dots, \mu_K,\space \pi_1,\dots, \pi_K,\)</span> and <span class="math inline">\(\sigma^2\)</span>. The <em>linear discriminant analysis</em> (LDA) method approximates the bayes classfier vy plugging estimates fro <span class="math inline">\(\pi_k, \mu_k\)</span> and <span class="math inline">\(\sigma^2\)</span> into (4.13). In particular the following estimates are used.:</p>
+<p>$$ <span class="math display">\[\begin{align}
+\hat{\mu}_k &amp;= \frac{1}{n_k}\sum_{i:y_i=k} x_i \\
+
+\hat{\sigma}^2 &amp;= \frac{1}{n-K}\sum^K_{k=1} \sum_{i:y_i =k}(x_i - \hat{\mu}_k)^2
+
+\end{align}\]</span> $$ (4.15) <strong>Important</strong></p>
+<p>where <em>n</em> is the total number of training observations, and <em>n_k</em> is the number of training observations in the <em>k</em>th class. The estimate for <span class="math inline">\(\mu_k\)</span> is simply the average of all the training observations from the <em>k</em>th class, while <span class="math inline">\(\hat{\sigma}^2\)</span> can be seen as a weighted average of the sample variances for each of the <span class="math inline">\(K\)</span> classes. Sometimes we have knowledge of the class membership probabilities <span class="math inline">\(\pi_1, \dots, \pi_K\)</span>, which can be used directly. In the absence of any additional information, LDA estimates <span class="math inline">\(\pi_K\)</span> using the proportion of the training observations that belong to the <em>k</em>th class. In other words,</p>
+<p><span class="math display">\[
+\pi_k = n_k /n
+\]</span> The LDA classifer plugs the estimates given in (4.15) and (4.16) into (4.13), and assigns an observation <span class="math inline">\(X=x\)</span> to the class for which</p>
+<p><span class="math display">\[
+\hat{\delta}(x) = x \cdot \,\frac{\hat{u}_k}{\hat{\sigma}^2} \,-\,\frac{\hat{u}^2_k}{2\,\hat{\sigma}^2}\,+\,\log(\hat{\pi}_k)
+\]</span> (4.17)</p>
+<p>is largest. The word <em>linear</em> in classfier’s name stems from the fact that <em>discriminant functions</em> <span class="math inline">\(\hat{\delta}_k(x)\)</span> in (4.17) are linear functions of <span class="math inline">\(x\)</span>.</p>
+<p>The right hand panel of Fig 4.4 displays a histogram of a random sample <span class="math inline">\(n=20\)</span> observations from each class. To implement LDA, we behan by estimating <span class="math inline">\(\pi_k, \mu_k, \sigma^2\)</span> using (4.15) and (4.16). We then computed the desicion boundy, shown as a black solid line, that results from assigning an observation to the clas for which (4.17) is largest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n=</span><span class="dv">20</span>, <span class="at">mean =</span> <span class="sc">-</span><span class="fl">1.25</span>, <span class="at">sd =</span><span class="dv">1</span>)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n=</span><span class="dv">20</span>, <span class="at">mean=</span><span class="fl">1.25</span>, <span class="at">sd =</span><span class="dv">1</span>)</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">rbind</span>(<span class="fu">tibble</span>(<span class="at">x =</span> a, <span class="at">class =</span> <span class="dv">1</span>),<span class="fu">tibble</span>(<span class="at">x =</span> b, <span class="at">class =</span><span class="dv">2</span>))</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">color =</span> class, <span class="at">group =</span> class) <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="at">show.legend =</span> F) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter4_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(class) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_hat =</span> <span class="fu">mean</span>(x), <span class="at">var_hat =</span> <span class="fu">sd</span>(x)<span class="sc">^</span><span class="dv">2</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  class mean_hat var_hat
+  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+1     1    -1.58   0.751
+2     2     1.35   0.781</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(class) <span class="sc">%&gt;%</span> </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pi_hat =</span> count<span class="sc">/</span><span class="fu">sum</span>(count))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  class count pi_hat
+  &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;
+1     1    20    0.5
+2     2    20    0.5</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">d_k_c1 =</span> x <span class="sc">*</span> (<span class="sc">-</span><span class="fl">1.58</span><span class="sc">/</span><span class="fl">0.751</span>) <span class="sc">-</span> (<span class="sc">-</span><span class="fl">1.58</span><span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fl">0.751</span>)) <span class="sc">+</span> <span class="fu">log</span>(<span class="fl">0.5</span>),</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">d_k_c2 =</span> x <span class="sc">*</span> (<span class="fl">1.35</span> <span class="sc">/</span> <span class="fl">0.781</span>) <span class="sc">-</span> (<span class="fl">1.35</span><span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fl">0.781</span>)) <span class="sc">+</span> <span class="fu">log</span>(<span class="fl">0.5</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pred.class =</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(d_k_c1 <span class="sc">&gt;</span> d_k_c2,<span class="dv">1</span>,<span class="dv">2</span>)), <span class="at">class =</span> <span class="fu">factor</span>(class)) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> class, <span class="at">estimate =</span> pred.class) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(<span class="at">type =</span> <span class="st">"heatmap"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Chapter4_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'discrim'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dials':
+
+    smoothness</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">factor</span>(class)) <span class="ot">-&gt;</span> d</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">discrim_linear</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>) <span class="ot">-&gt;</span> lda_spec</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>lda_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(class<span class="sc">~</span>x,<span class="at">data =</span>d)</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(lda_spec) <span class="sc">%&gt;%</span> </span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(lda_recipe) <span class="ot">-&gt;</span> lda_workflow</span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>lda_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> d) <span class="sc">%&gt;%</span> </span>
+<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data=</span>d) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 40 × 5
+        x class .pred_class .pred_1    .pred_2
+    &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt;
+ 1 -2.73  1     1             1.00  0.0000459 
+ 2  0.327 1     2             0.155 0.845     
+ 3 -2.21  1     1             1.00  0.000340  
+ 4 -2.17  1     1             1.00  0.000391  
+ 5 -3.25  1     1             1.00  0.00000637
+ 6 -1.52  1     1             0.995 0.00463   
+ 7 -1.57  1     1             0.996 0.00393   
+ 8 -1.88  1     1             0.999 0.00119   
+ 9 -1.36  1     1             0.991 0.00869   
+10 -0.822 1     1             0.937 0.0633    
+# ℹ 30 more rows</code></pre>
+</div>
+</div>
 
 
 </section>
