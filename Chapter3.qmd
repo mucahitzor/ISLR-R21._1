@@ -20,7 +20,10 @@ library(magrittr)
 library(dotwhisker)
 library(hrbrthemes)
 library(patchwork)
+library(GGally)
+library(showtext)
 })
+extrafont::loadfonts(quiet = TRUE)
 theme_set(theme_ipsum_ps(axis_title_size = 11 , axis_title_just = "c") + theme(axis.line = element_line(color ="black")))
 ```
 
@@ -531,7 +534,6 @@ lm(y~x,data) %>%
 
 Since standard error tells us the range of the $\beta$ values via confidence interval, we can infer that if this range does not include 0, than our $\beta$ values are statistically significant; x is assocaited with y.
 
-
 Lets do this for `advertising` data as well
 
 ```{r}
@@ -552,8 +554,7 @@ $$
 H_0 &: \beta_1 = 0 \to \text{there is no relationship between X and Y} \\
 H_1 &: \beta_1 \neq 0 \to \text{there is some relationship between X and Y}
 \end{align}
-$$ 
-If the *null-hypothesis* is true =\> \$ \beta\_1 = 0\$ =\> $Y = \beta_0 + \epsilon$ =\> $X$ is not associated with $Y$.
+$$ If the *null-hypothesis* is true =\> \$ \beta\_1 = 0\$ =\> $Y = \beta_0 + \epsilon$ =\> $X$ is not associated with $Y$.
 
 To test the null-hypothessi, we need to determine whether our estimate $\hat{\beta_1}$ is sufficiently far from zero that we can be confident that $\beta_1$ is non-zero. How far is enough? This depends on the accuracy of $\hat{\beta_1}$--that is it depends on $\text{SE}(\hat{\beta_1})$. If $\text{SE}(\hat{\beta_1})$ is small, then even relatively small values of $\hat{\beta_1}$ may provide strong evidence that $\beta_1 \neq 0$. If $\text{SE}(\hat{\beta_1})$ is large, then $\hat{\beta_1}$ must be large in absolute value in order for us to reject the null hypothessis. In practice we compute a *t-statistic* given by
 
@@ -566,7 +567,6 @@ which measures the number of standard deviations that $\hat{\beta_1}$ is away fr
 ```{r}
 summary(lm(sales ~ TV, advertising))
 ```
-
 
 ```{r}
 linear_reg() %>% 
@@ -1600,7 +1600,6 @@ linear_reg() %>%
   car::outlierTest(., cutoff = 0.30)
 ```
 
-
 Here is regression result after removing outliers
 
 ```{r}
@@ -1733,8 +1732,8 @@ When faced with collinearity, two simple solutions exist: \* drop one of the pro
 lm(sales~TV + radio + newspaper,advertising) %>% summary()
 ```
 
-
 To get a anova table;
+
 ```{r}
 anova(lm(sales~TV + radio + newspaper,advertising))
 ```
@@ -1746,7 +1745,6 @@ coef(lm(sales~TV + radio + newspaper,advertising))
 ```{r}
 lm(sales~TV + radio + newspaper,advertising) %>% confint()
 ```
-
 
 ```{r}
 vcov(lm(sales~TV + radio + newspaper,advertising))
@@ -1767,18 +1765,18 @@ backward stepwise regression is the easiest approach.
 
 Backward stepwise is easy but sometimes its not feasible to start with everything because you have too many candidate variables. In that case use forward stepwise regression; which will start with nothing and incrementatlly add variables that improve regression. It stops when no further improvement is possible
 
-
 ```{r}
 lm(sales ~ 1,advertising)
 ```
 
 we start with minimum model. We must tell step which candidate varaibels are available for inclusing in the model. We use `scope` argument for that.
 
-
 ```{r}
 lm(sales~1,advertising) %>% stats::step(direction = "forward", scope = (~ TV + radio + newspaper), trace = 0) %>% summary() 
 ```
+
 we have the same result with backward, in reality these results may differ.
+
 ```{r}
 stats::step(lm, direction = "both") %>% summary() 
 ```
@@ -1793,14 +1791,9 @@ Detecting the outliers :
 car::outlierTest(lm)
 ```
 
-
 ![](rcook1.png)
 
-
-
-
 ![](rcook2.png)
-
 
 ### Identifying Influential observations
 
@@ -1808,7 +1801,7 @@ You want to identify the observatipons that are having the ost influence on the 
 
 **Solution**
 
-The `influence.measures` function reports several useful statistics for identifying inflıuentioal obs. and it flags the significant ones with an asterisk(*).
+The `influence.measures` function reports several useful statistics for identifying inflıuentioal obs. and it flags the significant ones with an asterisk(\*).
 
 ```{r}
 lm <- lm(sales~TV + newspaper,advertising)
@@ -1818,6 +1811,7 @@ inf = influence.measures(lm)
 ```
 
 We need to filter for columns which has at least one true:
+
 ```{r}
 as.data.frame(inf$is.inf) %>% as_tibble() %>% 
   mutate(obs = 1:200) %>% 
@@ -1831,7 +1825,6 @@ lm(sales~TV + newspaper,advertising[-infss,]) %>% summary() # r^2 improves!
 lm12 <-lm(sales~TV + newspaper,advertising[-infss,])
 ```
 
-
 ## testing residuals for autocorrelation
 
 ```{r}
@@ -1839,17 +1832,18 @@ library(lmtest)
 dwtest(lm) 
 ```
 
-if $ p > 0.05$ no evidence of correaltion.
-
+if \$ p \> 0.05\$ no evidence of correaltion.
 
 ## The Marketing Plan
 
 Lets go back to our 7 questions about the `advertising`data:
 
-1.    *Is there a relationship between advertising sales and budget?*
+1.  *Is there a relationship between advertising sales and budget?*
 
-    To get an answer to this question, we regress `sales` onto our budget related varaibles `TV`, `radio`, and `newspaper` and test the hypothesis $H_0: \beta_{TV}=\beta_{radio}=\beta_{newspaper} = 0$ with F-statistic.
-    
+```         
+To get an answer to this question, we regress `sales` onto our budget related varaibles `TV`, `radio`, and `newspaper` and test the hypothesis $H_0: \beta_{TV}=\beta_{radio}=\beta_{newspaper} = 0$ with F-statistic.
+```
+
 ```{r}
 advertising %<>% select(-"sales_hat")
 linear_reg() %>% 
@@ -1860,64 +1854,65 @@ linear_reg() %>%
   summary()
 ```
 
-  In this case the p-value corresponding to the F-statistic is very low, indicating a clear evidence of a relationship between advertising and sales.
-  
-2. *How strong is the relationship?*
+In this case the p-value corresponding to the F-statistic is very low, indicating a clear evidence of a relationship between advertising and sales.
 
+2.  *How strong is the relationship?*
 
     This is about model accuracy. We can check $R^2$; the predictors explain almost 90% of the variance in `sales`.
 
-3. *Which media contribute to sales?*
+3.  *Which media contribute to sales?*
 
-    We check p values of the coefficients. newspaper is not statistically significant; only `TV` and `radio` are realated to sales. 
+    We check p values of the coefficients. newspaper is not statistically significant; only `TV` and `radio` are realated to sales.
 
-4. *How large is the effect of each medium on sales?*
+4.  *How large is the effect of each medium on sales?*
 
 ```{r}
 lm(sales~.,advertising) %>%
     dwplot(ci = 0.95,dot_args = list(size=2), vline = geom_vline(xintercept = 0, color = "grey50", linetype =2))
 ```
 
-    
-    We use standard errors to construct confidence intervals for the coefficients. If any of the confidence intervals include 0 that predictor is not statistically significant. Collinearty can result in very wide standard errors; making confint to include zero. Was the collineary the reason that confint of newspaper to be so wide? Lets check VIF scores
+```         
+We use standard errors to construct confidence intervals for the coefficients. If any of the confidence intervals include 0 that predictor is not statistically significant. Collinearty can result in very wide standard errors; making confint to include zero. Was the collineary the reason that confint of newspaper to be so wide? Lets check VIF scores
+```
 
 ```{r}
 car::vif(lm(sales~.,advertising))
 ```
 
-No all the VIF scores suggest no evidence of collinearity. 
+No all the VIF scores suggest no evidence of collinearity.
 
-
-5. *How accurately can we predict future sales?*
+5.  *How accurately can we predict future sales?*
 
     After deciding on our model
-    
+
 ```{r}
 lm(sales~TV+radio + TV * radio, advertising) %>% summary()
 ```
-    
-    The accuracy of our estimation depends on whether we wish to predict an individual response, $Y = f(X) + \epsilon$, or the average response, $f(X)$. If the former we use a prediction interval, and if the latter, we use a confidecen interval. Prediction intervals will always be wider than confidence intervals because they account for the uncertainty assocaited with $\epsilon$, the irreducible error.
-    
-    
-6. *Is the relationship linear?*
+
+```         
+The accuracy of our estimation depends on whether we wish to predict an individual response, $Y = f(X) + \epsilon$, or the average response, $f(X)$. If the former we use a prediction interval, and if the latter, we use a confidecen interval. Prediction intervals will always be wider than confidence intervals because they account for the uncertainty assocaited with $\epsilon$, the irreducible error.
+```
+
+6.  *Is the relationship linear?*
 
     We can use residual plots to identify non-linearity: the plot will show a pattern.
-  
+
 ```{r}
 lm(sales~TV + radio, advertising) %>% augment() %>% 
   ggplot() + aes(x = .hat, y = .fitted) + geom_point() + geom_smooth(se = F)
 ```
+
 the model seems okay. If we had encountered a non-linearity we would have to make transformations to the predictors.
 
-7. *Is there synergy among the advertising media?*
-    
+7.  *Is there synergy among the advertising media?*
+
     LR assumes additive relationship. When we account for interacation term our model is improved and the interaction term was statistically significant.
-    
+
 ```{r}
 lm(sales~TV + radio + radio * TV, advertising) %>% summary()
 ```
 
-## Comparison of Linear Regression with K-Nearest Neighbors 
+## Comparison of Linear Regression with K-Nearest Neighbors
 
 Linear regression is a parametric approach because it assumes a linear functinoal form for $f(x)$. Parametric approaches are easy to fit, coefficients have simple interpretations and test of statistical significance can be easily performed. But they make strong assumptions about the form of $f(X)$. If the assumed functional for is not correct, and the prediciton is our goal, then we see a poor performance of fit.
 
@@ -1928,11 +1923,10 @@ The KNN regression method is closely related to the KNN classifier in Chapter 2.
 $$
 \hat{f}(x_0) = \frac{1}{K}\sum_{x \in N_0} y_i
 $$
-    
-  
-The optimal $K$ value will depend on the *bias-variance tradeoff*. A small value for $K$ provides the most flexile fit, which will have low bias but high variance. This variance is due  to the fact that the prediciton in a given region is entirely dependent on just one obsrvation. In contrast, larger values of $K$ will provide a smoother and less variable fit; the prediction in a region is an average of several points, and so changing one observation has a smaller effect. However, the smoothing may cause bias by masking some of the structure in $f(x)$. Chapter 5 will introduce several approaches for estiamting test error rates which can be used to identify the optimal $K$ in KNN regression.
 
-*The parametric approach will outperform the non-parametric approach if the parametric form that has been selected is close to the true for of $f$.*
+The optimal $K$ value will depend on the *bias-variance tradeoff*. A small value for $K$ provides the most flexile fit, which will have low bias but high variance. This variance is due to the fact that the prediciton in a given region is entirely dependent on just one obsrvation. In contrast, larger values of $K$ will provide a smoother and less variable fit; the prediction in a region is an average of several points, and so changing one observation has a smaller effect. However, the smoothing may cause bias by masking some of the structure in $f(x)$. Chapter 5 will introduce several approaches for estiamting test error rates which can be used to identify the optimal $K$ in KNN regression.
+
+*The parametric approach will outperform the non-parametric approach if the parametric form that has been selected is close to the true for of* $f$.
 
 ![](fig3.17.png)
 
@@ -1942,17 +1936,16 @@ in Figure one true relationship is linear, represented by the black line. Blue c
 
 The blue dashed line is the OLS regression which outperfroms KNN for this data. Green sloid line, plotted as a function of $1/K$ represents the test set mean squared error(MSE) for KNN. The KNN errors are wlell above the black dashed line, which is the test MSE for linear regression. When K is large KNN performs only a little worse that least squares regression in terms of MSE. It performs far worse when K is small.
 
-In practice true relationship between $X$ and $Y$ is rarely exactly linear. 
+In practice true relationship between $X$ and $Y$ is rarely exactly linear.
 
 ![](fig3.19.png)
 
 Fig 3.10 examines the relative performances of OLS regression and KNN under increasing levels of non-linearity in the relationship between $X$ and $Y$. In the top row, the true relationship is nearly linear. In this case we see that test MSE for linear regression is still superior to that of KNN for low values of K. However, fro $4 \leq K$ KNN outperforms linear regression. The secodn row has more non-linearity. In this case KNN is better for all valeus of K.
 
-So, KNN performs slightly worse than linear regression when the relationship is linear, but much better for non-linear situations. Does this mean we should favour KNN In relaity because the relationships are rarely linear? No, in relaity, even when the true relationship is highly non linear, KNN may still provide inferior resutls to linear regression.  Fig 3-18 and 19 had $p=1$, but for larger $p$ KNN often performs worse than linear regression.
+So, KNN performs slightly worse than linear regression when the relationship is linear, but much better for non-linear situations. Does this mean we should favour KNN In relaity because the relationships are rarely linear? No, in relaity, even when the true relationship is highly non linear, KNN may still provide inferior resutls to linear regression. Fig 3-18 and 19 had $p=1$, but for larger $p$ KNN often performs worse than linear regression.
 
 ![](fig3.20.png)
 
- Fig 20 shows a strong non-linear situation. When $p=1$or $p=2$ KNN is better, but for $p=3$ results are mixed, for $4\leqp$ LR is superior. *This decrease in performance as the dimensions increases is a common problem for KNN*
- 
- As a general rule parametric methods will tend to outperform non-parametric approaches when there is small number of observations per predictor.
+Fig 20 shows a strong non-linear situation. When $p=1$or $p=2$ KNN is better, but for $p=3$ results are mixed, for $4\leqp$ LR is superior. *This decrease in performance as the dimensions increases is a common problem for KNN*
 
+As a general rule parametric methods will tend to outperform non-parametric approaches when there is small number of observations per predictor.

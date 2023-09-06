@@ -118,6 +118,20 @@
 \def\fps@figure{htbp}
 \makeatother
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \KOMAoption{captions}{tableheading}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
@@ -211,7 +225,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, boxrule=0pt, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, frame hidden, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -914,6 +928,23 @@ We will predict quantitative response.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\FunctionTok{suppressPackageStartupMessages}\NormalTok{(\{}
+\FunctionTok{library}\NormalTok{(ISLR)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(ggthemes)}
+\FunctionTok{library}\NormalTok{(sjPlot)}
+\FunctionTok{library}\NormalTok{(corrplot)}
+\FunctionTok{library}\NormalTok{(tidymodels)}
+\FunctionTok{library}\NormalTok{(magrittr)}
+\FunctionTok{library}\NormalTok{(dotwhisker)}
+\FunctionTok{library}\NormalTok{(hrbrthemes)}
+\FunctionTok{library}\NormalTok{(patchwork)}
+\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{advertising }\OtherTok{=} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"./data/Advertising.csv"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ as\_tibble }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}
 \NormalTok{advertising}
 \end{Highlighting}
@@ -1313,7 +1344,7 @@ Now lets plot this data points
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{x, }\AttributeTok{y=}\NormalTok{y) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{theme\_par}\NormalTok{()}
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{x, }\AttributeTok{y=}\NormalTok{y) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }
 \end{Highlighting}
 \end{Shaded}
 
@@ -1860,10 +1891,52 @@ Lets confirm this
 x           2.907938 3.209912
 \end{verbatim}
 
+Lets plot this confidence interval
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(y}\SpecialCharTok{\textasciitilde{}}\NormalTok{x,data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{dwplot}\NormalTok{(}\AttributeTok{ci =} \FloatTok{0.95}\NormalTok{,}\AttributeTok{dot\_args =} \FunctionTok{list}\NormalTok{(}\AttributeTok{size=}\DecValTok{2}\NormalTok{), }\AttributeTok{vline =} \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{color =} \StringTok{"grey50"}\NormalTok{, }\AttributeTok{linetype =}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-40-1.pdf}
+
+}
+
+\end{figure}
+
 Since standard error tells us the range of the \(\beta\) values via
 confidence interval, we can infer that if this range does not include 0,
 than our \(\beta\) values are statistically significant; x is assocaited
 with y.
+
+Lets do this for \texttt{advertising} data as well
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(sales }\SpecialCharTok{\textasciitilde{}}\NormalTok{ TV, advertising) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{tidy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{dwplot}\NormalTok{(}\AttributeTok{ci =} \FloatTok{0.95}\NormalTok{,}\AttributeTok{dot\_args =} \FunctionTok{list}\NormalTok{(}\AttributeTok{size=}\DecValTok{2}\NormalTok{), }\AttributeTok{vline =} \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{color =} \StringTok{"grey50"}\NormalTok{, }\AttributeTok{linetype =}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-41-1.pdf}
+
+}
+
+\caption{the 95\% confidence interval does not include 0; TV is
+statistically significant}
+
+\end{figure}
 
 Or we can use standard erros to perform \emph{hypothesis tests} on the
 coefficients. We usually don't care about the intercept, so lets do the
@@ -1930,6 +2003,28 @@ Residual standard error: 3.259 on 198 degrees of freedom
 Multiple R-squared:  0.6119,    Adjusted R-squared:  0.6099 
 F-statistic: 312.1 on 1 and 198 DF,  p-value: < 2.2e-16
 \end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV,advertising) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{confint}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{  kableExtra}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\AttributeTok{format =} \StringTok{"latex"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r}
+\hline
+  & 2.5 \% & 97.5 \%\\
+\hline
+(Intercept) & 6.1297193 & 7.9354678\\
+\hline
+TV & 0.0422307 & 0.0528426\\
+\hline
+\end{tabular}
 
 Here we see that t statistics are very high, and p values are very low
 =\textgreater{} reject the null hypothesis for both \(\beta\) values;
@@ -2432,7 +2527,7 @@ We can also make it a plot out of this:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-57-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-60-1.pdf}
 
 }
 
@@ -3159,7 +3254,7 @@ Lets do a scatterplot of all variables
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-70-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-73-1.pdf}
 
 }
 
@@ -3288,7 +3383,7 @@ between the genders.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-73-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-76-1.pdf}
 
 }
 
@@ -3580,7 +3675,7 @@ Y &= \beta_0 + (\beta_1 + \beta_3 x_2)x_1 + \beta_2x_2 +\epsilon \\
 is no longer constant: adjusting \(x_2\) will change the impact of
 \(x_1\) on \(Y\).
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-note-color-frame, opacityback=0, toptitle=1mm, toprule=.15mm, rightrule=.15mm, bottomtitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Productivy of a factory}, colbacktitle=quarto-callout-note-color!10!white, arc=.35mm, breakable, leftrule=.75mm, coltitle=black, bottomrule=.15mm, opacitybacktitle=0.6, left=2mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, bottomtitle=1mm, opacityback=0, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, left=2mm, toptitle=1mm, colback=white, titlerule=0mm, breakable, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Productivy of a factory}, coltitle=black, bottomrule=.15mm, arc=.35mm, colframe=quarto-callout-note-color-frame]
 
 Suppose that we are interested in studying the productivity of a
 factory. We want to predict the number of \texttt{units} produced on the
@@ -3758,7 +3853,7 @@ statistically significant. \(R^2 = 0.2775\)
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-80-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-83-1.pdf}
 
 }
 
@@ -3862,7 +3957,7 @@ and becomes
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-83-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-86-1.pdf}
 
 }
 
@@ -3878,7 +3973,7 @@ Lets merge this two plots together
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-84-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-87-1.pdf}
 
 }
 
@@ -3913,7 +4008,7 @@ Consider \texttt{Auto}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-85-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-88-1.pdf}
 
 }
 
@@ -4277,7 +4372,7 @@ because as the fitted values increase the resiudls will increase.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-94-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-97-1.pdf}
 
 }
 
@@ -4318,7 +4413,7 @@ regression:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-95-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-98-1.pdf}
 
 }
 
@@ -4468,7 +4563,7 @@ have studentized residauls between -2 and 2.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-96-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-99-1.pdf}
 
 }
 
@@ -4484,7 +4579,7 @@ or
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-97-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-100-1.pdf}
 
 }
 
@@ -4525,6 +4620,40 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 Residual standard error: 1.681 on 197 degrees of freedom
 Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
 F-statistic: 859.6 on 2 and 197 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(sales }\SpecialCharTok{\textasciitilde{}}\NormalTok{ TV }\SpecialCharTok{+}\NormalTok{ radio, advertising) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{  car}\SpecialCharTok{::}\FunctionTok{outlierTest}\NormalTok{()}\OtherTok{{-}\textgreater{}}\NormalTok{ outs}
+\NormalTok{outs }\CommentTok{\# 131th value is outlier}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     rstudent unadjusted p-value Bonferroni p
+131 -5.714235         4.0499e-08   8.0998e-06
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(sales }\SpecialCharTok{\textasciitilde{}}\NormalTok{ TV }\SpecialCharTok{+}\NormalTok{ radio, advertising) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{  car}\SpecialCharTok{::}\FunctionTok{outlierTest}\NormalTok{(., }\AttributeTok{cutoff =} \FloatTok{0.30}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     rstudent unadjusted p-value Bonferroni p
+131 -5.714235         4.0499e-08   8.0998e-06
+6   -3.295069         1.1678e-03   2.3356e-01
 \end{verbatim}
 
 Here is regression result after removing outliers
@@ -4659,7 +4788,7 @@ leverages are shown in \texttt{.hat} here.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-101-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-106-1.pdf}
 
 }
 
@@ -4682,7 +4811,7 @@ predictor variables are closely related to one another.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-102-1.pdf}
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-107-1.pdf}
 
 }
 
@@ -4832,11 +4961,3532 @@ Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8956
 F-statistic: 570.3 on 3 and 196 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
+To get a anova table;
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{anova}\NormalTok{(}\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{+}\NormalTok{ newspaper,advertising))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Variance Table
+
+Response: sales
+           Df Sum Sq Mean Sq   F value Pr(>F)    
+TV          1 3314.6  3314.6 1166.7308 <2e-16 ***
+radio       1 1545.6  1545.6  544.0501 <2e-16 ***
+newspaper   1    0.1     0.1    0.0312 0.8599    
+Residuals 196  556.8     2.8                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{coef}\NormalTok{(}\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{+}\NormalTok{ newspaper,advertising))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ (Intercept)           TV        radio    newspaper 
+ 2.938889369  0.045764645  0.188530017 -0.001037493 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{+}\NormalTok{ newspaper,advertising) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{confint}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                  2.5 %     97.5 %
+(Intercept)  2.32376228 3.55401646
+TV           0.04301371 0.04851558
+radio        0.17154745 0.20551259
+newspaper   -0.01261595 0.01054097
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vcov}\NormalTok{(}\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{+}\NormalTok{ newspaper,advertising))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+              (Intercept)            TV         radio     newspaper
+(Intercept)  0.0972867479 -2.657273e-04 -1.115489e-03 -5.910212e-04
+TV          -0.0002657273  1.945737e-06 -4.470395e-07 -3.265950e-07
+radio       -0.0011154895 -4.470395e-07  7.415335e-05 -1.780062e-05
+newspaper   -0.0005910212 -3.265950e-07 -1.780062e-05  3.446875e-05
+\end{verbatim}
+
 \bookmarksetup{startatroot}
 
-\hypertarget{summary-and-exercise-on-linear-model}{%
-\chapter{Summary and Exercise on Linear
-Model}\label{summary-and-exercise-on-linear-model}}
+\hypertarget{selecting-best-regression-varaibles}{%
+\chapter{Selecting best regression
+varaibles}\label{selecting-best-regression-varaibles}}
+
+You are creating a new regression mdoel or improving an exiting model.
+You have many regression varaibles and you want to select the vest
+subset of those varaibles.
+
+The \texttt{step} function can perform stepwise regression, either
+forward or backward. Backward stepwise regression starts with many
+varaibles and removes the underperformeners:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lm }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(sales }\SpecialCharTok{\textasciitilde{}}\NormalTok{ TV }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{+}\NormalTok{ newspaper, advertising) }\CommentTok{\# full model}
+\NormalTok{stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(lm, }\AttributeTok{direction =} \StringTok{"backward"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }\CommentTok{\# best model}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=212.79
+sales ~ TV + radio + newspaper
+
+            Df Sum of Sq    RSS    AIC
+- newspaper  1      0.09  556.9 210.82
+<none>                    556.8 212.79
+- radio      1   1361.74 1918.6 458.20
+- TV         1   3058.01 3614.8 584.90
+
+Step:  AIC=210.82
+sales ~ TV + radio
+
+        Df Sum of Sq    RSS    AIC
+<none>                556.9 210.82
+- radio  1    1545.6 2102.5 474.52
+- TV     1    3061.6 3618.5 583.10
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ TV + radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7977 -0.8752  0.2422  1.1708  2.8328 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.92110    0.29449   9.919   <2e-16 ***
+TV           0.04575    0.00139  32.909   <2e-16 ***
+radio        0.18799    0.00804  23.382   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.681 on 197 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
+F-statistic: 859.6 on 2 and 197 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+backward stepwise regression is the easiest approach.
+
+Backward stepwise is easy but sometimes its not feasible to start with
+everything because you have too many candidate variables. In that case
+use forward stepwise regression; which will start with nothing and
+incrementatlly add variables that improve regression. It stops when no
+further improvement is possible
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{,advertising)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ 1, data = advertising)
+
+Coefficients:
+(Intercept)  
+      14.02  
+\end{verbatim}
+
+we start with minimum model. We must tell step which candidate varaibels
+are available for inclusing in the model. We use \texttt{scope} argument
+for that.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\DecValTok{1}\NormalTok{,advertising) }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"forward"}\NormalTok{, }\AttributeTok{scope =}\NormalTok{ (}\SpecialCharTok{\textasciitilde{}}\NormalTok{ TV }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{+}\NormalTok{ newspaper), }\AttributeTok{trace =} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ TV + radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7977 -0.8752  0.2422  1.1708  2.8328 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.92110    0.29449   9.919   <2e-16 ***
+TV           0.04575    0.00139  32.909   <2e-16 ***
+radio        0.18799    0.00804  23.382   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.681 on 197 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
+F-statistic: 859.6 on 2 and 197 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+we have the same result with backward, in reality these results may
+differ.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(lm, }\AttributeTok{direction =} \StringTok{"both"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=212.79
+sales ~ TV + radio + newspaper
+
+            Df Sum of Sq    RSS    AIC
+- newspaper  1      0.09  556.9 210.82
+<none>                    556.8 212.79
+- radio      1   1361.74 1918.6 458.20
+- TV         1   3058.01 3614.8 584.90
+
+Step:  AIC=210.82
+sales ~ TV + radio
+
+            Df Sum of Sq    RSS    AIC
+<none>                    556.9 210.82
++ newspaper  1      0.09  556.8 212.79
+- radio      1   1545.62 2102.5 474.52
+- TV         1   3061.57 3618.5 583.10
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ TV + radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.7977 -0.8752  0.2422  1.1708  2.8328 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.92110    0.29449   9.919   <2e-16 ***
+TV           0.04575    0.00139  32.909   <2e-16 ***
+radio        0.18799    0.00804  23.382   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.681 on 197 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8962 
+F-statistic: 859.6 on 2 and 197 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{MASS}\SpecialCharTok{::}\FunctionTok{boxcox}\NormalTok{(lm)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-119-1.pdf}
+
+}
+
+\end{figure}
+
+Detecting the outliers :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{car}\SpecialCharTok{::}\FunctionTok{outlierTest}\NormalTok{(lm)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     rstudent unadjusted p-value Bonferroni p
+131 -5.757983          3.267e-08    6.534e-06
+\end{verbatim}
+
+\includegraphics{rcook1.png}
+
+\includegraphics{rcook2.png}
+
+\hypertarget{identifying-influential-observations}{%
+\subsection{Identifying Influential
+observations}\label{identifying-influential-observations}}
+
+You want to identify the observatipons that are having the ost influence
+on the regression model, this is useful for diagnosing possible porblems
+with the data.
+
+\textbf{Solution}
+
+The \texttt{influence.measures} function reports several useful
+statistics for identifying inflıuentioal obs. and it flags the
+significant ones with an asterisk(*).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lm }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ newspaper,advertising)}
+\NormalTok{lm }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\CommentTok{\# r2 is 0.6422}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ TV + newspaper, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.6231 -1.7346 -0.0948  1.8926  8.4512 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 5.774948   0.525338  10.993  < 2e-16 ***
+TV          0.046901   0.002581  18.173  < 2e-16 ***
+newspaper   0.044219   0.010174   4.346 2.22e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.121 on 197 degrees of freedom
+Multiple R-squared:  0.6458,    Adjusted R-squared:  0.6422 
+F-statistic: 179.6 on 2 and 197 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inf }\OtherTok{=} \FunctionTok{influence.measures}\NormalTok{(lm)}
+\end{Highlighting}
+\end{Shaded}
+
+We need to filter for columns which has at least one true:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{as.data.frame}\NormalTok{(inf}\SpecialCharTok{$}\NormalTok{is.inf) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{obs =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{200}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{if\_any}\NormalTok{(}\FunctionTok{everything}\NormalTok{(), }\SpecialCharTok{\textasciitilde{}}\NormalTok{. }\SpecialCharTok{==} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pull}\NormalTok{(}\StringTok{"obs"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ infss}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 13 x 8
+   dfb.1_ dfb.TV dfb.nwsp dffit cov.r cook.d hat     obs
+   <lgl>  <lgl>  <lgl>    <lgl> <lgl> <lgl>  <lgl> <int>
+ 1 FALSE  FALSE  FALSE    FALSE FALSE FALSE  FALSE     1
+ 2 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE     3
+ 3 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE     6
+ 4 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE    13
+ 5 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  TRUE     17
+ 6 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE    26
+ 7 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  TRUE     76
+ 8 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  TRUE    102
+ 9 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   119
+10 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   129
+11 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   132
+12 FALSE  FALSE  FALSE    TRUE  TRUE  FALSE  FALSE   166
+13 FALSE  FALSE  FALSE    FALSE TRUE  FALSE  FALSE   179
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{infss}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ [1]   1   3   6  13  17  26  76 102 119 129 132 166 179
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ newspaper,advertising[}\SpecialCharTok{{-}}\NormalTok{infss,]) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }\CommentTok{\# r\^{}2 improves!}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ TV + newspaper, data = advertising[-infss, 
+    ])
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.2432 -1.6062 -0.0775  1.9088  6.9490 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 5.348561   0.512438   10.44  < 2e-16 ***
+TV          0.047992   0.002574   18.65  < 2e-16 ***
+newspaper   0.058656   0.011501    5.10  8.4e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.918 on 184 degrees of freedom
+Multiple R-squared:  0.6866,    Adjusted R-squared:  0.6832 
+F-statistic: 201.6 on 2 and 184 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lm12 }\OtherTok{\textless{}{-}}\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ newspaper,advertising[}\SpecialCharTok{{-}}\NormalTok{infss,])}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{testing-residuals-for-autocorrelation}{%
+\section{testing residuals for
+autocorrelation}\label{testing-residuals-for-autocorrelation}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lmtest)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Zorunlu paket yükleniyor: zoo
+\end{verbatim}
+
+\begin{verbatim}
+
+Attaching package: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+The following objects are masked from 'package:base':
+
+    as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dwtest}\NormalTok{(lm) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+    Durbin-Watson test
+
+data:  lm
+DW = 1.9685, p-value = 0.4097
+alternative hypothesis: true autocorrelation is greater than 0
+\end{verbatim}
+
+if \$ p \textgreater{} 0.05\$ no evidence of correaltion.
+
+\hypertarget{the-marketing-plan}{%
+\section{The Marketing Plan}\label{the-marketing-plan}}
+
+Lets go back to our 7 questions about the \texttt{advertising}data:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Is there a relationship between advertising sales and budget?}
+\end{enumerate}
+
+\begin{verbatim}
+To get an answer to this question, we regress `sales` onto our budget related varaibles `TV`, `radio`, and `newspaper` and test the hypothesis $H_0: \beta_{TV}=\beta_{radio}=\beta_{newspaper} = 0$ with F-statistic.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{advertising }\SpecialCharTok{\%\textless{}\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\StringTok{"sales\_hat"}\NormalTok{)}
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(sales }\SpecialCharTok{\textasciitilde{}}\NormalTok{., advertising) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = sales ~ ., data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.8277 -0.8908  0.2418  1.1893  2.8292 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.938889   0.311908   9.422   <2e-16 ***
+TV           0.045765   0.001395  32.809   <2e-16 ***
+radio        0.188530   0.008611  21.893   <2e-16 ***
+newspaper   -0.001037   0.005871  -0.177     0.86    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.686 on 196 degrees of freedom
+Multiple R-squared:  0.8972,    Adjusted R-squared:  0.8956 
+F-statistic: 570.3 on 3 and 196 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+In this case the p-value corresponding to the F-statistic is very low,
+indicating a clear evidence of a relationship between advertising and
+sales.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \emph{How strong is the relationship?}
+
+  This is about model accuracy. We can check \(R^2\); the predictors
+  explain almost 90\% of the variance in \texttt{sales}.
+\item
+  \emph{Which media contribute to sales?}
+
+  We check p values of the coefficients. newspaper is not statistically
+  significant; only \texttt{TV} and \texttt{radio} are realated to
+  sales.
+\item
+  \emph{How large is the effect of each medium on sales?}
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{.,advertising) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{dwplot}\NormalTok{(}\AttributeTok{ci =} \FloatTok{0.95}\NormalTok{,}\AttributeTok{dot\_args =} \FunctionTok{list}\NormalTok{(}\AttributeTok{size=}\DecValTok{2}\NormalTok{), }\AttributeTok{vline =} \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{color =} \StringTok{"grey50"}\NormalTok{, }\AttributeTok{linetype =}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-126-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{verbatim}
+We use standard errors to construct confidence intervals for the coefficients. If any of the confidence intervals include 0 that predictor is not statistically significant. Collinearty can result in very wide standard errors; making confint to include zero. Was the collineary the reason that confint of newspaper to be so wide? Lets check VIF scores
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{car}\SpecialCharTok{::}\FunctionTok{vif}\NormalTok{(}\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{.,advertising))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       TV     radio newspaper 
+ 1.004611  1.144952  1.145187 
+\end{verbatim}
+
+No all the VIF scores suggest no evidence of collinearity.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\item
+  \emph{How accurately can we predict future sales?}
+
+  After deciding on our model
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV}\SpecialCharTok{+}\NormalTok{radio }\SpecialCharTok{+}\NormalTok{ TV }\SpecialCharTok{*}\NormalTok{ radio, advertising) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ TV + radio + TV * radio, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.3366 -0.4028  0.1831  0.5948  1.5246 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 6.750e+00  2.479e-01  27.233   <2e-16 ***
+TV          1.910e-02  1.504e-03  12.699   <2e-16 ***
+radio       2.886e-02  8.905e-03   3.241   0.0014 ** 
+TV:radio    1.086e-03  5.242e-05  20.727   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9435 on 196 degrees of freedom
+Multiple R-squared:  0.9678,    Adjusted R-squared:  0.9673 
+F-statistic:  1963 on 3 and 196 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{verbatim}
+The accuracy of our estimation depends on whether we wish to predict an individual response, $Y = f(X) + \epsilon$, or the average response, $f(X)$. If the former we use a prediction interval, and if the latter, we use a confidecen interval. Prediction intervals will always be wider than confidence intervals because they account for the uncertainty assocaited with $\epsilon$, the irreducible error.
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\item
+  \emph{Is the relationship linear?}
+
+  We can use residual plots to identify non-linearity: the plot will
+  show a pattern.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ radio, advertising) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .hat, }\AttributeTok{y =}\NormalTok{ .fitted) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter3_files/figure-pdf/unnamed-chunk-129-1.pdf}
+
+}
+
+\end{figure}
+
+the model seems okay. If we had encountered a non-linearity we would
+have to make transformations to the predictors.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\item
+  \emph{Is there synergy among the advertising media?}
+
+  LR assumes additive relationship. When we account for interacation
+  term our model is improved and the interaction term was statistically
+  significant.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{TV }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{+}\NormalTok{ radio }\SpecialCharTok{*}\NormalTok{ TV, advertising) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = sales ~ TV + radio + radio * TV, data = advertising)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.3366 -0.4028  0.1831  0.5948  1.5246 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 6.750e+00  2.479e-01  27.233   <2e-16 ***
+TV          1.910e-02  1.504e-03  12.699   <2e-16 ***
+radio       2.886e-02  8.905e-03   3.241   0.0014 ** 
+TV:radio    1.086e-03  5.242e-05  20.727   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9435 on 196 degrees of freedom
+Multiple R-squared:  0.9678,    Adjusted R-squared:  0.9673 
+F-statistic:  1963 on 3 and 196 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{comparison-of-linear-regression-with-k-nearest-neighbors}{%
+\section{Comparison of Linear Regression with K-Nearest
+Neighbors}\label{comparison-of-linear-regression-with-k-nearest-neighbors}}
+
+Linear regression is a parametric approach because it assumes a linear
+functinoal form for \(f(x)\). Parametric approaches are easy to fit,
+coefficients have simple interpretations and test of statistical
+significance can be easily performed. But they make strong assumptions
+about the form of \(f(X)\). If the assumed functional for is not
+correct, and the prediciton is our goal, then we see a poor performance
+of fit.
+
+In contrast, \emph{non-parametric} methods do not explicity assume a
+parametric for of \(f(X)\), so they provide a more flexible approach for
+performing regression. One of a non-parametric method is \emph{K-nearest
+neighbors regressin} (KNN regression) .
+
+The KNN regression method is closely related to the KNN classifier in
+Chapter 2. Given a value for \emph{K} and a prediciton point \(x_0\),
+KNN regression first identifies the \emph{K} traiinng observations that
+are closest to \(x_0\) represented by \(N_0\). It then estimates
+\(f(x_0)\) using the average of all the training responses in \(N_0\).
+In other words:
+
+\[
+\hat{f}(x_0) = \frac{1}{K}\sum_{x \in N_0} y_i
+\]
+
+The optimal \(K\) value will depend on the \emph{bias-variance
+tradeoff}. A small value for \(K\) provides the most flexile fit, which
+will have low bias but high variance. This variance is due to the fact
+that the prediciton in a given region is entirely dependent on just one
+obsrvation. In contrast, larger values of \(K\) will provide a smoother
+and less variable fit; the prediction in a region is an average of
+several points, and so changing one observation has a smaller effect.
+However, the smoothing may cause bias by masking some of the structure
+in \(f(x)\). Chapter 5 will introduce several approaches for estiamting
+test error rates which can be used to identify the optimal \(K\) in KNN
+regression.
+
+\emph{The parametric approach will outperform the non-parametric
+approach if the parametric form that has been selected is close to the
+true for of} \(f\).
+
+\includegraphics{fig3.17.png}
+
+in Figure one true relationship is linear, represented by the black
+line. Blue curves response to the KNN fits using \(K=1\) and \(K=9\).
+\(K=9\) is much closer to \(f(x)\). However, since the true relationship
+is linear, KNN approach cannot compete with a linear regression; a
+non-parametric approach incurs a cost in variance that is not offset by
+reduction in bias.
+
+\includegraphics{fig3.18.png}
+
+The blue dashed line is the OLS regression which outperfroms KNN for
+this data. Green sloid line, plotted as a function of \(1/K\) represents
+the test set mean squared error(MSE) for KNN. The KNN errors are wlell
+above the black dashed line, which is the test MSE for linear
+regression. When K is large KNN performs only a little worse that least
+squares regression in terms of MSE. It performs far worse when K is
+small.
+
+In practice true relationship between \(X\) and \(Y\) is rarely exactly
+linear.
+
+\includegraphics{fig3.19.png}
+
+Fig 3.10 examines the relative performances of OLS regression and KNN
+under increasing levels of non-linearity in the relationship between
+\(X\) and \(Y\). In the top row, the true relationship is nearly linear.
+In this case we see that test MSE for linear regression is still
+superior to that of KNN for low values of K. However, fro \(4 \leq K\)
+KNN outperforms linear regression. The secodn row has more
+non-linearity. In this case KNN is better for all valeus of K.
+
+So, KNN performs slightly worse than linear regression when the
+relationship is linear, but much better for non-linear situations. Does
+this mean we should favour KNN In relaity because the relationships are
+rarely linear? No, in relaity, even when the true relationship is highly
+non linear, KNN may still provide inferior resutls to linear regression.
+Fig 3-18 and 19 had \(p=1\), but for larger \(p\) KNN often performs
+worse than linear regression.
+
+\includegraphics{fig3.20.png}
+
+Fig 20 shows a strong non-linear situation. When \(p=1\)or \(p=2\) KNN
+is better, but for \(p=3\) results are mixed, for \(4\leqp\) LR is
+superior. \emph{This decrease in performance as the dimensions increases
+is a common problem for KNN}
+
+As a general rule parametric methods will tend to outperform
+non-parametric approaches when there is small number of observations per
+predictor.
+
+\bookmarksetup{startatroot}
+
+\hypertarget{exercise}{%
+\chapter{Exercise}\label{exercise}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{suppressPackageStartupMessages}\NormalTok{(\{}
+  \FunctionTok{library}\NormalTok{(tidyverse)}
+  \FunctionTok{library}\NormalTok{(tidymodels)}
+  \FunctionTok{library}\NormalTok{(hrbrthemes)}
+  \FunctionTok{library}\NormalTok{(patchwork)}
+  \FunctionTok{library}\NormalTok{(magrittr)}
+  \FunctionTok{library}\NormalTok{(corrplot)}
+\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{slr}{%
+\section{SLR}\label{slr}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{=}\NormalTok{ MASS}\SpecialCharTok{::}\NormalTok{Boston}
+\NormalTok{data }\SpecialCharTok{\%\textless{}\textgreater{}\%} \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 14
+      crim    zn indus  chas   nox    rm   age   dis   rad   tax ptratio black
+     <dbl> <dbl> <dbl> <int> <dbl> <dbl> <dbl> <dbl> <int> <dbl>   <dbl> <dbl>
+ 1 0.00632  18    2.31     0 0.538  6.58  65.2  4.09     1   296    15.3  397.
+ 2 0.0273    0    7.07     0 0.469  6.42  78.9  4.97     2   242    17.8  397.
+ 3 0.0273    0    7.07     0 0.469  7.18  61.1  4.97     2   242    17.8  393.
+ 4 0.0324    0    2.18     0 0.458  7.00  45.8  6.06     3   222    18.7  395.
+ 5 0.0690    0    2.18     0 0.458  7.15  54.2  6.06     3   222    18.7  397.
+ 6 0.0298    0    2.18     0 0.458  6.43  58.7  6.06     3   222    18.7  394.
+ 7 0.0883   12.5  7.87     0 0.524  6.01  66.6  5.56     5   311    15.2  396.
+ 8 0.145    12.5  7.87     0 0.524  6.17  96.1  5.95     5   311    15.2  397.
+ 9 0.211    12.5  7.87     0 0.524  5.63 100    6.08     5   311    15.2  387.
+10 0.170    12.5  7.87     0 0.524  6.00  85.9  6.59     5   311    15.2  387.
+# i 496 more rows
+# i 2 more variables: lstat <dbl>, medv <dbl>
+\end{verbatim}
+
+We are going to predict \texttt{medv}(median house value) in Boston,
+using 13 predictors such as \texttt{rm}(average number of rooms per
+house), \texttt{age}(avarege age of houses), and \texttt{lstat} (percent
+of household with low socioeconomics status).
+
+Do a linear regression of \texttt{lstat} on \texttt{medv}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ slr\_res }
+
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.168  -3.990  -1.318   2.034  24.500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 34.55384    0.56263   61.41   <2e-16 ***
+lstat       -0.95005    0.03873  -24.53   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.216 on 504 degrees of freedom
+Multiple R-squared:  0.5441,    Adjusted R-squared:  0.5432 
+F-statistic: 601.6 on 1 and 504 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{names}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ [1] "coefficients"  "residuals"     "effects"       "rank"         
+ [5] "fitted.values" "assign"        "qr"            "df.residual"  
+ [9] "xlevels"       "call"          "terms"         "model"        
+\end{verbatim}
+
+Get the confidence intervals
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{confint}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                2.5 %     97.5 %
+(Intercept) 33.448457 35.6592247
+lstat       -1.026148 -0.8739505
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ dotwhisker}\SpecialCharTok{::}\FunctionTok{dwplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-5-1.pdf}
+
+}
+
+\end{figure}
+
+Lets do some predictions from this model. Lets create predictions for
+cases when \texttt{lstat} is equal to 5,10, and 15. We can use
+\texttt{predict} function for this. Here is a confidence interval for
+our p
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{predict}\NormalTok{(., }\FunctionTok{tibble}\NormalTok{(}\AttributeTok{lstat =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{15}\NormalTok{)), }\AttributeTok{interval =} \StringTok{"confidence"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       fit      lwr      upr
+1 29.80359 29.00741 30.59978
+2 25.05335 24.47413 25.63256
+3 20.30310 19.73159 20.87461
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{predict}\NormalTok{(., }\FunctionTok{tibble}\NormalTok{(}\AttributeTok{lstat =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{15}\NormalTok{)), }\AttributeTok{interval =} \StringTok{"prediction"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       fit       lwr      upr
+1 29.80359 17.565675 42.04151
+2 25.05335 12.827626 37.27907
+3 20.30310  8.077742 32.52846
+\end{verbatim}
+
+Lets plot \texttt{medv} and \texttt{lstat} along with the least squares
+regression line.
+
+We can either:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{medv, data}\SpecialCharTok{$}\NormalTok{lstat)}
+\FunctionTok{abline}\NormalTok{(slr\_res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-8-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ lstat, }\AttributeTok{y =}\NormalTok{ medv) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{geom\_abline}\NormalTok{(}\AttributeTok{intercept =}\NormalTok{ slr\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{], }\AttributeTok{slope =}\NormalTok{ slr\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\AttributeTok{size =}\FloatTok{1.1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 8
+    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
+   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
+ 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
+ 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
+ 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
+ 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
+ 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
+ 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
+ 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
+ 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
+ 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
+10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
+# i 496 more rows
+\end{verbatim}
+
+\begin{verbatim}
+Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+i Please use `linewidth` instead.
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-9-1.pdf}
+
+}
+
+\end{figure}
+
+This looks like not a linear relationship actually; lets confirm this
+with our residual plot. Since this is a SLR i can plot \(x\) vs \(e_i\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{ .resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se=}\NormalTok{F) }\OtherTok{{-}\textgreater{}}\NormalTok{ p1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 8
+    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
+   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
+ 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
+ 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
+ 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
+ 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
+ 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
+ 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
+ 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
+ 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
+ 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
+10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
+# i 496 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{ .std.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se=}\NormalTok{F) }\OtherTok{{-}\textgreater{}}\NormalTok{ p2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 8
+    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
+   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
+ 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
+ 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
+ 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
+ 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
+ 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
+ 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
+ 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
+ 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
+ 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
+10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
+# i 496 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-10-1.pdf}
+
+}
+
+\end{figure}
+
+Our suspicions are true, it looks like there may not be a linear
+relationship, this shows a quadratic relationship.
+
+Our leverage statistics are given in the \texttt{.hat} column, but we
+can also get them using \texttt{hatvalues}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{hatvalues}\NormalTok{(slr\_res))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-11-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{which.max}\NormalTok{(}\FunctionTok{hatvalues}\NormalTok{(slr\_res))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+375 
+375 
+\end{verbatim}
+
+Lets check the outliers by plotting standardized residuals vs fitted
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(id,.std.resid) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pull}\NormalTok{(}\StringTok{"id"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ outliers}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 10 x 2
+      id .std.resid
+   <int>      <dbl>
+ 1   164       3.00
+ 2   167       3.06
+ 3   187       3.17
+ 4   226       3.20
+ 5   258       3.27
+ 6   263       3.20
+ 7   268       3.63
+ 8   370       3.06
+ 9   372       3.95
+10   373       3.85
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# visualize the outliers}
+
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{.std.resid, }\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{color =} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{, F,T)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =}\DecValTok{2}\NormalTok{, }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{  ggrepel}\SpecialCharTok{::}\FunctionTok{geom\_text\_repel}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{,id,}\StringTok{""}\NormalTok{)), }\AttributeTok{max.overlaps =} \DecValTok{100}\NormalTok{, }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{scale\_color\_ipsum}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-13-1.pdf}
+
+}
+
+\end{figure}
+
+Leverage points: we plot std res vs leverage
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(id, .std.resid,.hat) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{pull}\NormalTok{(}\StringTok{"id"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ highlevgs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 5 x 3
+     id .std.resid   .hat
+  <int>      <dbl>  <dbl>
+1   142       2.04 0.0204
+2   374       2.00 0.0210
+3   375       2.50 0.0269
+4   413       2.60 0.0203
+5   415       1.23 0.0250
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# high leverage points}
+
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{.hat, }\AttributeTok{y =}\NormalTok{ .std.resid, }\AttributeTok{color =} \FunctionTok{ifelse}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{,F,T)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =}\DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{  ggrepel}\SpecialCharTok{::}\FunctionTok{geom\_text\_repel}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{ifelse}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{,id,}\StringTok{""}\NormalTok{)), }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+}\FunctionTok{scale\_color\_ipsum}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-14-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.168  -3.990  -1.318   2.034  24.500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 34.55384    0.56263   61.41   <2e-16 ***
+lstat       -0.95005    0.03873  -24.53   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.216 on 504 degrees of freedom
+Multiple R-squared:  0.5441,    Adjusted R-squared:  0.5432 
+F-statistic: 601.6 on 1 and 504 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(outliers,highlevgs),]) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-14.633  -3.465  -1.012   1.937  19.060 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  34.0494     0.5110   66.63   <2e-16 ***
+lstat        -0.9538     0.0358  -26.64   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.376 on 489 degrees of freedom
+Multiple R-squared:  0.5921,    Adjusted R-squared:  0.5912 
+F-statistic: 709.7 on 1 and 489 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Removing high leverages and outliers improeves our result.
+
+\hypertarget{multiple-linear-regression-1}{%
+\section{Multiple linear
+Regression}\label{multiple-linear-regression-1}}
+
+\[
+medv = \beta_0 + \beta_1 lstat + \beta_2 age 
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat + age, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.981  -3.978  -1.283   1.968  23.158 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 33.22276    0.73085  45.458  < 2e-16 ***
+lstat       -1.03207    0.04819 -21.416  < 2e-16 ***
+age          0.03454    0.01223   2.826  0.00491 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.173 on 503 degrees of freedom
+Multiple R-squared:  0.5513,    Adjusted R-squared:  0.5495 
+F-statistic:   309 on 2 and 503 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Lets do a regression including all varaibles
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{., data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ mlr}
+\NormalTok{mlr }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ ., data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.595  -2.730  -0.518   1.777  26.199 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  3.646e+01  5.103e+00   7.144 3.28e-12 ***
+crim        -1.080e-01  3.286e-02  -3.287 0.001087 ** 
+zn           4.642e-02  1.373e-02   3.382 0.000778 ***
+indus        2.056e-02  6.150e-02   0.334 0.738288    
+chas         2.687e+00  8.616e-01   3.118 0.001925 ** 
+nox         -1.777e+01  3.820e+00  -4.651 4.25e-06 ***
+rm           3.810e+00  4.179e-01   9.116  < 2e-16 ***
+age          6.922e-04  1.321e-02   0.052 0.958229    
+dis         -1.476e+00  1.995e-01  -7.398 6.01e-13 ***
+rad          3.060e-01  6.635e-02   4.613 5.07e-06 ***
+tax         -1.233e-02  3.760e-03  -3.280 0.001112 ** 
+ptratio     -9.527e-01  1.308e-01  -7.283 1.31e-12 ***
+black        9.312e-03  2.686e-03   3.467 0.000573 ***
+lstat       -5.248e-01  5.072e-02 -10.347  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.745 on 492 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7338 
+F-statistic: 108.1 on 13 and 492 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Lets calculate the VIF values
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mlr }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ car}\SpecialCharTok{::}\FunctionTok{vif}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+    crim       zn    indus     chas      nox       rm      age      dis 
+1.792192 2.298758 3.991596 1.073995 4.393720 1.933744 3.100826 3.955945 
+     rad      tax  ptratio    black    lstat 
+7.484496 9.008554 1.799084 1.348521 2.941491 
+\end{verbatim}
+
+\texttt{age} has the highest p-value, lets remove that from the
+regression
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{. }\SpecialCharTok{{-}}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ . - age, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.6054  -2.7313  -0.5188   1.7601  26.2243 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  36.436927   5.080119   7.172 2.72e-12 ***
+crim         -0.108006   0.032832  -3.290 0.001075 ** 
+zn            0.046334   0.013613   3.404 0.000719 ***
+indus         0.020562   0.061433   0.335 0.737989    
+chas          2.689026   0.859598   3.128 0.001863 ** 
+nox         -17.713540   3.679308  -4.814 1.97e-06 ***
+rm            3.814394   0.408480   9.338  < 2e-16 ***
+dis          -1.478612   0.190611  -7.757 5.03e-14 ***
+rad           0.305786   0.066089   4.627 4.75e-06 ***
+tax          -0.012329   0.003755  -3.283 0.001099 ** 
+ptratio      -0.952211   0.130294  -7.308 1.10e-12 ***
+black         0.009321   0.002678   3.481 0.000544 ***
+lstat        -0.523852   0.047625 -10.999  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.74 on 493 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7343 
+F-statistic: 117.3 on 12 and 493 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{interaction-terms}{%
+\subsection{Interaction Terms}\label{interaction-terms}}
+
+following model
+
+\[
+medv = \beta_0 + \beta_1 lstat + \beta_2 age + \beta_3 lstat \cdot age + \epsilon
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{*}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# short for fit(medv\textasciitilde{} lstat + age + lstat * age)}
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat * age, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.806  -4.045  -1.333   2.085  27.552 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 36.0885359  1.4698355  24.553  < 2e-16 ***
+lstat       -1.3921168  0.1674555  -8.313 8.78e-16 ***
+age         -0.0007209  0.0198792  -0.036   0.9711    
+lstat:age    0.0041560  0.0018518   2.244   0.0252 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.149 on 502 degrees of freedom
+Multiple R-squared:  0.5557,    Adjusted R-squared:  0.5531 
+F-statistic: 209.3 on 3 and 502 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{non-linaer-transformation-of-the-predictors}{%
+\subsection{Non-linaer Transformation of the
+predictors}\label{non-linaer-transformation-of-the-predictors}}
+
+\[
+medv = \beta_0 + \beta_1 lstat + \beta_2 lstat^2 + \epsilon
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat + I(lstat^2), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.2834  -3.8313  -0.5295   2.3095  25.4148 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 42.862007   0.872084   49.15   <2e-16 ***
+lstat       -2.332821   0.123803  -18.84   <2e-16 ***
+I(lstat^2)   0.043547   0.003745   11.63   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.524 on 503 degrees of freedom
+Multiple R-squared:  0.6407,    Adjusted R-squared:  0.6393 
+F-statistic: 448.5 on 2 and 503 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+The coefficient of the quadratic term is statistically significant:
+model is improved.
+
+We use \texttt{anova} function to further quantify the extent to which
+quadratic fit is superior to linear fit. We It takes models as its
+arguments. We want to compare two models, lets create them again and
+compare them
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ modelLin}
+
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ modelQuad}
+
+\FunctionTok{anova}\NormalTok{(modelLin, modelQuad)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Variance Table
+
+Model 1: medv ~ lstat
+Model 2: medv ~ lstat + I(lstat^2)
+  Res.Df   RSS Df Sum of Sq     F    Pr(>F)    
+1    504 19472                                 
+2    503 15347  1    4125.1 135.2 < 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+The annova function performs a hypothesis test comparing the two models.
+The null hypothesis is that the two models fit the data equally well,
+and the alternative hypothesis is that the full model is superior. Here
+we reject \(H_0\); and the model indcludes quadratic term is superior to
+the linaer odel. This is not a suprise to us, because we already
+suspected this.
+
+Lets do the plots again
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Linear model residual plot"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ p1}
+
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Quadratic model residual plot"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ p2}
+
+\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-23-1.pdf}
+
+}
+
+\end{figure}
+
+Now on the quadratic model it looks like there is still some pattern in
+the residuals. Should we create a cubic fit? Now what we can do is
+actually insert like 10 polynomial terms and check whether they are
+significant or not
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{10}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ poly(lstat, 10), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.5340  -3.0286  -0.7507   2.0437  26.4738 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         22.5328     0.2311  97.488  < 2e-16 ***
+poly(lstat, 10)1  -152.4595     5.1993 -29.323  < 2e-16 ***
+poly(lstat, 10)2    64.2272     5.1993  12.353  < 2e-16 ***
+poly(lstat, 10)3   -27.0511     5.1993  -5.203 2.88e-07 ***
+poly(lstat, 10)4    25.4517     5.1993   4.895 1.33e-06 ***
+poly(lstat, 10)5   -19.2524     5.1993  -3.703 0.000237 ***
+poly(lstat, 10)6     6.5088     5.1993   1.252 0.211211    
+poly(lstat, 10)7     1.9416     5.1993   0.373 0.708977    
+poly(lstat, 10)8    -6.7299     5.1993  -1.294 0.196133    
+poly(lstat, 10)9     8.4168     5.1993   1.619 0.106116    
+poly(lstat, 10)10   -7.3351     5.1993  -1.411 0.158930    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.199 on 495 degrees of freedom
+Multiple R-squared:  0.6867,    Adjusted R-squared:  0.6804 
+F-statistic: 108.5 on 10 and 495 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We see that up to 5 polynomial terms are statistically significant
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{5}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ poly(lstat, 5), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-13.5433  -3.1039  -0.7052   2.0844  27.1153 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       22.5328     0.2318  97.197  < 2e-16 ***
+poly(lstat, 5)1 -152.4595     5.2148 -29.236  < 2e-16 ***
+poly(lstat, 5)2   64.2272     5.2148  12.316  < 2e-16 ***
+poly(lstat, 5)3  -27.0511     5.2148  -5.187 3.10e-07 ***
+poly(lstat, 5)4   25.4517     5.2148   4.881 1.42e-06 ***
+poly(lstat, 5)5  -19.2524     5.2148  -3.692 0.000247 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.215 on 500 degrees of freedom
+Multiple R-squared:  0.6817,    Adjusted R-squared:  0.6785 
+F-statistic: 214.2 on 5 and 500 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{5}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"poly 5 model residual plot"}\NormalTok{)  }\OtherTok{{-}\textgreater{}}\NormalTok{ p3}
+
+\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2 }\SpecialCharTok{+}\NormalTok{ p3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-26-1.pdf}
+
+}
+
+\end{figure}
+
+Instead of adding the polynomial transformations, we could try log
+transformation
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(lstat),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"log model residual plot"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-27-1.pdf}
+
+}
+
+\end{figure}
+
+This is actually very nice.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(rm),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ log(rm), data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-19.487  -2.875  -0.104   2.837  39.816 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -76.488      5.028  -15.21   <2e-16 ***
+log(rm)       54.055      2.739   19.73   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.915 on 504 degrees of freedom
+Multiple R-squared:  0.4358,    Adjusted R-squared:  0.4347 
+F-statistic: 389.3 on 1 and 504 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{.,data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ lmm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{anova}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Variance Table
+
+Response: medv
+           Df  Sum Sq Mean Sq  F value    Pr(>F)    
+crim        1  6440.8  6440.8 286.0300 < 2.2e-16 ***
+zn          1  3554.3  3554.3 157.8452 < 2.2e-16 ***
+indus       1  2551.2  2551.2 113.2984 < 2.2e-16 ***
+chas        1  1529.8  1529.8  67.9393 1.543e-15 ***
+nox         1    76.2    76.2   3.3861 0.0663505 .  
+rm          1 10938.1 10938.1 485.7530 < 2.2e-16 ***
+age         1    90.3    90.3   4.0087 0.0458137 *  
+dis         1  1779.5  1779.5  79.0262 < 2.2e-16 ***
+rad         1    34.1    34.1   1.5159 0.2188325    
+tax         1   329.6   329.6  14.6352 0.0001472 ***
+ptratio     1  1309.3  1309.3  58.1454 1.266e-13 ***
+black       1   593.3   593.3  26.3496 4.109e-07 ***
+lstat       1  2410.8  2410.8 107.0634 < 2.2e-16 ***
+Residuals 492 11078.8    22.5                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{anova}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Variance Table
+
+Response: medv
+           Df  Sum Sq Mean Sq  F value    Pr(>F)    
+crim        1  6440.8  6440.8 286.0300 < 2.2e-16 ***
+zn          1  3554.3  3554.3 157.8452 < 2.2e-16 ***
+indus       1  2551.2  2551.2 113.2984 < 2.2e-16 ***
+chas        1  1529.8  1529.8  67.9393 1.543e-15 ***
+nox         1    76.2    76.2   3.3861 0.0663505 .  
+rm          1 10938.1 10938.1 485.7530 < 2.2e-16 ***
+age         1    90.3    90.3   4.0087 0.0458137 *  
+dis         1  1779.5  1779.5  79.0262 < 2.2e-16 ***
+rad         1    34.1    34.1   1.5159 0.2188325    
+tax         1   329.6   329.6  14.6352 0.0001472 ***
+ptratio     1  1309.3  1309.3  58.1454 1.266e-13 ***
+black       1   593.3   593.3  26.3496 4.109e-07 ***
+lstat       1  2410.8  2410.8 107.0634 < 2.2e-16 ***
+Residuals 492 11078.8    22.5                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"backward"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=1589.64
+medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+    tax + ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- age      1      0.06 11079 1587.7
+- indus    1      2.52 11081 1587.8
+<none>                 11079 1589.6
+- chas     1    218.97 11298 1597.5
+- tax      1    242.26 11321 1598.6
+- crim     1    243.22 11322 1598.6
+- zn       1    257.49 11336 1599.3
+- black    1    270.63 11349 1599.8
+- rad      1    479.15 11558 1609.1
+- nox      1    487.16 11566 1609.4
+- ptratio  1   1194.23 12273 1639.4
+- dis      1   1232.41 12311 1641.0
+- rm       1   1871.32 12950 1666.6
+- lstat    1   2410.84 13490 1687.3
+
+Step:  AIC=1587.65
+medv ~ crim + zn + indus + chas + nox + rm + dis + rad + tax + 
+    ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- indus    1      2.52 11081 1585.8
+<none>                 11079 1587.7
+- chas     1    219.91 11299 1595.6
+- tax      1    242.24 11321 1596.6
+- crim     1    243.20 11322 1596.6
+- zn       1    260.32 11339 1597.4
+- black    1    272.26 11351 1597.9
+- rad      1    481.09 11560 1607.2
+- nox      1    520.87 11600 1608.9
+- ptratio  1   1200.23 12279 1637.7
+- dis      1   1352.26 12431 1643.9
+- rm       1   1959.55 13038 1668.0
+- lstat    1   2718.88 13798 1696.7
+
+Step:  AIC=1585.76
+medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
+    black + lstat
+
+          Df Sum of Sq   RSS    AIC
+<none>                 11081 1585.8
+- chas     1    227.21 11309 1594.0
+- crim     1    245.37 11327 1594.8
+- zn       1    257.82 11339 1595.4
+- black    1    270.82 11352 1596.0
+- tax      1    273.62 11355 1596.1
+- rad      1    500.92 11582 1606.1
+- nox      1    541.91 11623 1607.9
+- ptratio  1   1206.45 12288 1636.0
+- dis      1   1448.94 12530 1645.9
+- rm       1   1963.66 13045 1666.3
+- lstat    1   2723.48 13805 1695.0
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ crim + zn + chas + nox + rm + dis + 
+    rad + tax + ptratio + black + lstat, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.5984  -2.7386  -0.5046   1.7273  26.2373 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  36.341145   5.067492   7.171 2.73e-12 ***
+crim         -0.108413   0.032779  -3.307 0.001010 ** 
+zn            0.045845   0.013523   3.390 0.000754 ***
+chas          2.718716   0.854240   3.183 0.001551 ** 
+nox         -17.376023   3.535243  -4.915 1.21e-06 ***
+rm            3.801579   0.406316   9.356  < 2e-16 ***
+dis          -1.492711   0.185731  -8.037 6.84e-15 ***
+rad           0.299608   0.063402   4.726 3.00e-06 ***
+tax          -0.011778   0.003372  -3.493 0.000521 ***
+ptratio      -0.946525   0.129066  -7.334 9.24e-13 ***
+black         0.009291   0.002674   3.475 0.000557 ***
+lstat        -0.522553   0.047424 -11.019  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.736 on 494 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7348 
+F-statistic: 128.2 on 11 and 494 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"forward"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=1589.64
+medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+    tax + ptratio + black + lstat
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ crim + zn + indus + chas + nox + rm + 
+    age + dis + rad + tax + ptratio + black + lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.595  -2.730  -0.518   1.777  26.199 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  3.646e+01  5.103e+00   7.144 3.28e-12 ***
+crim        -1.080e-01  3.286e-02  -3.287 0.001087 ** 
+zn           4.642e-02  1.373e-02   3.382 0.000778 ***
+indus        2.056e-02  6.150e-02   0.334 0.738288    
+chas         2.687e+00  8.616e-01   3.118 0.001925 ** 
+nox         -1.777e+01  3.820e+00  -4.651 4.25e-06 ***
+rm           3.810e+00  4.179e-01   9.116  < 2e-16 ***
+age          6.922e-04  1.321e-02   0.052 0.958229    
+dis         -1.476e+00  1.995e-01  -7.398 6.01e-13 ***
+rad          3.060e-01  6.635e-02   4.613 5.07e-06 ***
+tax         -1.233e-02  3.760e-03  -3.280 0.001112 ** 
+ptratio     -9.527e-01  1.308e-01  -7.283 1.31e-12 ***
+black        9.312e-03  2.686e-03   3.467 0.000573 ***
+lstat       -5.248e-01  5.072e-02 -10.347  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.745 on 492 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7338 
+F-statistic: 108.1 on 13 and 492 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"both"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=1589.64
+medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+    tax + ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- age      1      0.06 11079 1587.7
+- indus    1      2.52 11081 1587.8
+<none>                 11079 1589.6
+- chas     1    218.97 11298 1597.5
+- tax      1    242.26 11321 1598.6
+- crim     1    243.22 11322 1598.6
+- zn       1    257.49 11336 1599.3
+- black    1    270.63 11349 1599.8
+- rad      1    479.15 11558 1609.1
+- nox      1    487.16 11566 1609.4
+- ptratio  1   1194.23 12273 1639.4
+- dis      1   1232.41 12311 1641.0
+- rm       1   1871.32 12950 1666.6
+- lstat    1   2410.84 13490 1687.3
+
+Step:  AIC=1587.65
+medv ~ crim + zn + indus + chas + nox + rm + dis + rad + tax + 
+    ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- indus    1      2.52 11081 1585.8
+<none>                 11079 1587.7
++ age      1      0.06 11079 1589.6
+- chas     1    219.91 11299 1595.6
+- tax      1    242.24 11321 1596.6
+- crim     1    243.20 11322 1596.6
+- zn       1    260.32 11339 1597.4
+- black    1    272.26 11351 1597.9
+- rad      1    481.09 11560 1607.2
+- nox      1    520.87 11600 1608.9
+- ptratio  1   1200.23 12279 1637.7
+- dis      1   1352.26 12431 1643.9
+- rm       1   1959.55 13038 1668.0
+- lstat    1   2718.88 13798 1696.7
+
+Step:  AIC=1585.76
+medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
+    black + lstat
+
+          Df Sum of Sq   RSS    AIC
+<none>                 11081 1585.8
++ indus    1      2.52 11079 1587.7
++ age      1      0.06 11081 1587.8
+- chas     1    227.21 11309 1594.0
+- crim     1    245.37 11327 1594.8
+- zn       1    257.82 11339 1595.4
+- black    1    270.82 11352 1596.0
+- tax      1    273.62 11355 1596.1
+- rad      1    500.92 11582 1606.1
+- nox      1    541.91 11623 1607.9
+- ptratio  1   1206.45 12288 1636.0
+- dis      1   1448.94 12530 1645.9
+- rm       1   1963.66 13045 1666.3
+- lstat    1   2723.48 13805 1695.0
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ crim + zn + chas + nox + rm + dis + 
+    rad + tax + ptratio + black + lstat, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.5984  -2.7386  -0.5046   1.7273  26.2373 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  36.341145   5.067492   7.171 2.73e-12 ***
+crim         -0.108413   0.032779  -3.307 0.001010 ** 
+zn            0.045845   0.013523   3.390 0.000754 ***
+chas          2.718716   0.854240   3.183 0.001551 ** 
+nox         -17.376023   3.535243  -4.915 1.21e-06 ***
+rm            3.801579   0.406316   9.356  < 2e-16 ***
+dis          -1.492711   0.185731  -8.037 6.84e-15 ***
+rad           0.299608   0.063402   4.726 3.00e-06 ***
+tax          -0.011778   0.003372  -3.493 0.000521 ***
+ptratio      -0.946525   0.129066  -7.334 9.24e-13 ***
+black         0.009291   0.002674   3.475 0.000557 ***
+lstat        -0.522553   0.047424 -11.019  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.736 on 494 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7348 
+F-statistic: 128.2 on 11 and 494 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ ., data = data)
+
+Coefficients:
+(Intercept)         crim           zn        indus         chas          nox  
+  3.646e+01   -1.080e-01    4.642e-02    2.056e-02    2.687e+00   -1.777e+01  
+         rm          age          dis          rad          tax      ptratio  
+  3.810e+00    6.922e-04   -1.476e+00    3.060e-01   -1.233e-02   -9.527e-01  
+      black        lstat  
+  9.312e-03   -5.248e-01  
+\end{verbatim}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{classification}{%
+\chapter{Classification}\label{classification}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{suppressPackageStartupMessages}\NormalTok{(\{}
+\FunctionTok{library}\NormalTok{(ISLR)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(ggthemes)}
+\FunctionTok{library}\NormalTok{(sjPlot)}
+\FunctionTok{library}\NormalTok{(corrplot)}
+\FunctionTok{library}\NormalTok{(tidymodels)}
+\FunctionTok{library}\NormalTok{(magrittr)}
+\FunctionTok{library}\NormalTok{(dotwhisker)}
+\FunctionTok{library}\NormalTok{(hrbrthemes)}
+\FunctionTok{library}\NormalTok{(patchwork)}
+\FunctionTok{library}\NormalTok{(GGally)}
+\NormalTok{\})}
+\NormalTok{extrafont}\SpecialCharTok{::}\FunctionTok{loadfonts}\NormalTok{(}\AttributeTok{quiet =}  \ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{theme\_set}\NormalTok{(}\FunctionTok{theme\_ipsum\_es}\NormalTok{(}\AttributeTok{axis\_title\_size =} \DecValTok{11}\NormalTok{ , }\AttributeTok{axis\_title\_just =} \StringTok{"c"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.line =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =}\StringTok{"black"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+For many cases the response variable is \emph{qualitative}, or
+\emph{categorical}.
+
+Clasification is the process for predicting qualitative responses; we
+are classifying an observation.
+
+There are three main classifiers,\emph{classification techniques},
+mainly:
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{Logistic regression}
+\item
+  \emph{Linear discriminant analysis}
+\item
+  \emph{K-nearest neighbors}
+\end{itemize}
+
+We discuss more computer intensive methods is later chapters such as
+GAM(ch 7), trees, random forests, and boosting(ch 8), and support vector
+machines (ch 9).
+
+\hypertarget{an-overview-of-classsification}{%
+\section{An overview of
+Classsification}\label{an-overview-of-classsification}}
+
+Here some clasffication problems
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  A person arrives at the emergency room with a set of symptoms that
+  could possible be attributed to one f three medical conditions. Which
+  of the three conditions does the individual have?
+\item
+  An online banking service must be able to determine whether or not a
+  transaction being performed on the site is fraudulent, on the basis of
+  the user's IP adress, past transaction history and so forth.
+\item
+  In the bais of DNA sequence data for a number of patients with and
+  without a given disease, a biologist would like to figure out which
+  DNA mutations are disease causing and which are not.
+\end{enumerate}
+
+Just like in LR , in the classification setting we have a set of
+training observations \((x_1,y_1), \dots, (x_n,y_n)\) what we can use to
+build a classfier. We want our classifier to perform not only on th
+training data, but also on test observations that are not used to train
+the classier.
+
+\begin{quote}
+We are going to use \texttt{Default} data set.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default }\OtherTok{=} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"./data/Default.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Rows: 10000 Columns: 4
+-- Column specification --------------------------------------------------------
+Delimiter: ","
+chr (2): default, student
+dbl (2): balance, income
+
+i Use `spec()` to retrieve the full column specification for this data.
+i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default }\SpecialCharTok{\%\textless{}\textgreater{}\%} 
+  \FunctionTok{mutate\_if}\NormalTok{(is.character, }\SpecialCharTok{\textasciitilde{}}\FunctionTok{as.factor}\NormalTok{(.)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 10,000 x 4
+   default student balance income
+   <fct>   <fct>     <dbl>  <dbl>
+ 1 No      No         730. 44362.
+ 2 No      Yes        817. 12106.
+ 3 No      No        1074. 31767.
+ 4 No      No         529. 35704.
+ 5 No      No         786. 38463.
+ 6 No      Yes        920.  7492.
+ 7 No      No         826. 24905.
+ 8 No      Yes        809. 17600.
+ 9 No      No        1161. 37469.
+10 No      No           0  29275.
+# i 9,990 more rows
+\end{verbatim}
+
+We are interested in predicting whether an individual will default on
+his or her credit card balance.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{skimr}\SpecialCharTok{::}\FunctionTok{skim}\NormalTok{(default)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Data summary}\tabularnewline
+\toprule\noalign{}
+\endfirsthead
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Name & default \\
+Number of rows & 10000 \\
+Number of columns & 4 \\
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ & \\
+Column type frequency: & \\
+factor & 2 \\
+numeric & 2 \\
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ & \\
+Group variables & None \\
+\end{longtable}
+
+\textbf{Variable type: factor}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1867}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1333}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1867}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1067}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+skim\_variable
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_missing
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+complete\_rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ordered
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_unique
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+top\_counts
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+default & 0 & 1 & FALSE & 2 & No: 9667, Yes: 333 \\
+student & 0 & 1 & FALSE & 2 & No: 7056, Yes: 2944 \\
+\end{longtable}
+
+\textbf{Variable type: numeric}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.1333}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0952}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.1333}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0857}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0857}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0667}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0857}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0857}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0857}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0857}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 20\tabcolsep) * \real{0.0571}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+skim\_variable
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_missing
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+complete\_rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+sd
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p25
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p50
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p75
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p100
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+hist
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+balance & 0 & 1 & 835.37 & 483.71 & 0.00 & 481.73 & 823.64 & 1166.31 &
+2654.32 & ▆▇▅▁▁ \\
+income & 0 & 1 & 33516.98 & 13336.64 & 771.97 & 21340.46 & 34552.64 &
+43807.73 & 73554.23 & ▂▇▇▅▁ \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{GGally}\SpecialCharTok{::}\FunctionTok{ggpairs}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ default), }\AttributeTok{data =}\NormalTok{ default)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter4_files/figure-pdf/unnamed-chunk-4-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ balance, }\AttributeTok{y =}\NormalTok{ income, }\AttributeTok{color =}\NormalTok{ default, }\AttributeTok{shape =}\NormalTok{ default) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"\#6CA2C9"}\NormalTok{,}\StringTok{"\#BD5E2A"}\NormalTok{)) }\SpecialCharTok{+} \FunctionTok{scale\_shape\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)) }\OtherTok{{-}\textgreater{}}\NormalTok{ p1}
+
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ default, }\AttributeTok{y =}\NormalTok{ balance, }\AttributeTok{fill =}\NormalTok{ default) }\SpecialCharTok{+} \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"\#6CA2C9"}\NormalTok{,}\StringTok{"\#BD5E2A"}\NormalTok{)) }\OtherTok{{-}\textgreater{}}\NormalTok{ p2}
+
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ default, }\AttributeTok{y =}\NormalTok{ income, }\AttributeTok{fill =}\NormalTok{ default) }\SpecialCharTok{+} \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"\#6CA2C9"}\NormalTok{,}\StringTok{"\#BD5E2A"}\NormalTok{)) }\OtherTok{{-}\textgreater{}}\NormalTok{ p3}
+
+\CommentTok{\# gridExtra::grid.arrange(p1,p2,p3, nrow=1)}
+\NormalTok{gridExtra}\SpecialCharTok{::}\FunctionTok{grid.arrange}\NormalTok{(p1,p2,p3, }\AttributeTok{nrow=}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter4_files/figure-pdf/unnamed-chunk-5-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Top: The aanual incomes and montly credit card balances of a number of individuals. The individuals who defaulted on their credit card payments are shown in orange, and those who did not are shown in blue. Center: boxplots of balances as a function of default status. Bottom: boxplots of income as a functino of default status.}
+\end{Highlighting}
+\end{Shaded}
+
+people who default tend to have high credit card balances compared to
+not defaulted.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{count}\NormalTok{(default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{port =}\NormalTok{ n}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(n))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 3
+  default     n   port
+  <fct>   <int>  <dbl>
+1 No       9667 0.967 
+2 Yes       333 0.0333
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# default rate is 3\%}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(student,default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{count =} \FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{port =}\NormalTok{ count}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(count))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`summarise()` has grouped output by 'student'. You can override using the
+`.groups` argument.
+\end{verbatim}
+
+\begin{verbatim}
+# A tibble: 4 x 4
+# Groups:   student [2]
+  student default count   port
+  <fct>   <fct>   <int>  <dbl>
+1 No      No       6850 0.971 
+2 No      Yes       206 0.0292
+3 Yes     No       2817 0.957 
+4 Yes     Yes       127 0.0431
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# student are 2 times more likely to default}
+\end{Highlighting}
+\end{Shaded}
+
+In this chapter we laern how to build a model to predict
+\texttt{default}(\(y\)), for any given value of balance (\(x_1\)), and
+income (\(x_2\)). Since \(Y\) is not quantitative, SLR is not
+appropriate.
+
+\hypertarget{why-not-linear-regression}{%
+\section{Why Not Linear Regression?}\label{why-not-linear-regression}}
+
+Why is LR not appropriate here?
+
+Suppose that we are trying to predict the mdeical condition of a patient
+in the emergency room on the basis of her symptoms. In this simplified
+example, therea rea three possible diagnoses: \texttt{stroke},
+\texttt{drug\ overdose}, \texttt{epileptic\ seizure}. We could consider
+encoding these values as a quantitative respose variable \(Y\):
+
+\[
+Y = 
+\begin{cases}
+1 & \text{if stroke}; \\
+2 & \text{if drug overdose}; \\
+3 & \text{if epileptic seizure}.
+\end{cases}
+\]
+
+We can now predict \(Y\) using \(x_1, \dots, \x_p\). However, this
+coding implies an ordering on the outcomes, putting
+\texttt{drug\ overdose} in between \texttt{stroke} and
+\texttt{epileptic\ seizure} and insisting that the difference between
+\texttt{stroke} and \texttt{drug\ overdose} is the same as the
+difference between \texttt{drug\ overdose} and
+\texttt{epileptic\ seizure}. In practice there is no particular reason
+that this needs to be the case. We could have ordered the cases
+differently, i.e.~stroke to the 3 etc. Which implies a totally different
+relationship among the three conditions. All these combinations would
+produce different linear models that would lead to different set of
+predictions on test observations.
+
+However, if the response variable's values take on a natural ordering,
+such as \emph{mild, moderate, and severe}, and we felt the gap between
+mild and moderate was similar to the gap between moderate and sever,
+then a 1,2,3 coding would be reasonable. **Unfortunaltely, in general
+there is no natural way to convert a qualitative response variable with
+more than two levels into a quantittative response that is ready for
+linear regression*.
+
+For a \emph{binary(two level)} qualitative response, the situation is
+easier. For instance consider only two possiblities for \(Y\):
+
+\[
+ Y = 
+ \begin{cases}
+ 0 & \text{if stroke} \\
+ 1 & \text{if drug overdose}
+ \end{cases}
+ \]
+
+we can create a dummy varaible and fit a linar regression to this binary
+response and predict \texttt{drug\ overdose} if \(\hat{y}>0.5\) and
+\texttt{stroke} otherwise. However, if we use a linear regression our
+estimates might be outside of \([0,1]\), aking them hard to interpret as
+probabilities.
+
+The dummy varaible approach coonot be easliy extended to accommodate
+qualitative responses with more than two levels. We prefer
+classification methods:
+
+\#\# Logistic Regression
+
+Our \texttt{default} variable can have two values: \texttt{Yes} or
+\texttt{No}. Rather than modeling this response \(Y\) directly, logistic
+regression models the \emph{probability} that \(Y\) belongs to a
+particular category.
+
+For the \texttt{default} data logistic regression models the probability
+of default. For example, the probability of default given balance can be
+written as
+
+\[
+Pr(default = Yes | balance)
+\] The values of \(Pr(default = Yes|balance)\), which we abbreviate
+\(p(balance)\), will range between 0 and 1. Then for any given value of
+\texttt{balance}, a prediction can be made for \texttt{default}. For
+example, we can predict \(default = Yes\) or any individaul for whom
+\(p(balance)>0.5\). Alternatively, if a company wishes to be
+conservative in predicting individuals who are at risk for default, then
+they may choose to use a lower threshold, such as \(p(balance)>0.1\).
+
+\hypertarget{the-logistic-model}{%
+\subsection{The Logistic Model}\label{the-logistic-model}}
+
+How should we model the relationship between \(p(x) = Pr(y = 1| x)\) and
+\(x\)? (when we coded 0/1 for response values)
+
+In section 4.2 we talked of using a linear regression model to represent
+these probabilities:
+
+\[
+p(x) = \beta_0 + \beta_1 x
+\] (4.1)
+
+\includegraphics{fig4.2.png}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{default =} \FunctionTok{ifelse}\NormalTok{(default }\SpecialCharTok{==} \StringTok{"Yes"}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{lm}\NormalTok{(default}\SpecialCharTok{\textasciitilde{}}\NormalTok{balance,.) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 10,000 x 4
+   default student balance income
+     <dbl> <fct>     <dbl>  <dbl>
+ 1       0 No         730. 44362.
+ 2       0 Yes        817. 12106.
+ 3       0 No        1074. 31767.
+ 4       0 No         529. 35704.
+ 5       0 No         786. 38463.
+ 6       0 Yes        920.  7492.
+ 7       0 No         826. 24905.
+ 8       0 Yes        809. 17600.
+ 9       0 No        1161. 37469.
+10       0 No           0  29275.
+# i 9,990 more rows
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+lm(formula = default ~ balance, data = .)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.23533 -0.06939 -0.02628  0.02004  0.99046 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -7.519e-02  3.354e-03  -22.42   <2e-16 ***
+balance      1.299e-04  3.475e-06   37.37   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1681 on 9998 degrees of freedom
+Multiple R-squared:  0.1226,    Adjusted R-squared:  0.1225 
+F-statistic:  1397 on 1 and 9998 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{default =} \FunctionTok{ifelse}\NormalTok{(default }\SpecialCharTok{==} \StringTok{"Yes"}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{lm}\NormalTok{(default}\SpecialCharTok{\textasciitilde{}}\NormalTok{balance,.) }\OtherTok{{-}\textgreater{}}\NormalTok{ lm\_res}
+
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{default =} \FunctionTok{ifelse}\NormalTok{(default }\SpecialCharTok{==} \StringTok{"Yes"}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ balance, }\AttributeTok{y =}\NormalTok{ default) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{shape =} \DecValTok{4}\NormalTok{, }\AttributeTok{color =} \StringTok{"brown4"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_abline}\NormalTok{(}\AttributeTok{intercept =}\NormalTok{ lm\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{], }\AttributeTok{slope =}\NormalTok{ lm\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\AttributeTok{color =} \StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{expand =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.25}\NormalTok{), }\AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\AttributeTok{by=}\FloatTok{0.2}\NormalTok{) )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+font width unknown for character 0x2d
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter4_files/figure-pdf/unnamed-chunk-9-1.pdf}
+
+}
+
+\end{figure}
+
+The plot above is the same as plot on the left pane of 4.2. Here we see
+the problem with this approach, for balances close to zero, we predict a
+negative probability of default and if we predict for very large
+balances we would get values bigger than 1. These predictions are not
+sensible. This always happen for any time a straight line is fit to a
+binary response that is coded as 0 or 1, in pricpile we can always
+predict \(p(x)<0\) for some values of \(x\) and \(p(x)>1\) for others.
+
+To avoid this problem we must model \(p(x)\) using a function that gives
+outputs between 0 and 1 for all values of \(x\). Many functions meet
+this description, however in logistis regression, we use \emph{logistic
+function}
+
+\[
+p(x) = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}}
+\] (4.2)
+
+To fit the mode (4.2) we use a method called \emph{maximum likelihood},
+which we discuss in the next section. The right-hand panel of Figure 4.2
+sows then fit of the logistic regression model to the
+\texttt{default}data.
+
+Notice that for low balances we now predict the probability of default
+as close to , but never below zero. Likewise for high balances we
+predict a default probability close to, but never above, one.
+
+The logistic function will always produce an \emph{S-shaped} curve of
+this form, and so regardless of the value of \(X\) we will obtain a
+sensible prediction.
+
+After a bit of manipulation of (4.2) we find that
+
+\$\$ \begin{align}
+p(x) &= \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}} \\
+
+1-p(x) &= 1- \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}} \\
+
+1- p(x) &= \frac{1}{1 + e^{\beta_0 + \beta_1 x}}  \\
+
+1- p(x) \cdot e^{\beta_0 + \beta_1x} &= \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}}\\
+
+1-p(x) \cdot e^{\beta_0 + \beta_1 x} &= p(x) \\
+
+\frac{p(x)}{1-p(x)} &= e^{\beta_0 + \beta_1} \space \space \space \space \space \space \space \space \space \space (4.3)
+
+\end{align} \$\$
+
+the quantity \(p(x)/(1 - p(x))\) is called the \emph{odds}, and can take
+on any value between 0 and \(\infty\). Values of the odds close to 0 and
+\(\infty\) indicate very low and very high probabilities of default,
+respectively.
+
+For example, on average 1 in 4 people with an odds of 1/4 will default
+since \(p(x) = 0.2\) implies an ods of \(\frac{0.2}{1-0.2} = 1/4\).
+Likewise on average 9/10 wpeople with an odds of 9 will default since
+\(p(x) = 0.9\) implies an odds of \(\frac{0.9}{1-0.9} = 9\).
+
+By taking the lograithm of both sides of (4.3) we arrive at
+
+\[
+\log(\frac{p(x)}{1-p(x)}) = \beta_0 + \beta_1 x
+\] (4.4)
+
+the left-hand side is called the \emph{log-odds-} or \emph{logit}. We
+see that the logistic regression model (4.2) has a logit that is linear
+in \(X\).
+
+Here increasing \(x\) by one unit changes the log odds by \(\beta_1\)
+(4.4), or it multiplies the odds by \(e^{\beta_1}\). But because the
+relationship between \(p(x)\) and \(x\) in (4.2) is not a straight line,
+\(\beta_1\) does not correspond to the change in \(p(x)\) associated
+with a one-unit increase in \(x\). The amount that \(p(x)\) changes due
+to a one-unit change in \(x\) will depend on the current value of \(x\).
+But regardless of the value of \(x\), if \(\beta_1\) is positive, then
+increasing \(x\) will be associated with increasing \(p(x)\), vice
+versa. We can see that in the right hand panel of Figure 4.2.
+
+\hypertarget{estiamting-the-regression-coefficients}{%
+\subsection{Estiamting the Regression
+Coefficients}\label{estiamting-the-regression-coefficients}}
+
+\[
+p(x) = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1}}
+\] (4.2) The coefficients of \(\beta_0\) and \(\beta_1\) are unknown,
+must be estimated based on the available training data. We are going to
+use \emph{maximum likelyhood} method. The basic intuition begind using
+maximum likelihood to fit a logistic regression model is as follows: we
+seek estimates for \(\beta_0\) and \(\beta_1\) such that the predicted
+probability \(\hat{p}(x_i)\)\} of default for each individual, using
+(4.2), corresponds as closely as possible to the individual's observed
+default status. In other words, we try to find \(\hat{\beta_0}\) and
+\(\hat{\beta_1}\) such that plugging these estimates into the model for
+\(p(x)\),given in (4.2), yields a number close to 1 for all individuals
+who defaulted, and a number close to zero for all individuals who did
+not. We can formalize this mathematical equation with \emph{likelihood
+function}
+
+\[
+l(\beta_0, \beta_1) = \prod_{i:y_i = 1}p(x_i) \prod_{i':y_{i'} = 0}(1-p(x_{i'}))
+\] (4.5)
+
+The estimates \(\hat{\beta_0\) and \(\hat{\beta_1}\) are chosen to
+\emph{maximize} this likelihood function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# initialize model}
+\FunctionTok{logistic\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"glm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"classification"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ log\_model}
+\NormalTok{log\_model}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Logistic Regression Model Specification (classification)
+
+Computational engine: glm 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# setup the recipe }
+\NormalTok{default\_recipe }\OtherTok{\textless{}{-}} \FunctionTok{recipe}\NormalTok{(default }\SpecialCharTok{\textasciitilde{}}\NormalTok{ balance, }\AttributeTok{data =}\NormalTok{ default)}
+\NormalTok{default\_recipe}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+\end{verbatim}
+
+\begin{verbatim}
+-- Recipe ----------------------------------------------------------------------
+\end{verbatim}
+
+\begin{verbatim}
+\end{verbatim}
+
+\begin{verbatim}
+-- Inputs 
+\end{verbatim}
+
+\begin{verbatim}
+Number of variables by role
+\end{verbatim}
+
+\begin{verbatim}
+outcome:   1
+predictor: 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# set up the workflow}
+\FunctionTok{workflow}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_model}\NormalTok{(log\_model) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_recipe}\NormalTok{(default\_recipe) }\OtherTok{{-}\textgreater{}}\NormalTok{ default\_workflow}
+\NormalTok{default\_workflow}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+== Workflow ====================================================================
+Preprocessor: Recipe
+Model: logistic_reg()
+
+-- Preprocessor ----------------------------------------------------------------
+0 Recipe Steps
+
+-- Model -----------------------------------------------------------------------
+Logistic Regression Model Specification (classification)
+
+Computational engine: glm 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# fit model}
+\NormalTok{default\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{tidy}\NormalTok{(}\AttributeTok{conf.int =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 7
+  term         estimate std.error statistic   p.value  conf.low conf.high
+  <chr>           <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
+1 (Intercept) -10.7      0.361        -29.5 3.62e-191 -11.4      -9.97   
+2 balance       0.00550  0.000220      25.0 1.98e-137   0.00508   0.00594
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{(}\AttributeTok{new\_data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ balance, }\AttributeTok{y =}\NormalTok{ default, }\AttributeTok{color =}\NormalTok{ .pred\_class) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{scale\_color\_ipsum}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter4_files/figure-pdf/unnamed-chunk-14-1.pdf}
+
+}
+
+\end{figure}
+
+Lets have a look at the Logistic Regression results again:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# fit model}
+\NormalTok{default\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{tidy}\NormalTok{(}\AttributeTok{conf.int =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 7
+  term         estimate std.error statistic   p.value  conf.low conf.high
+  <chr>           <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
+1 (Intercept) -10.7      0.361        -29.5 3.62e-191 -11.4      -9.97   
+2 balance       0.00550  0.000220      25.0 1.98e-137   0.00508   0.00594
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# for the default data, estiamted coefficients of the logistic regression model that predicts the probability of default using balance. A one unit increase in balance is assocaited witnh an increase in the log odds of default by 0.0055 units.}
+\end{Highlighting}
+\end{Shaded}
+
+We can measure the accuracy of the coefficient estimates by computing
+their standard errors. The \emph{z-}statistic in the above plays the
+same role as \emph{t} statistic in linear regression output. They are
+calculated from \(\hat{\beta_i} / \text{SE}(\hat{\beta_i})\), and so a
+large(absolute) value of the z-statistic indicates evidence against the
+null hypothesis \(H_0: \beta_1 = 0\). This null hypothesis implies that
+\(p(x) = \frac{e^{\beta_0}}{1 + e^{\beta_0}}\). In other words, that the
+probability of default does not depend on blaance. p value is very low,
+we can reject \(H_0\); there is relationship between balance and
+probability of default. Intercept is not important here.
+
+\hypertarget{making-predictions}{%
+\subsection{Making predictions}\label{making-predictions}}
+
+Once the coefficients have been estimated, we can compute the
+probability of default for any given credit card balance.
+
+\[
+\hat{p}(x) = \frac{e^{\hat{\beta_0} + \hat{\beta_1}x}}{1 +e^{\hat{\beta_0} + \hat{\beta_1}x}} = \frac{e^{-10.6513 + 0.0055 x}}{1 + e^{-10.6513 + 0.0055 x}}
+\]
+
+so for example given income \$1,000 the predicted possiblity of default
+is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{10.6513} \SpecialCharTok{+} \FloatTok{0.0055} \SpecialCharTok{*} \DecValTok{1000}\NormalTok{) }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{10.6513} \SpecialCharTok{+} \FloatTok{0.0055} \SpecialCharTok{*} \DecValTok{1000}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.005758518
+\end{verbatim}
+
+which is below 1\%. What about the probability of default for a person
+with \$2,000 balance
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{10.6513} \SpecialCharTok{+} \FloatTok{0.0055} \SpecialCharTok{*} \DecValTok{2000}\NormalTok{) }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{10.6513} \SpecialCharTok{+} \FloatTok{0.0055} \SpecialCharTok{*} \DecValTok{2000}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.5863023
+\end{verbatim}
+
+much higher 58\%.
+
+We can get all the predictions for our training data set form
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data=}\NormalTok{default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{(}\AttributeTok{new\_data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{count}\NormalTok{(.pred\_class)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 10,000 x 7
+   default student balance income .pred_class .pred_No .pred_Yes
+   <fct>   <fct>     <dbl>  <dbl> <fct>          <dbl>     <dbl>
+ 1 No      No         730. 44362. No             0.999 0.00131  
+ 2 No      Yes        817. 12106. No             0.998 0.00211  
+ 3 No      No        1074. 31767. No             0.991 0.00859  
+ 4 No      No         529. 35704. No             1.00  0.000434 
+ 5 No      No         786. 38463. No             0.998 0.00178  
+ 6 No      Yes        920.  7492. No             0.996 0.00370  
+ 7 No      No         826. 24905. No             0.998 0.00221  
+ 8 No      Yes        809. 17600. No             0.998 0.00202  
+ 9 No      No        1161. 37469. No             0.986 0.0138   
+10 No      No           0  29275. No             1.00  0.0000237
+# i 9,990 more rows
+\end{verbatim}
+
+\begin{verbatim}
+# A tibble: 2 x 2
+  .pred_class     n
+  <fct>       <int>
+1 No           9858
+2 Yes           142
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# we classified 142 cases to default }
+
+\CommentTok{\# originally }
+\NormalTok{default }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{count}\NormalTok{(default)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 2
+  default     n
+  <fct>   <int>
+1 No       9667
+2 Yes       333
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 333 cases are actually default}
+\end{Highlighting}
+\end{Shaded}
+
+We can implement qualitative predictors to the logistic regression using
+the dummy variable approach.. Lets predict default by only
+\texttt{student} variable
+
+\[
+x = 
+\begin{cases}
+1 & \text{if student} \\
+0 & \text{if not student}
+\end{cases}
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{logistic\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"glm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"classification"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ log\_model}
+
+\NormalTok{default\_recipe }\OtherTok{\textless{}{-}} \FunctionTok{recipe}\NormalTok{(default }\SpecialCharTok{\textasciitilde{}}\NormalTok{ student, }\AttributeTok{data =}\NormalTok{ default)}
+\FunctionTok{workflow}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_model}\NormalTok{(log\_model) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_recipe}\NormalTok{(default\_recipe) }\OtherTok{{-}\textgreater{}}\NormalTok{ default\_workflow}
+\NormalTok{default\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{tidy}\NormalTok{(}\AttributeTok{conf.int =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 7
+  term        estimate std.error statistic  p.value conf.low conf.high
+  <chr>          <dbl>     <dbl>     <dbl>    <dbl>    <dbl>     <dbl>
+1 (Intercept)   -3.50     0.0707    -49.6  0          -3.65     -3.37 
+2 studentYes     0.405    0.115       3.52 0.000431    0.177     0.629
+\end{verbatim}
+
+The coefficient is positive and the p value is statistically
+significant. This indicates that students tend to have higher default
+probabilities than non student:
+
+\[
+\widehat{Pr}(default = Yes | student = Yes) = \frac{e^{-3.50 + 0.4049 \times 1}}{1 + e^{-3.50 + 0.4049 \times 1}} = 0.0431
+\]
+
+\[
+\widehat{Pr}(default = Yes | student = No) = \frac{e^{-3.50 + 0.4049 \times 0}}{1 + e^{-3.50 + 0.4049 \times 0}} = 0.0292
+\]
+
+\hypertarget{multiple-logistic-regression}{%
+\subsection{Multiple Logistic
+Regression}\label{multiple-logistic-regression}}
+
+We now consider the problem of predicting a binary response using a
+multiple predictors. We can generalize (4.4) as follows:
+
+\[
+\log\left(\frac{p(x)}{1-p(x)}\right) = \beta_0 + \beta_1x_1 + \dots + \beta_p x_p
+\] (4.6)
+
+(4.6) can be written as
+
+\[
+p(x) = \frac{e^{\beta_0 + \beta_1x_1 + \dots + \beta_p x_p}}{1 + e^{\beta_0 + \beta_1x_1 + \dots + \beta_p x_p}}
+\] (4.7)
+
+We again use maximum likelihood method to estimate
+\(\beta_0, \beta_1, \dots, \beta_p\).
+
+Lets use all of our variables in our model
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{logistic\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"glm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"classification"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ log\_model}
+
+\NormalTok{recipe }\OtherTok{\textless{}{-}} \FunctionTok{recipe}\NormalTok{(default }\SpecialCharTok{\textasciitilde{}}\NormalTok{ balance }\SpecialCharTok{+}\NormalTok{ income }\SpecialCharTok{+}\NormalTok{ student, }\AttributeTok{data =}\NormalTok{ default)}
+
+\FunctionTok{workflow}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_model}\NormalTok{(log\_model) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_recipe}\NormalTok{(recipe) }\OtherTok{{-}\textgreater{}}\NormalTok{ default\_workflow}
+
+\NormalTok{default\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{tidy}\NormalTok{() }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 4 x 5
+  term            estimate  std.error statistic   p.value
+  <chr>              <dbl>      <dbl>     <dbl>     <dbl>
+1 (Intercept) -10.9        0.492        -22.1   4.91e-108
+2 balance       0.00574    0.000232      24.7   4.22e-135
+3 income        0.00000303 0.00000820     0.370 7.12e-  1
+4 studentYes   -0.647      0.236         -2.74  6.19e-  3
+\end{verbatim}
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule\noalign{}
+term & estimate & std.error & statistic & p.value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+(Intercept) & -10.8690452 & 0.4922555 & -22.080088 & 0.0000000 \\
+balance & 0.0057365 & 0.0002319 & 24.737563 & 0.0000000 \\
+income & 0.0000030 & 0.0000082 & 0.369815 & 0.7115203 \\
+studentYes & -0.6467758 & 0.2362525 & -2.737646 & 0.0061881 \\
+\end{longtable}
+
+Here there is a suprising result. According to the p-values balance and
+student variables are associted with the probability of default.
+However, coefficient for stundet dummy is negative; indicating that
+students are less likely to default than non-students. But this
+coefficint was positive in our previous analysis when we regressed
+probability of default by student: results showed that probability of
+default is twice as likely for students compared to non students.
+
+\includegraphics{fig4.3.png}
+
+Check out the fig 4.3. The orange and blue lines show the average
+default rates for students and non students, respectively, as a function
+of credit card balance. The nagive coefficient for student in the
+multiple logistic regression indicates that \textbf{for a fixed value of
+balance and income} a student is less likely to default than a
+non-student. We observe from the left hand panel that the student
+default ratge is at or below that of the nun student default rate for
+every value of balance. But the horizontal broken lines near the base of
+the plot, which show the default rates for students and non students
+averaged over all values of balance and income, suggest the opposite
+effect: the overall student default rate is higher than non student
+default rate. Consequently there is a positive coefficient for student
+in the single variable logistic regression output.
+
+The right hand panel provies an explanation for this discrepancy: the
+varaibles student and blaance are correlated. Students tend to hold
+higher levels of debt, which is in turn assocaited with higer
+probability of default. In other words, students are more likely to have
+large credit card balances, which as we know from the left hand panel of
+figure 4.3 tend to be assocaited with high default rates. Thus, even
+though an individual student with a given credit card balance will tend
+to have a lower probability of default than a non student with the same
+credit card balance, the fact that students on the whole tend to have
+higher credit card balances means that overall students tend to default
+at a higher rate than non students. This is an important distinction. A
+student is riskier than a non student if no information about the
+student's credit card balance is available. However, that student is
+less risky than a non student with the same credit card balance.
+
+This simple example illustrates the dangers and subtleties assocaited
+with performing regressions involving only a single predictor when other
+predictors may als obe relevant. The results obtained using one
+predictor may be quite different from those obtained using multiple
+predictors, especially when there is correlation among the predictors.
+In general, the phenomenon seen in Figure 4.3 is known as
+\emph{confounding}.
+
+Lets put the estimates to our estimated probability function
+
+\$\$ \hat{p}(x) = \frac{
+e^{-10.86 + 0.00574 \cdot balance + 3e-6 \cdot income - 0.646 Student}
+}
+
+\{ 1 + e\^{}\{-10.86 + 0.00574 \cdot balance + 3e-6 \cdot income - 0.646
+Student\} \} \$\$ We can make predictions: a student with a credit card
+balnce of \$1,500 and an income of \$40,000 has an estimated probability
+of default:
+
+\[
+\hat{p}(x)=\frac{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 1}
+}
+{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 1}
+} = 0.05780859
+\]
+
+A non student with the same balance and income has an estiamted
+probability of default of
+
+\[
+\hat{p}(x)=\frac{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
+}
+{
+e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
+} = 0.1048655
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{default\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ default) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{(}\AttributeTok{new\_data =} \FunctionTok{tibble}\NormalTok{(}\AttributeTok{income =} \DecValTok{40000}\NormalTok{, }\AttributeTok{balance =} \DecValTok{1500}\NormalTok{, }\AttributeTok{student =} \FunctionTok{c}\NormalTok{(}\StringTok{"Yes"}\NormalTok{,}\StringTok{"No"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 6
+  income balance student .pred_class .pred_No .pred_Yes
+   <dbl>   <dbl> <chr>   <fct>          <dbl>     <dbl>
+1  40000    1500 Yes     No             0.942    0.0579
+2  40000    1500 No      No             0.895    0.105 
+\end{verbatim}
+
+\hypertarget{logistic-regression-for-2-response-classes}{%
+\subsection{Logistic Regression for \textgreater{} 2 Response
+Classes}\label{logistic-regression-for-2-response-classes}}
+
+What if our response variable has more than two classes. Like medical
+condition in the emergency room: \texttt{stroke},
+\texttt{drug\ overdose}, \texttt{epileptic\ seizure}. In this setting we
+wish to model both \(Pr(Y = stroke | x)\) and
+\(Pr(Y = drug \space overdose | x)\), with the remaining
+\(Pr(Y = epileptic \space seizure |x) = 1 - Pr(Y= stroke | x) - Pr(Y = drug \space overdose | x)\).
+We can do it my extending logistic regression but \emph{Linear
+Discriminant Analysis} is much suitable for this task
+
+\hypertarget{linear-discriminant-analysis}{%
+\section{Linear Discriminant
+Analysis}\label{linear-discriminant-analysis}}
+
+Logistic regression involves directly modeling \(Pr(Y = k | X = x)\)
+using the logistic function, given by (4.7) for the case of two response
+classes. In statistical jargon, we model the conditional distribution of
+the response \(Y\), given the predictor(s) \(X\).
+
+We now consider an alternative and less direct approach to estimating
+these probabilities. In this alternative approach, we model the
+distribution of the predictors \(X\) separately in each of the response
+classes (i.e.~given \(Y\)), and then use Bayes' theorem to flip these
+around into estimates for \(Pr(Y = k | X = x)\). When these
+distributions are assumed to be normal, it turns out that the model is
+very similar in form to logistic regression.
+
+Why do we need another method when we have logistic regression?
+
+\begin{itemize}
+\item
+  When the classes are well separated, the parameter estimates for the
+  logistic regression model are surprisingly unstable. Linear
+  discrimnant analysis does not suffer from this problem.
+\item
+  If \emph{n} is small and the distribution of the predictors \(X\) is
+  approximately normal in each of the classes the linear discriminant
+  model is again more stable than th elogistic regression model
+\item
+  LDA is popular when we have more than two response classes.
+\end{itemize}
+
+\hypertarget{using-bayes-theorem-for-classification}{%
+\subsection{Using Bayes' Theorem for
+Classification}\label{using-bayes-theorem-for-classification}}
+
+We want to classify an observation into one of \(K\) classes, where
+\(2 \leq K\). So \(Y\) can take on \(K\) possible distinct and unordered
+values. Let \(\pi_k\) represent the overall or \emph{prior} probability
+that a randomly chosen observation comes from the \(k\)th class.; this
+is the probability that a given observation is associated with the
+\emph{k}th category of the response variable \(Y\). Let
+\(f_k(x) \equiv Pr(X = x | Y = k)\) denote the \emph{density} function
+of \(X\) for an observation that comes from the \emph{k} th class. In
+other words \(f_k(x)\) is relatively large if there is a high
+probability that an observation in the \emph{k} th class has
+\(X \approx x\), and \(f_k(x)\) is small if it is very unlikely that an
+observation in the \emph{k}th class has \(X \approx x\). Then
+\emph{Bayes's theorem} states that
+
+\[
+Pr(Y = k | X = x) = \frac{
+\pi_k\,f_k(x)
+}
+{
+\sum^K_{l = 1}\,\pi_l\,f_l(x)
+}
+\] (4.10)
+
+We will use the abbreviation \(p_k(X) = Pr(Y = k | X)\). This suggests
+that instead of directly computing \(p_k(X)\) as Section 4.3.1, we can
+simply plug in estimates of \(\pi_k\) and \(f_k(X)\) into (4.10). In
+general, estimating \(\pi_k\) is easy if we have a random sample of
+\(Y\)s from the population: we simply compute the fraction of the
+training observations that belong to the \emph{k}th class. However,
+etimating \(f_k(X)\) tends to be more challenging, unless we assume some
+simple forms for these densities. We refer to \(p_k(x)\) as the
+\emph{posterior} probability than an observation \(X=x\) belongs to the
+\emph{k}th class. That is, it is the probability that the observation
+belongs to the \emph{k}th class, \emph{given} the predictor value for
+that observation.
+
+We know from Ch.2 that the Bayes classifier, which classifies an
+observation to the class for which \(p_k(X)\) is largest, has the lowest
+possible error rate out of all classifiers. Therefore, if we can find a
+way to estimate \(f_k(X)\) then we can develop a classifier that
+approximates the bayes classifier:
+
+\hypertarget{linear-discriminant-analysis-for-p1}{%
+\subsection{Linear Discriminant Analysis for
+p=1}\label{linear-discriminant-analysis-for-p1}}
+
+Assume we have one predictor. We would like to obtain an estimate for
+\(f_k(x)\) that we can plug into (4.10) in order to estimate \(p_k(x)\).
+We will then classify an observation to the class for which \(p_k(x)\)
+is greatests. In order to estimate \(f_k(x)\) we will first make some
+assumptions about this form.
+
+Suppose we assume \(f_k(x)\) is \emph{normal} or \emph{Gaussian}. In the
+one dimensional setting, the normal density takes the form
+
+\[
+f_k(x) = \frac{
+1
+}
+{
+\sqrt{2\pi}\,\sigma_k
+}\,exp\,\left(-\frac{1}{2\sigma^2_k}(x - \mu_k)^2\right)
+\] (4.11)
+
+where \(\mu_k\) and \(\sigma^2_k\) are the mean and variance parameters
+for the \emph{k}th class. For now, let us further assume that
+\(\sigma_1^2=\dots=\sigma^2_K\): that is, there is shared variance term
+across all \(K\) classes, which for simplicty we can denote by
+\(\sigma^2\). Plugging (4.11) into (4.10) we find that
+
+\[
+p_k(x) = \frac{
+\pi_k\,\frac{1}{\sqrt{2\pi}\,\sigma}\,exp(-\frac{1}{2\sigma^2}(x - \mu_k)^2)
+}
+{
+\sum_{l=1}^K \pi_l \frac{1}{\sqrt{2\pi}\sigma}\,exp(-\frac{1}{2\sigma^2}(x - \mu_l)^2)
+}
+\] (4.12)
+
+The bayes classifier involves assigning an observation \(X=x\) to the
+class for which (4.12) is largest. Taking the log of (4.12) and
+rearranging the terms, it is not hard to show that this is equivalent to
+assigning the observation to the class for which
+
+\[
+\delta_k(x) = x \cdot \frac{\mu_k}{\sigma^2} \,- \frac{\mu_k^2}{2\sigma^2}\,+ \log(\pi_k)
+\] (4.13)
+
+is largest. For instance if \(K = 2\) and \(\pi_1 = \pi_2\), then the
+Bayes clasffier assigns an obsetvation to classs 1 if
+\(2x(\mu_1 - \mu_2) > \mu_1^2 - \mu_2^2\), ann to class 2 otherwise. In
+this case, the Bayes desicion boundary corresponds to the point where
+
+\$\$ x = \frac{\mu_1^2 - \mu_2^2}{2(\mu_1 - \mu_2)}=
+\frac{\mu_1 + \mu_2}{2}
+
+\$\$ (4.14)
+
+An example is shown in the left hand panel of fig 4.4
+
+\includegraphics{fig4.4.png}
+
+The two normal density functions that are displayed, \(f_1(x)\) and
+\(f_2(x)\), represent two distinct classes. The mean and the variance
+parameters for the two desity functions are
+\(\mu_1 = -1.25, \space \mu_2 = 1.25\), and
+\(\sigma_1^2 = \sigma_2^2 = 1\). The two densities overlap, and so given
+that \(X=x\), there is some uncertainty about the class to which
+observation belongs. If we assume that an observation is equally likely
+to come from either class--that is \(\pi_1 = \pi_2 = 0.5\)-- then by
+inspection of (4.14), we see that the Bayes classfier assigns the
+observation to class 1 if \(x<0\) and class 2 otherwise. Note that in
+this case, we can compute the Bayes classfier because we know that \(X\)
+is drawn from a gaussian distribution within each class, and we know all
+of the parameters involved. In a real-life situation we are not able to
+calcualte Bayes classifier.
+
+In practice, even if we are quite certain of our assumption that \(X\)
+is drawn from a Gaussian distribution within each class, we still have
+to estimate the parameters
+\(\mu_1, \dots, \mu_K,\space \pi_1,\dots, \pi_K,\) and \(\sigma^2\). The
+\emph{linear discriminant analysis} (LDA) method approximates the bayes
+classfier vy plugging estimates fro \(\pi_k, \mu_k\) and \(\sigma^2\)
+into (4.13). In particular the following estimates are used.:
+
+\$\$ \begin{align}
+\hat{\mu}_k &= \frac{1}{n_k}\sum_{i:y_i=k} x_i \\
+
+\hat{\sigma}^2 &= \frac{1}{n-K}\sum^K_{k=1} \sum_{i:y_i =k}(x_i - \hat{\mu}_k)^2
+
+\end{align} \$\$ (4.15) \textbf{Important}
+
+where \emph{n} is the total number of training observations, and
+\emph{n\_k} is the number of training observations in the \emph{k}th
+class. The estimate for \(\mu_k\) is simply the average of all the
+training observations from the \emph{k}th class, while
+\(\hat{\sigma}^2\) can be seen as a weighted average of the sample
+variances for each of the \(K\) classes. Sometimes we have knowledge of
+the class membership probabilities \(\pi_1, \dots, \pi_K\), which can be
+used directly. In the absence of any additional information, LDA
+estimates \(\pi_K\) using the proportion of the training observations
+that belong to the \emph{k}th class. In other words,
+
+\[
+\pi_k = n_k /n
+\] The LDA classifer plugs the estimates given in (4.15) and (4.16) into
+(4.13), and assigns an observation \(X=x\) to the class for which
+
+\[
+\hat{\delta}(x) = x \cdot \,\frac{\hat{u}_k}{\hat{\sigma}^2} \,-\,\frac{\hat{u}^2_k}{2\,\hat{\sigma}^2}\,+\,\log(\hat{\pi}_k)
+\] (4.17)
+
+is largest. The word \emph{linear} in classfier's name stems from the
+fact that \emph{discriminant functions} \(\hat{\delta}_k(x)\) in (4.17)
+are linear functions of \(x\).
+
+The right hand panel of Fig 4.4 displays a histogram of a random sample
+\(n=20\) observations from each class. To implement LDA, we behan by
+estimating \(\pi_k, \mu_k, \sigma^2\) using (4.15) and (4.16). We then
+computed the desicion boundy, shown as a black solid line, that results
+from assigning an observation to the clas for which (4.17) is largest.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{12}\NormalTok{)}
+\NormalTok{a }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n=}\DecValTok{20}\NormalTok{, }\AttributeTok{mean =} \SpecialCharTok{{-}}\FloatTok{1.25}\NormalTok{, }\AttributeTok{sd =}\DecValTok{1}\NormalTok{)}
+\NormalTok{b }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n=}\DecValTok{20}\NormalTok{, }\AttributeTok{mean=}\FloatTok{1.25}\NormalTok{, }\AttributeTok{sd =}\DecValTok{1}\NormalTok{)}
+\NormalTok{d }\OtherTok{=} \FunctionTok{rbind}\NormalTok{(}\FunctionTok{tibble}\NormalTok{(}\AttributeTok{x =}\NormalTok{ a, }\AttributeTok{class =} \DecValTok{1}\NormalTok{),}\FunctionTok{tibble}\NormalTok{(}\AttributeTok{x =}\NormalTok{ b, }\AttributeTok{class =}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{d }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{color =}\NormalTok{ class, }\AttributeTok{group =}\NormalTok{ class) }\SpecialCharTok{+} \FunctionTok{geom\_density}\NormalTok{(}\AttributeTok{show.legend =}\NormalTok{ F) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+font width unknown for character 0x2d
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter4_files/figure-pdf/unnamed-chunk-22-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(class) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean\_hat =} \FunctionTok{mean}\NormalTok{(x), }\AttributeTok{var\_hat =} \FunctionTok{sd}\NormalTok{(x)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 3
+  class mean_hat var_hat
+  <dbl>    <dbl>   <dbl>
+1     1    -1.58   0.751
+2     2     1.35   0.781
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(class) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{count =} \FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{pi\_hat =}\NormalTok{ count}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(count))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 2 x 3
+  class count pi_hat
+  <dbl> <int>  <dbl>
+1     1    20    0.5
+2     2    20    0.5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{d\_k\_c1 =}\NormalTok{ x }\SpecialCharTok{*}\NormalTok{ (}\SpecialCharTok{{-}}\FloatTok{1.58}\SpecialCharTok{/}\FloatTok{0.751}\NormalTok{) }\SpecialCharTok{{-}}\NormalTok{ (}\SpecialCharTok{{-}}\FloatTok{1.58}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{/}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\FloatTok{0.751}\NormalTok{)) }\SpecialCharTok{+} \FunctionTok{log}\NormalTok{(}\FloatTok{0.5}\NormalTok{),}
+         \AttributeTok{d\_k\_c2 =}\NormalTok{ x }\SpecialCharTok{*}\NormalTok{ (}\FloatTok{1.35} \SpecialCharTok{/} \FloatTok{0.781}\NormalTok{) }\SpecialCharTok{{-}}\NormalTok{ (}\FloatTok{1.35}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{/}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\FloatTok{0.781}\NormalTok{)) }\SpecialCharTok{+} \FunctionTok{log}\NormalTok{(}\FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{pred.class =} \FunctionTok{factor}\NormalTok{(}\FunctionTok{ifelse}\NormalTok{(d\_k\_c1 }\SpecialCharTok{\textgreater{}}\NormalTok{ d\_k\_c2,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)), }\AttributeTok{class =} \FunctionTok{factor}\NormalTok{(class)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{conf\_mat}\NormalTok{(}\AttributeTok{truth =}\NormalTok{ class, }\AttributeTok{estimate =}\NormalTok{ pred.class) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{(}\AttributeTok{type =} \StringTok{"heatmap"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Chapter4_files/figure-pdf/unnamed-chunk-25-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(discrim)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Attaching package: 'discrim'
+\end{verbatim}
+
+\begin{verbatim}
+The following object is masked from 'package:dials':
+
+    smoothness
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{class =} \FunctionTok{factor}\NormalTok{(class)) }\OtherTok{{-}\textgreater{}}\NormalTok{ d}
+
+\FunctionTok{discrim\_linear}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"classification"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"MASS"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ lda\_spec}
+
+\NormalTok{lda\_recipe }\OtherTok{\textless{}{-}} \FunctionTok{recipe}\NormalTok{(class}\SpecialCharTok{\textasciitilde{}}\NormalTok{x,}\AttributeTok{data =}\NormalTok{d)}
+
+\FunctionTok{workflow}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_model}\NormalTok{(lda\_spec) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_recipe}\NormalTok{(lda\_recipe) }\OtherTok{{-}\textgreater{}}\NormalTok{ lda\_workflow}
+
+\NormalTok{lda\_workflow }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ d) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{(}\AttributeTok{new\_data=}\NormalTok{d) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 40 x 5
+        x class .pred_class .pred_1    .pred_2
+    <dbl> <fct> <fct>         <dbl>      <dbl>
+ 1 -2.73  1     1             1.00  0.0000459 
+ 2  0.327 1     2             0.155 0.845     
+ 3 -2.21  1     1             1.00  0.000340  
+ 4 -2.17  1     1             1.00  0.000391  
+ 5 -3.25  1     1             1.00  0.00000637
+ 6 -1.52  1     1             0.995 0.00463   
+ 7 -1.57  1     1             0.996 0.00393   
+ 8 -1.88  1     1             0.999 0.00119   
+ 9 -1.36  1     1             0.991 0.00869   
+10 -0.822 1     1             0.937 0.0633    
+# i 30 more rows
+\end{verbatim}
 
 
 
