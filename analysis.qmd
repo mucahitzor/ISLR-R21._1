@@ -19,8 +19,7 @@ library(patchwork)
 library(GGally)
 library(showtext)
 })
-extrafont::loadfonts(quiet = TRUE)
-theme_set(theme_ipsum_ps(axis_title_size = 11 , axis_title_just = "c") + theme(axis.line = element_line(color ="black")))
+
 ```
 
 # Exercise

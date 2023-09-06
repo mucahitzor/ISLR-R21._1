@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ISLR-R21._1 - 4&nbsp; Classification</title>
+<title>ISLR-R21._1 - 3&nbsp; Classification</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./analysis.html" rel="prev">
+<link href="./analysis.html" rel="next">
+<link href="./Chapter3.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -111,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Chapter4.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classification</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Chapter4.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Classification</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -177,14 +178,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exercise</span></span></a>
+  <a href="./Chapter4.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Classification</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Chapter4.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classification</span></span></a>
+  <a href="./analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercise</span></span></a>
   </div>
 </li>
     </ul>
@@ -197,19 +198,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#an-overview-of-classsification" id="toc-an-overview-of-classsification" class="nav-link active" data-scroll-target="#an-overview-of-classsification"><span class="header-section-number">4.1</span> An overview of Classsification</a></li>
-  <li><a href="#why-not-linear-regression" id="toc-why-not-linear-regression" class="nav-link" data-scroll-target="#why-not-linear-regression"><span class="header-section-number">4.2</span> Why Not Linear Regression?</a>
+  <li><a href="#an-overview-of-classsification" id="toc-an-overview-of-classsification" class="nav-link active" data-scroll-target="#an-overview-of-classsification"><span class="header-section-number">3.1</span> An overview of Classsification</a></li>
+  <li><a href="#why-not-linear-regression" id="toc-why-not-linear-regression" class="nav-link" data-scroll-target="#why-not-linear-regression"><span class="header-section-number">3.2</span> Why Not Linear Regression?</a>
   <ul class="collapse">
-  <li><a href="#the-logistic-model" id="toc-the-logistic-model" class="nav-link" data-scroll-target="#the-logistic-model"><span class="header-section-number">4.2.1</span> The Logistic Model</a></li>
-  <li><a href="#estiamting-the-regression-coefficients" id="toc-estiamting-the-regression-coefficients" class="nav-link" data-scroll-target="#estiamting-the-regression-coefficients"><span class="header-section-number">4.2.2</span> Estiamting the Regression Coefficients</a></li>
-  <li><a href="#making-predictions" id="toc-making-predictions" class="nav-link" data-scroll-target="#making-predictions"><span class="header-section-number">4.2.3</span> Making predictions</a></li>
-  <li><a href="#multiple-logistic-regression" id="toc-multiple-logistic-regression" class="nav-link" data-scroll-target="#multiple-logistic-regression"><span class="header-section-number">4.2.4</span> Multiple Logistic Regression</a></li>
-  <li><a href="#logistic-regression-for-2-response-classes" id="toc-logistic-regression-for-2-response-classes" class="nav-link" data-scroll-target="#logistic-regression-for-2-response-classes"><span class="header-section-number">4.2.5</span> Logistic Regression for &gt; 2 Response Classes</a></li>
+  <li><a href="#the-logistic-model" id="toc-the-logistic-model" class="nav-link" data-scroll-target="#the-logistic-model"><span class="header-section-number">3.2.1</span> The Logistic Model</a></li>
+  <li><a href="#estiamting-the-regression-coefficients" id="toc-estiamting-the-regression-coefficients" class="nav-link" data-scroll-target="#estiamting-the-regression-coefficients"><span class="header-section-number">3.2.2</span> Estiamting the Regression Coefficients</a></li>
+  <li><a href="#making-predictions" id="toc-making-predictions" class="nav-link" data-scroll-target="#making-predictions"><span class="header-section-number">3.2.3</span> Making predictions</a></li>
+  <li><a href="#multiple-logistic-regression" id="toc-multiple-logistic-regression" class="nav-link" data-scroll-target="#multiple-logistic-regression"><span class="header-section-number">3.2.4</span> Multiple Logistic Regression</a></li>
+  <li><a href="#logistic-regression-for-2-response-classes" id="toc-logistic-regression-for-2-response-classes" class="nav-link" data-scroll-target="#logistic-regression-for-2-response-classes"><span class="header-section-number">3.2.5</span> Logistic Regression for &gt; 2 Response Classes</a></li>
   </ul></li>
-  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">4.3</span> Linear Discriminant Analysis</a>
+  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">3.3</span> Linear Discriminant Analysis</a>
   <ul class="collapse">
-  <li><a href="#using-bayes-theorem-for-classification" id="toc-using-bayes-theorem-for-classification" class="nav-link" data-scroll-target="#using-bayes-theorem-for-classification"><span class="header-section-number">4.3.1</span> Using Bayes’ Theorem for Classification</a></li>
-  <li><a href="#linear-discriminant-analysis-for-p1" id="toc-linear-discriminant-analysis-for-p1" class="nav-link" data-scroll-target="#linear-discriminant-analysis-for-p1"><span class="header-section-number">4.3.2</span> Linear Discriminant Analysis for p=1</a></li>
+  <li><a href="#using-bayes-theorem-for-classification" id="toc-using-bayes-theorem-for-classification" class="nav-link" data-scroll-target="#using-bayes-theorem-for-classification"><span class="header-section-number">3.3.1</span> Using Bayes’ Theorem for Classification</a></li>
+  <li><a href="#linear-discriminant-analysis-for-p1" id="toc-linear-discriminant-analysis-for-p1" class="nav-link" data-scroll-target="#linear-discriminant-analysis-for-p1"><span class="header-section-number">3.3.2</span> Linear Discriminant Analysis for p=1</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -219,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classification</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Classification</span></h1>
 </div>
 
 
@@ -250,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(showtext)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>extrafont<span class="sc">::</span><span class="fu">loadfonts</span>(<span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_ipsum_ps</span>(<span class="at">axis_title_size =</span> <span class="dv">11</span> , <span class="at">axis_title_just =</span> <span class="st">"c"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span><span class="st">"black"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_ipsum_es</span>(<span class="at">axis_title_size =</span> <span class="dv">11</span> , <span class="at">axis_title_just =</span> <span class="st">"c"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span><span class="st">"black"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For many cases the response variable is <em>qualitative</em>, or <em>categorical</em>.</p>
 <p>Clasification is the process for predicting qualitative responses; we are classifying an observation.</p>
@@ -261,8 +262,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><em>K-nearest neighbors</em></li>
 </ul>
 <p>We discuss more computer intensive methods is later chapters such as GAM(ch 7), trees, random forests, and boosting(ch 8), and support vector machines (ch 9).</p>
-<section id="an-overview-of-classsification" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="an-overview-of-classsification"><span class="header-section-number">4.1</span> An overview of Classsification</h2>
+<section id="an-overview-of-classsification" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="an-overview-of-classsification"><span class="header-section-number">3.1</span> An overview of Classsification</h2>
 <p>Here some clasffication problems</p>
 <ol type="1">
 <li><p>A person arrives at the emergency room with a set of symptoms that could possible be attributed to one f three medical conditions. Which of the three conditions does the individual have?</p></li>
@@ -518,8 +519,8 @@ dbl (2): balance, income
 </div>
 <p>In this chapter we laern how to build a model to predict <code>default</code>(<span class="math inline">\(y\)</span>), for any given value of balance (<span class="math inline">\(x_1\)</span>), and income (<span class="math inline">\(x_2\)</span>). Since <span class="math inline">\(Y\)</span> is not quantitative, SLR is not appropriate.</p>
 </section>
-<section id="why-not-linear-regression" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="why-not-linear-regression"><span class="header-section-number">4.2</span> Why Not Linear Regression?</h2>
+<section id="why-not-linear-regression" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="why-not-linear-regression"><span class="header-section-number">3.2</span> Why Not Linear Regression?</h2>
 <p>Why is LR not appropriate here?</p>
 <p>Suppose that we are trying to predict the mdeical condition of a patient in the emergency room on the basis of her symptoms. In this simplified example, therea rea three possible diagnoses: <code>stroke</code>, <code>drug overdose</code>, <code>epileptic seizure</code>. We could consider encoding these values as a quantitative respose variable <span class="math inline">\(Y\)</span>:</p>
 <p><span class="math display">\[
@@ -548,8 +549,8 @@ Y =
 <p><span class="math display">\[
 Pr(default = Yes | balance)
 \]</span> The values of <span class="math inline">\(Pr(default = Yes|balance)\)</span>, which we abbreviate <span class="math inline">\(p(balance)\)</span>, will range between 0 and 1. Then for any given value of <code>balance</code>, a prediction can be made for <code>default</code>. For example, we can predict <span class="math inline">\(default = Yes\)</span> or any individaul for whom <span class="math inline">\(p(balance)&gt;0.5\)</span>. Alternatively, if a company wishes to be conservative in predicting individuals who are at risk for default, then they may choose to use a lower threshold, such as <span class="math inline">\(p(balance)&gt;0.1\)</span>.</p>
-<section id="the-logistic-model" class="level3" data-number="4.2.1">
-<h3 data-number="4.2.1" class="anchored" data-anchor-id="the-logistic-model"><span class="header-section-number">4.2.1</span> The Logistic Model</h3>
+<section id="the-logistic-model" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="the-logistic-model"><span class="header-section-number">3.2.1</span> The Logistic Model</h3>
 <p>How should we model the relationship between <span class="math inline">\(p(x) = Pr(y = 1| x)\)</span> and <span class="math inline">\(x\)</span>? (when we coded 0/1 for response values)</p>
 <p>In section 4.2 we talked of using a linear regression model to represent these probabilities:</p>
 <p><span class="math display">\[
@@ -644,8 +645,8 @@ p(x) &amp;= \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}} \\
 <p>the left-hand side is called the <em>log-odds-</em> or <em>logit</em>. We see that the logistic regression model (4.2) has a logit that is linear in <span class="math inline">\(X\)</span>.</p>
 <p>Here increasing <span class="math inline">\(x\)</span> by one unit changes the log odds by <span class="math inline">\(\beta_1\)</span> (4.4), or it multiplies the odds by <span class="math inline">\(e^{\beta_1}\)</span>. But because the relationship between <span class="math inline">\(p(x)\)</span> and <span class="math inline">\(x\)</span> in (4.2) is not a straight line, <span class="math inline">\(\beta_1\)</span> does not correspond to the change in <span class="math inline">\(p(x)\)</span> associated with a one-unit increase in <span class="math inline">\(x\)</span>. The amount that <span class="math inline">\(p(x)\)</span> changes due to a one-unit change in <span class="math inline">\(x\)</span> will depend on the current value of <span class="math inline">\(x\)</span>. But regardless of the value of <span class="math inline">\(x\)</span>, if <span class="math inline">\(\beta_1\)</span> is positive, then increasing <span class="math inline">\(x\)</span> will be associated with increasing <span class="math inline">\(p(x)\)</span>, vice versa. We can see that in the right hand panel of Figure 4.2.</p>
 </section>
-<section id="estiamting-the-regression-coefficients" class="level3" data-number="4.2.2">
-<h3 data-number="4.2.2" class="anchored" data-anchor-id="estiamting-the-regression-coefficients"><span class="header-section-number">4.2.2</span> Estiamting the Regression Coefficients</h3>
+<section id="estiamting-the-regression-coefficients" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="estiamting-the-regression-coefficients"><span class="header-section-number">3.2.2</span> Estiamting the Regression Coefficients</h3>
 <p><span class="math display">\[
 p(x) = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1}}
 \]</span> (4.2) The coefficients of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are unknown, must be estimated based on the available training data. We are going to use <em>maximum likelyhood</em> method. The basic intuition begind using maximum likelihood to fit a logistic regression model is as follows: we seek estimates for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> such that the predicted probability <span class="math inline">\(\hat{p}(x_i)\)</span>} of default for each individual, using (4.2), corresponds as closely as possible to the individual’s observed default status. In other words, we try to find <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta_1}\)</span> such that plugging these estimates into the model for <span class="math inline">\(p(x)\)</span>,given in (4.2), yields a number close to 1 for all individuals who defaulted, and a number close to zero for all individuals who did not. We can formalize this mathematical equation with <em>likelihood function</em></p>
@@ -749,8 +750,8 @@ Computational engine: glm </code></pre>
 </div>
 <p>We can measure the accuracy of the coefficient estimates by computing their standard errors. The <em>z-</em>statistic in the above plays the same role as <em>t</em> statistic in linear regression output. They are calculated from <span class="math inline">\(\hat{\beta_i} / \text{SE}(\hat{\beta_i})\)</span>, and so a large(absolute) value of the z-statistic indicates evidence against the null hypothesis <span class="math inline">\(H_0: \beta_1 = 0\)</span>. This null hypothesis implies that <span class="math inline">\(p(x) = \frac{e^{\beta_0}}{1 + e^{\beta_0}}\)</span>. In other words, that the probability of default does not depend on blaance. p value is very low, we can reject <span class="math inline">\(H_0\)</span>; there is relationship between balance and probability of default. Intercept is not important here.</p>
 </section>
-<section id="making-predictions" class="level3" data-number="4.2.3">
-<h3 data-number="4.2.3" class="anchored" data-anchor-id="making-predictions"><span class="header-section-number">4.2.3</span> Making predictions</h3>
+<section id="making-predictions" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="making-predictions"><span class="header-section-number">3.2.3</span> Making predictions</h3>
 <p>Once the coefficients have been estimated, we can compute the probability of default for any given credit card balance.</p>
 <p><span class="math display">\[
 \hat{p}(x) = \frac{e^{\hat{\beta_0} + \hat{\beta_1}x}}{1 +e^{\hat{\beta_0} + \hat{\beta_1}x}} = \frac{e^{-10.6513 + 0.0055 x}}{1 + e^{-10.6513 + 0.0055 x}}
@@ -849,8 +850,8 @@ x =
 \widehat{Pr}(default = Yes | student = No) = \frac{e^{-3.50 + 0.4049 \times 0}}{1 + e^{-3.50 + 0.4049 \times 0}} = 0.0292
 \]</span></p>
 </section>
-<section id="multiple-logistic-regression" class="level3" data-number="4.2.4">
-<h3 data-number="4.2.4" class="anchored" data-anchor-id="multiple-logistic-regression"><span class="header-section-number">4.2.4</span> Multiple Logistic Regression</h3>
+<section id="multiple-logistic-regression" class="level3" data-number="3.2.4">
+<h3 data-number="3.2.4" class="anchored" data-anchor-id="multiple-logistic-regression"><span class="header-section-number">3.2.4</span> Multiple Logistic Regression</h3>
 <p>We now consider the problem of predicting a binary response using a multiple predictors. We can generalize (4.4) as follows:</p>
 <p><span class="math display">\[
 \log\left(\frac{p(x)}{1-p(x)}\right) = \beta_0 + \beta_1x_1 + \dots + \beta_p x_p
@@ -964,13 +965,13 @@ e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
 </div>
 </div>
 </section>
-<section id="logistic-regression-for-2-response-classes" class="level3" data-number="4.2.5">
-<h3 data-number="4.2.5" class="anchored" data-anchor-id="logistic-regression-for-2-response-classes"><span class="header-section-number">4.2.5</span> Logistic Regression for &gt; 2 Response Classes</h3>
+<section id="logistic-regression-for-2-response-classes" class="level3" data-number="3.2.5">
+<h3 data-number="3.2.5" class="anchored" data-anchor-id="logistic-regression-for-2-response-classes"><span class="header-section-number">3.2.5</span> Logistic Regression for &gt; 2 Response Classes</h3>
 <p>What if our response variable has more than two classes. Like medical condition in the emergency room: <code>stroke</code>, <code>drug overdose</code>, <code>epileptic seizure</code>. In this setting we wish to model both <span class="math inline">\(Pr(Y = stroke | x)\)</span> and <span class="math inline">\(Pr(Y = drug \space overdose | x)\)</span>, with the remaining <span class="math inline">\(Pr(Y = epileptic \space seizure |x) = 1 - Pr(Y= stroke | x) - Pr(Y = drug \space overdose | x)\)</span>. We can do it my extending logistic regression but <em>Linear Discriminant Analysis</em> is much suitable for this task</p>
 </section>
 </section>
-<section id="linear-discriminant-analysis" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="linear-discriminant-analysis"><span class="header-section-number">4.3</span> Linear Discriminant Analysis</h2>
+<section id="linear-discriminant-analysis" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="linear-discriminant-analysis"><span class="header-section-number">3.3</span> Linear Discriminant Analysis</h2>
 <p>Logistic regression involves directly modeling <span class="math inline">\(Pr(Y = k | X = x)\)</span> using the logistic function, given by (4.7) for the case of two response classes. In statistical jargon, we model the conditional distribution of the response <span class="math inline">\(Y\)</span>, given the predictor(s) <span class="math inline">\(X\)</span>.</p>
 <p>We now consider an alternative and less direct approach to estimating these probabilities. In this alternative approach, we model the distribution of the predictors <span class="math inline">\(X\)</span> separately in each of the response classes (i.e.&nbsp;given <span class="math inline">\(Y\)</span>), and then use Bayes’ theorem to flip these around into estimates for <span class="math inline">\(Pr(Y = k | X = x)\)</span>. When these distributions are assumed to be normal, it turns out that the model is very similar in form to logistic regression.</p>
 <p>Why do we need another method when we have logistic regression?</p>
@@ -979,8 +980,8 @@ e^{-10.86 + 0.00574 \cdot 1,500 + 3e-6 \cdot 40,000 - 0.646 \cdot 0}
 <li><p>If <em>n</em> is small and the distribution of the predictors <span class="math inline">\(X\)</span> is approximately normal in each of the classes the linear discriminant model is again more stable than th elogistic regression model</p></li>
 <li><p>LDA is popular when we have more than two response classes.</p></li>
 </ul>
-<section id="using-bayes-theorem-for-classification" class="level3" data-number="4.3.1">
-<h3 data-number="4.3.1" class="anchored" data-anchor-id="using-bayes-theorem-for-classification"><span class="header-section-number">4.3.1</span> Using Bayes’ Theorem for Classification</h3>
+<section id="using-bayes-theorem-for-classification" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="using-bayes-theorem-for-classification"><span class="header-section-number">3.3.1</span> Using Bayes’ Theorem for Classification</h3>
 <p>We want to classify an observation into one of <span class="math inline">\(K\)</span> classes, where <span class="math inline">\(2 \leq K\)</span>. So <span class="math inline">\(Y\)</span> can take on <span class="math inline">\(K\)</span> possible distinct and unordered values. Let <span class="math inline">\(\pi_k\)</span> represent the overall or <em>prior</em> probability that a randomly chosen observation comes from the <span class="math inline">\(k\)</span>th class.; this is the probability that a given observation is associated with the <em>k</em>th category of the response variable <span class="math inline">\(Y\)</span>. Let <span class="math inline">\(f_k(x) \equiv Pr(X = x | Y = k)\)</span> denote the <em>density</em> function of <span class="math inline">\(X\)</span> for an observation that comes from the <em>k</em> th class. In other words <span class="math inline">\(f_k(x)\)</span> is relatively large if there is a high probability that an observation in the <em>k</em> th class has <span class="math inline">\(X \approx x\)</span>, and <span class="math inline">\(f_k(x)\)</span> is small if it is very unlikely that an observation in the <em>k</em>th class has <span class="math inline">\(X \approx x\)</span>. Then <em>Bayes’s theorem</em> states that</p>
 <p><span class="math display">\[
 Pr(Y = k | X = x) = \frac{
@@ -993,8 +994,8 @@ Pr(Y = k | X = x) = \frac{
 <p>We will use the abbreviation <span class="math inline">\(p_k(X) = Pr(Y = k | X)\)</span>. This suggests that instead of directly computing <span class="math inline">\(p_k(X)\)</span> as Section 4.3.1, we can simply plug in estimates of <span class="math inline">\(\pi_k\)</span> and <span class="math inline">\(f_k(X)\)</span> into (4.10). In general, estimating <span class="math inline">\(\pi_k\)</span> is easy if we have a random sample of <span class="math inline">\(Y\)</span>s from the population: we simply compute the fraction of the training observations that belong to the <em>k</em>th class. However, etimating <span class="math inline">\(f_k(X)\)</span> tends to be more challenging, unless we assume some simple forms for these densities. We refer to <span class="math inline">\(p_k(x)\)</span> as the <em>posterior</em> probability than an observation <span class="math inline">\(X=x\)</span> belongs to the <em>k</em>th class. That is, it is the probability that the observation belongs to the <em>k</em>th class, <em>given</em> the predictor value for that observation.</p>
 <p>We know from Ch.2 that the Bayes classifier, which classifies an observation to the class for which <span class="math inline">\(p_k(X)\)</span> is largest, has the lowest possible error rate out of all classifiers. Therefore, if we can find a way to estimate <span class="math inline">\(f_k(X)\)</span> then we can develop a classifier that approximates the bayes classifier:</p>
 </section>
-<section id="linear-discriminant-analysis-for-p1" class="level3" data-number="4.3.2">
-<h3 data-number="4.3.2" class="anchored" data-anchor-id="linear-discriminant-analysis-for-p1"><span class="header-section-number">4.3.2</span> Linear Discriminant Analysis for p=1</h3>
+<section id="linear-discriminant-analysis-for-p1" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="linear-discriminant-analysis-for-p1"><span class="header-section-number">3.3.2</span> Linear Discriminant Analysis for p=1</h3>
 <p>Assume we have one predictor. We would like to obtain an estimate for <span class="math inline">\(f_k(x)\)</span> that we can plug into (4.10) in order to estimate <span class="math inline">\(p_k(x)\)</span>. We will then classify an observation to the class for which <span class="math inline">\(p_k(x)\)</span> is greatests. In order to estimate <span class="math inline">\(f_k(x)\)</span> we will first make some assumptions about this form.</p>
 <p>Suppose we assume <span class="math inline">\(f_k(x)\)</span> is <em>normal</em> or <em>Gaussian</em>. In the one dimensional setting, the normal density takes the form</p>
 <p><span class="math display">\[
@@ -1486,11 +1487,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="./analysis.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exercise</span></span>
+      <a href="./Chapter3.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./analysis.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercise</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

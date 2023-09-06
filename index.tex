@@ -225,7 +225,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, frame hidden, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, enhanced, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -939,7 +939,11 @@ We will predict quantitative response.
 \FunctionTok{library}\NormalTok{(dotwhisker)}
 \FunctionTok{library}\NormalTok{(hrbrthemes)}
 \FunctionTok{library}\NormalTok{(patchwork)}
+\FunctionTok{library}\NormalTok{(GGally)}
+\FunctionTok{library}\NormalTok{(showtext)}
 \NormalTok{\})}
+\NormalTok{extrafont}\SpecialCharTok{::}\FunctionTok{loadfonts}\NormalTok{(}\AttributeTok{quiet =} \ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{theme\_set}\NormalTok{(}\FunctionTok{theme\_ipsum\_es}\NormalTok{(}\AttributeTok{axis\_title\_size =} \DecValTok{11}\NormalTok{ , }\AttributeTok{axis\_title\_just =} \StringTok{"c"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.line =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =}\StringTok{"black"}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1347,6 +1351,146 @@ Now lets plot this data points
   \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{x, }\AttributeTok{y=}\NormalTok{y) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+font width unknown for character 0x2d
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+width unknown for character 0x2d
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+font width unknown for character 0x2d
+
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+font width unknown for character 0x2d
+\end{verbatim}
 
 \begin{figure}[H]
 
@@ -3675,7 +3819,7 @@ Y &= \beta_0 + (\beta_1 + \beta_3 x_2)x_1 + \beta_2x_2 +\epsilon \\
 is no longer constant: adjusting \(x_2\) will change the impact of
 \(x_1\) on \(Y\).
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, bottomtitle=1mm, opacityback=0, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, left=2mm, toptitle=1mm, colback=white, titlerule=0mm, breakable, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Productivy of a factory}, coltitle=black, bottomrule=.15mm, arc=.35mm, colframe=quarto-callout-note-color-frame]
+\begin{tcolorbox}[enhanced jigsaw, colback=white, leftrule=.75mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, breakable, toptitle=1mm, titlerule=0mm, toprule=.15mm, left=2mm, bottomtitle=1mm, coltitle=black, arc=.35mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Productivy of a factory}, opacityback=0, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, rightrule=.15mm]
 
 Suppose that we are interested in studying the productivity of a
 factory. We want to predict the number of \texttt{units} produced on the
@@ -5703,1295 +5847,6 @@ predictor.
 
 \bookmarksetup{startatroot}
 
-\hypertarget{exercise}{%
-\chapter{Exercise}\label{exercise}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{suppressPackageStartupMessages}\NormalTok{(\{}
-  \FunctionTok{library}\NormalTok{(tidyverse)}
-  \FunctionTok{library}\NormalTok{(tidymodels)}
-  \FunctionTok{library}\NormalTok{(hrbrthemes)}
-  \FunctionTok{library}\NormalTok{(patchwork)}
-  \FunctionTok{library}\NormalTok{(magrittr)}
-  \FunctionTok{library}\NormalTok{(corrplot)}
-\NormalTok{\})}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{slr}{%
-\section{SLR}\label{slr}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data }\OtherTok{=}\NormalTok{ MASS}\SpecialCharTok{::}\NormalTok{Boston}
-\NormalTok{data }\SpecialCharTok{\%\textless{}\textgreater{}\%} \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 506 x 14
-      crim    zn indus  chas   nox    rm   age   dis   rad   tax ptratio black
-     <dbl> <dbl> <dbl> <int> <dbl> <dbl> <dbl> <dbl> <int> <dbl>   <dbl> <dbl>
- 1 0.00632  18    2.31     0 0.538  6.58  65.2  4.09     1   296    15.3  397.
- 2 0.0273    0    7.07     0 0.469  6.42  78.9  4.97     2   242    17.8  397.
- 3 0.0273    0    7.07     0 0.469  7.18  61.1  4.97     2   242    17.8  393.
- 4 0.0324    0    2.18     0 0.458  7.00  45.8  6.06     3   222    18.7  395.
- 5 0.0690    0    2.18     0 0.458  7.15  54.2  6.06     3   222    18.7  397.
- 6 0.0298    0    2.18     0 0.458  6.43  58.7  6.06     3   222    18.7  394.
- 7 0.0883   12.5  7.87     0 0.524  6.01  66.6  5.56     5   311    15.2  396.
- 8 0.145    12.5  7.87     0 0.524  6.17  96.1  5.95     5   311    15.2  397.
- 9 0.211    12.5  7.87     0 0.524  5.63 100    6.08     5   311    15.2  387.
-10 0.170    12.5  7.87     0 0.524  6.00  85.9  6.59     5   311    15.2  387.
-# i 496 more rows
-# i 2 more variables: lstat <dbl>, medv <dbl>
-\end{verbatim}
-
-We are going to predict \texttt{medv}(median house value) in Boston,
-using 13 predictors such as \texttt{rm}(average number of rooms per
-house), \texttt{age}(avarege age of houses), and \texttt{lstat} (percent
-of household with low socioeconomics status).
-
-Do a linear regression of \texttt{lstat} on \texttt{medv}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ slr\_res }
-
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ lstat, data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--15.168  -3.990  -1.318   2.034  24.500 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept) 34.55384    0.56263   61.41   <2e-16 ***
-lstat       -0.95005    0.03873  -24.53   <2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 6.216 on 504 degrees of freedom
-Multiple R-squared:  0.5441,    Adjusted R-squared:  0.5432 
-F-statistic: 601.6 on 1 and 504 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{names}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
- [1] "coefficients"  "residuals"     "effects"       "rank"         
- [5] "fitted.values" "assign"        "qr"            "df.residual"  
- [9] "xlevels"       "call"          "terms"         "model"        
-\end{verbatim}
-
-Get the confidence intervals
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{confint}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-                2.5 %     97.5 %
-(Intercept) 33.448457 35.6592247
-lstat       -1.026148 -0.8739505
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ dotwhisker}\SpecialCharTok{::}\FunctionTok{dwplot}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-5-1.pdf}
-
-}
-
-\end{figure}
-
-Lets do some predictions from this model. Lets create predictions for
-cases when \texttt{lstat} is equal to 5,10, and 15. We can use
-\texttt{predict} function for this. Here is a confidence interval for
-our p
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{predict}\NormalTok{(., }\FunctionTok{tibble}\NormalTok{(}\AttributeTok{lstat =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{15}\NormalTok{)), }\AttributeTok{interval =} \StringTok{"confidence"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-       fit      lwr      upr
-1 29.80359 29.00741 30.59978
-2 25.05335 24.47413 25.63256
-3 20.30310 19.73159 20.87461
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{predict}\NormalTok{(., }\FunctionTok{tibble}\NormalTok{(}\AttributeTok{lstat =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{15}\NormalTok{)), }\AttributeTok{interval =} \StringTok{"prediction"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-       fit       lwr      upr
-1 29.80359 17.565675 42.04151
-2 25.05335 12.827626 37.27907
-3 20.30310  8.077742 32.52846
-\end{verbatim}
-
-Lets plot \texttt{medv} and \texttt{lstat} along with the least squares
-regression line.
-
-We can either:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{medv, data}\SpecialCharTok{$}\NormalTok{lstat)}
-\FunctionTok{abline}\NormalTok{(slr\_res)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-8-1.pdf}
-
-}
-
-\end{figure}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ lstat, }\AttributeTok{y =}\NormalTok{ medv) }\SpecialCharTok{+} 
-  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{geom\_abline}\NormalTok{(}\AttributeTok{intercept =}\NormalTok{ slr\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{], }\AttributeTok{slope =}\NormalTok{ slr\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\AttributeTok{size =}\FloatTok{1.1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 506 x 8
-    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
-   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
- 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
- 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
- 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
- 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
- 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
- 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
- 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
- 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
- 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
-10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
-# i 496 more rows
-\end{verbatim}
-
-\begin{verbatim}
-Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-i Please use `linewidth` instead.
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-9-1.pdf}
-
-}
-
-\end{figure}
-
-This looks like not a linear relationship actually; lets confirm this
-with our residual plot. Since this is a SLR i can plot \(x\) vs \(e_i\).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{ .resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se=}\NormalTok{F) }\OtherTok{{-}\textgreater{}}\NormalTok{ p1}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 506 x 8
-    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
-   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
- 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
- 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
- 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
- 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
- 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
- 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
- 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
- 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
- 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
-10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
-# i 496 more rows
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{ .std.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se=}\NormalTok{F) }\OtherTok{{-}\textgreater{}}\NormalTok{ p2}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 506 x 8
-    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
-   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
- 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
- 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
- 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
- 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
- 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
- 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
- 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
- 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
- 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
-10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
-# i 496 more rows
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-10-1.pdf}
-
-}
-
-\end{figure}
-
-Our suspicions are true, it looks like there may not be a linear
-relationship, this shows a quadratic relationship.
-
-Our leverage statistics are given in the \texttt{.hat} column, but we
-can also get them using \texttt{hatvalues}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot}\NormalTok{(}\FunctionTok{hatvalues}\NormalTok{(slr\_res))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-11-1.pdf}
-
-}
-
-\end{figure}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{which.max}\NormalTok{(}\FunctionTok{hatvalues}\NormalTok{(slr\_res))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-375 
-375 
-\end{verbatim}
-
-Lets check the outliers by plotting standardized residuals vs fitted
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{filter}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{select}\NormalTok{(id,.std.resid) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pull}\NormalTok{(}\StringTok{"id"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ outliers}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 10 x 2
-      id .std.resid
-   <int>      <dbl>
- 1   164       3.00
- 2   167       3.06
- 3   187       3.17
- 4   226       3.20
- 5   258       3.27
- 6   263       3.20
- 7   268       3.63
- 8   370       3.06
- 9   372       3.95
-10   373       3.85
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# visualize the outliers}
-
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{.std.resid, }\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{color =} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{, F,T)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =}\DecValTok{2}\NormalTok{, }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+}
-\NormalTok{  ggrepel}\SpecialCharTok{::}\FunctionTok{geom\_text\_repel}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{,id,}\StringTok{""}\NormalTok{)), }\AttributeTok{max.overlaps =} \DecValTok{100}\NormalTok{, }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{scale\_color\_ipsum}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-13-1.pdf}
-
-}
-
-\end{figure}
-
-Leverage points: we plot std res vs leverage
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{filter}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{select}\NormalTok{(id, .std.resid,.hat) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{pull}\NormalTok{(}\StringTok{"id"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ highlevgs}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 5 x 3
-     id .std.resid   .hat
-  <int>      <dbl>  <dbl>
-1   142       2.04 0.0204
-2   374       2.00 0.0210
-3   375       2.50 0.0269
-4   413       2.60 0.0203
-5   415       1.23 0.0250
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# high leverage points}
-
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{.hat, }\AttributeTok{y =}\NormalTok{ .std.resid, }\AttributeTok{color =} \FunctionTok{ifelse}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{,F,T)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =}\DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{  ggrepel}\SpecialCharTok{::}\FunctionTok{geom\_text\_repel}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{ifelse}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{,id,}\StringTok{""}\NormalTok{)), }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+}\FunctionTok{scale\_color\_ipsum}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-14-1.pdf}
-
-}
-
-\end{figure}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ lstat, data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--15.168  -3.990  -1.318   2.034  24.500 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept) 34.55384    0.56263   61.41   <2e-16 ***
-lstat       -0.95005    0.03873  -24.53   <2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 6.216 on 504 degrees of freedom
-Multiple R-squared:  0.5441,    Adjusted R-squared:  0.5432 
-F-statistic: 601.6 on 1 and 504 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(outliers,highlevgs),]) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ lstat, data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--14.633  -3.465  -1.012   1.937  19.060 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  34.0494     0.5110   66.63   <2e-16 ***
-lstat        -0.9538     0.0358  -26.64   <2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 5.376 on 489 degrees of freedom
-Multiple R-squared:  0.5921,    Adjusted R-squared:  0.5912 
-F-statistic: 709.7 on 1 and 489 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-Removing high leverages and outliers improeves our result.
-
-\hypertarget{multiple-linear-regression-1}{%
-\section{Multiple linear
-Regression}\label{multiple-linear-regression-1}}
-
-\[
-medv = \beta_0 + \beta_1 lstat + \beta_2 age 
-\]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ lstat + age, data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--15.981  -3.978  -1.283   1.968  23.158 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept) 33.22276    0.73085  45.458  < 2e-16 ***
-lstat       -1.03207    0.04819 -21.416  < 2e-16 ***
-age          0.03454    0.01223   2.826  0.00491 ** 
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 6.173 on 503 degrees of freedom
-Multiple R-squared:  0.5513,    Adjusted R-squared:  0.5495 
-F-statistic:   309 on 2 and 503 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-Lets do a regression including all varaibles
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{., data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ mlr}
-\NormalTok{mlr }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ ., data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--15.595  -2.730  -0.518   1.777  26.199 
-
-Coefficients:
-              Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  3.646e+01  5.103e+00   7.144 3.28e-12 ***
-crim        -1.080e-01  3.286e-02  -3.287 0.001087 ** 
-zn           4.642e-02  1.373e-02   3.382 0.000778 ***
-indus        2.056e-02  6.150e-02   0.334 0.738288    
-chas         2.687e+00  8.616e-01   3.118 0.001925 ** 
-nox         -1.777e+01  3.820e+00  -4.651 4.25e-06 ***
-rm           3.810e+00  4.179e-01   9.116  < 2e-16 ***
-age          6.922e-04  1.321e-02   0.052 0.958229    
-dis         -1.476e+00  1.995e-01  -7.398 6.01e-13 ***
-rad          3.060e-01  6.635e-02   4.613 5.07e-06 ***
-tax         -1.233e-02  3.760e-03  -3.280 0.001112 ** 
-ptratio     -9.527e-01  1.308e-01  -7.283 1.31e-12 ***
-black        9.312e-03  2.686e-03   3.467 0.000573 ***
-lstat       -5.248e-01  5.072e-02 -10.347  < 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 4.745 on 492 degrees of freedom
-Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7338 
-F-statistic: 108.1 on 13 and 492 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-Lets calculate the VIF values
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{mlr }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ car}\SpecialCharTok{::}\FunctionTok{vif}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-    crim       zn    indus     chas      nox       rm      age      dis 
-1.792192 2.298758 3.991596 1.073995 4.393720 1.933744 3.100826 3.955945 
-     rad      tax  ptratio    black    lstat 
-7.484496 9.008554 1.799084 1.348521 2.941491 
-\end{verbatim}
-
-\texttt{age} has the highest p-value, lets remove that from the
-regression
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{. }\SpecialCharTok{{-}}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ . - age, data = data)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--15.6054  -2.7313  -0.5188   1.7601  26.2243 
-
-Coefficients:
-              Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  36.436927   5.080119   7.172 2.72e-12 ***
-crim         -0.108006   0.032832  -3.290 0.001075 ** 
-zn            0.046334   0.013613   3.404 0.000719 ***
-indus         0.020562   0.061433   0.335 0.737989    
-chas          2.689026   0.859598   3.128 0.001863 ** 
-nox         -17.713540   3.679308  -4.814 1.97e-06 ***
-rm            3.814394   0.408480   9.338  < 2e-16 ***
-dis          -1.478612   0.190611  -7.757 5.03e-14 ***
-rad           0.305786   0.066089   4.627 4.75e-06 ***
-tax          -0.012329   0.003755  -3.283 0.001099 ** 
-ptratio      -0.952211   0.130294  -7.308 1.10e-12 ***
-black         0.009321   0.002678   3.481 0.000544 ***
-lstat        -0.523852   0.047625 -10.999  < 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 4.74 on 493 degrees of freedom
-Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7343 
-F-statistic: 117.3 on 12 and 493 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\hypertarget{interaction-terms}{%
-\subsection{Interaction Terms}\label{interaction-terms}}
-
-following model
-
-\[
-medv = \beta_0 + \beta_1 lstat + \beta_2 age + \beta_3 lstat \cdot age + \epsilon
-\]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{*}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# short for fit(medv\textasciitilde{} lstat + age + lstat * age)}
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ lstat * age, data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--15.806  -4.045  -1.333   2.085  27.552 
-
-Coefficients:
-              Estimate Std. Error t value Pr(>|t|)    
-(Intercept) 36.0885359  1.4698355  24.553  < 2e-16 ***
-lstat       -1.3921168  0.1674555  -8.313 8.78e-16 ***
-age         -0.0007209  0.0198792  -0.036   0.9711    
-lstat:age    0.0041560  0.0018518   2.244   0.0252 *  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 6.149 on 502 degrees of freedom
-Multiple R-squared:  0.5557,    Adjusted R-squared:  0.5531 
-F-statistic: 209.3 on 3 and 502 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\hypertarget{non-linaer-transformation-of-the-predictors}{%
-\subsection{Non-linaer Transformation of the
-predictors}\label{non-linaer-transformation-of-the-predictors}}
-
-\[
-medv = \beta_0 + \beta_1 lstat + \beta_2 lstat^2 + \epsilon
-\]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ lstat + I(lstat^2), data = data)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--15.2834  -3.8313  -0.5295   2.3095  25.4148 
-
-Coefficients:
-             Estimate Std. Error t value Pr(>|t|)    
-(Intercept) 42.862007   0.872084   49.15   <2e-16 ***
-lstat       -2.332821   0.123803  -18.84   <2e-16 ***
-I(lstat^2)   0.043547   0.003745   11.63   <2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 5.524 on 503 degrees of freedom
-Multiple R-squared:  0.6407,    Adjusted R-squared:  0.6393 
-F-statistic: 448.5 on 2 and 503 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-The coefficient of the quadratic term is statistically significant:
-model is improved.
-
-We use \texttt{anova} function to further quantify the extent to which
-quadratic fit is superior to linear fit. We It takes models as its
-arguments. We want to compare two models, lets create them again and
-compare them
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ modelLin}
-
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ modelQuad}
-
-\FunctionTok{anova}\NormalTok{(modelLin, modelQuad)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Analysis of Variance Table
-
-Model 1: medv ~ lstat
-Model 2: medv ~ lstat + I(lstat^2)
-  Res.Df   RSS Df Sum of Sq     F    Pr(>F)    
-1    504 19472                                 
-2    503 15347  1    4125.1 135.2 < 2.2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-\end{verbatim}
-
-The annova function performs a hypothesis test comparing the two models.
-The null hypothesis is that the two models fit the data equally well,
-and the alternative hypothesis is that the full model is superior. Here
-we reject \(H_0\); and the model indcludes quadratic term is superior to
-the linaer odel. This is not a suprise to us, because we already
-suspected this.
-
-Lets do the plots again
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Linear model residual plot"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ p1}
-
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Quadratic model residual plot"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ p2}
-
-\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-23-1.pdf}
-
-}
-
-\end{figure}
-
-Now on the quadratic model it looks like there is still some pattern in
-the residuals. Should we create a cubic fit? Now what we can do is
-actually insert like 10 polynomial terms and check whether they are
-significant or not
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{10}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ poly(lstat, 10), data = data)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--14.5340  -3.0286  -0.7507   2.0437  26.4738 
-
-Coefficients:
-                   Estimate Std. Error t value Pr(>|t|)    
-(Intercept)         22.5328     0.2311  97.488  < 2e-16 ***
-poly(lstat, 10)1  -152.4595     5.1993 -29.323  < 2e-16 ***
-poly(lstat, 10)2    64.2272     5.1993  12.353  < 2e-16 ***
-poly(lstat, 10)3   -27.0511     5.1993  -5.203 2.88e-07 ***
-poly(lstat, 10)4    25.4517     5.1993   4.895 1.33e-06 ***
-poly(lstat, 10)5   -19.2524     5.1993  -3.703 0.000237 ***
-poly(lstat, 10)6     6.5088     5.1993   1.252 0.211211    
-poly(lstat, 10)7     1.9416     5.1993   0.373 0.708977    
-poly(lstat, 10)8    -6.7299     5.1993  -1.294 0.196133    
-poly(lstat, 10)9     8.4168     5.1993   1.619 0.106116    
-poly(lstat, 10)10   -7.3351     5.1993  -1.411 0.158930    
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 5.199 on 495 degrees of freedom
-Multiple R-squared:  0.6867,    Adjusted R-squared:  0.6804 
-F-statistic: 108.5 on 10 and 495 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-We see that up to 5 polynomial terms are statistically significant
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{5}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ poly(lstat, 5), data = data)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--13.5433  -3.1039  -0.7052   2.0844  27.1153 
-
-Coefficients:
-                 Estimate Std. Error t value Pr(>|t|)    
-(Intercept)       22.5328     0.2318  97.197  < 2e-16 ***
-poly(lstat, 5)1 -152.4595     5.2148 -29.236  < 2e-16 ***
-poly(lstat, 5)2   64.2272     5.2148  12.316  < 2e-16 ***
-poly(lstat, 5)3  -27.0511     5.2148  -5.187 3.10e-07 ***
-poly(lstat, 5)4   25.4517     5.2148   4.881 1.42e-06 ***
-poly(lstat, 5)5  -19.2524     5.2148  -3.692 0.000247 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 5.215 on 500 degrees of freedom
-Multiple R-squared:  0.6817,    Adjusted R-squared:  0.6785 
-F-statistic: 214.2 on 5 and 500 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{5}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"poly 5 model residual plot"}\NormalTok{)  }\OtherTok{{-}\textgreater{}}\NormalTok{ p3}
-
-\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2 }\SpecialCharTok{+}\NormalTok{ p3}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-26-1.pdf}
-
-}
-
-\end{figure}
-
-Instead of adding the polynomial transformations, we could try log
-transformation
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(lstat),data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"log model residual plot"}\NormalTok{) }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-27-1.pdf}
-
-}
-
-\end{figure}
-
-This is actually very nice.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(rm),data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ log(rm), data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--19.487  -2.875  -0.104   2.837  39.816 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  -76.488      5.028  -15.21   <2e-16 ***
-log(rm)       54.055      2.739   19.73   <2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 6.915 on 504 degrees of freedom
-Multiple R-squared:  0.4358,    Adjusted R-squared:  0.4347 
-F-statistic: 389.3 on 1 and 504 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{.,data) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ lmm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{anova}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Analysis of Variance Table
-
-Response: medv
-           Df  Sum Sq Mean Sq  F value    Pr(>F)    
-crim        1  6440.8  6440.8 286.0300 < 2.2e-16 ***
-zn          1  3554.3  3554.3 157.8452 < 2.2e-16 ***
-indus       1  2551.2  2551.2 113.2984 < 2.2e-16 ***
-chas        1  1529.8  1529.8  67.9393 1.543e-15 ***
-nox         1    76.2    76.2   3.3861 0.0663505 .  
-rm          1 10938.1 10938.1 485.7530 < 2.2e-16 ***
-age         1    90.3    90.3   4.0087 0.0458137 *  
-dis         1  1779.5  1779.5  79.0262 < 2.2e-16 ***
-rad         1    34.1    34.1   1.5159 0.2188325    
-tax         1   329.6   329.6  14.6352 0.0001472 ***
-ptratio     1  1309.3  1309.3  58.1454 1.266e-13 ***
-black       1   593.3   593.3  26.3496 4.109e-07 ***
-lstat       1  2410.8  2410.8 107.0634 < 2.2e-16 ***
-Residuals 492 11078.8    22.5                       
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{anova}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Analysis of Variance Table
-
-Response: medv
-           Df  Sum Sq Mean Sq  F value    Pr(>F)    
-crim        1  6440.8  6440.8 286.0300 < 2.2e-16 ***
-zn          1  3554.3  3554.3 157.8452 < 2.2e-16 ***
-indus       1  2551.2  2551.2 113.2984 < 2.2e-16 ***
-chas        1  1529.8  1529.8  67.9393 1.543e-15 ***
-nox         1    76.2    76.2   3.3861 0.0663505 .  
-rm          1 10938.1 10938.1 485.7530 < 2.2e-16 ***
-age         1    90.3    90.3   4.0087 0.0458137 *  
-dis         1  1779.5  1779.5  79.0262 < 2.2e-16 ***
-rad         1    34.1    34.1   1.5159 0.2188325    
-tax         1   329.6   329.6  14.6352 0.0001472 ***
-ptratio     1  1309.3  1309.3  58.1454 1.266e-13 ***
-black       1   593.3   593.3  26.3496 4.109e-07 ***
-lstat       1  2410.8  2410.8 107.0634 < 2.2e-16 ***
-Residuals 492 11078.8    22.5                       
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"backward"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Start:  AIC=1589.64
-medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
-    tax + ptratio + black + lstat
-
-          Df Sum of Sq   RSS    AIC
-- age      1      0.06 11079 1587.7
-- indus    1      2.52 11081 1587.8
-<none>                 11079 1589.6
-- chas     1    218.97 11298 1597.5
-- tax      1    242.26 11321 1598.6
-- crim     1    243.22 11322 1598.6
-- zn       1    257.49 11336 1599.3
-- black    1    270.63 11349 1599.8
-- rad      1    479.15 11558 1609.1
-- nox      1    487.16 11566 1609.4
-- ptratio  1   1194.23 12273 1639.4
-- dis      1   1232.41 12311 1641.0
-- rm       1   1871.32 12950 1666.6
-- lstat    1   2410.84 13490 1687.3
-
-Step:  AIC=1587.65
-medv ~ crim + zn + indus + chas + nox + rm + dis + rad + tax + 
-    ptratio + black + lstat
-
-          Df Sum of Sq   RSS    AIC
-- indus    1      2.52 11081 1585.8
-<none>                 11079 1587.7
-- chas     1    219.91 11299 1595.6
-- tax      1    242.24 11321 1596.6
-- crim     1    243.20 11322 1596.6
-- zn       1    260.32 11339 1597.4
-- black    1    272.26 11351 1597.9
-- rad      1    481.09 11560 1607.2
-- nox      1    520.87 11600 1608.9
-- ptratio  1   1200.23 12279 1637.7
-- dis      1   1352.26 12431 1643.9
-- rm       1   1959.55 13038 1668.0
-- lstat    1   2718.88 13798 1696.7
-
-Step:  AIC=1585.76
-medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
-    black + lstat
-
-          Df Sum of Sq   RSS    AIC
-<none>                 11081 1585.8
-- chas     1    227.21 11309 1594.0
-- crim     1    245.37 11327 1594.8
-- zn       1    257.82 11339 1595.4
-- black    1    270.82 11352 1596.0
-- tax      1    273.62 11355 1596.1
-- rad      1    500.92 11582 1606.1
-- nox      1    541.91 11623 1607.9
-- ptratio  1   1206.45 12288 1636.0
-- dis      1   1448.94 12530 1645.9
-- rm       1   1963.66 13045 1666.3
-- lstat    1   2723.48 13805 1695.0
-\end{verbatim}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ crim + zn + chas + nox + rm + dis + 
-    rad + tax + ptratio + black + lstat, data = data)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--15.5984  -2.7386  -0.5046   1.7273  26.2373 
-
-Coefficients:
-              Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  36.341145   5.067492   7.171 2.73e-12 ***
-crim         -0.108413   0.032779  -3.307 0.001010 ** 
-zn            0.045845   0.013523   3.390 0.000754 ***
-chas          2.718716   0.854240   3.183 0.001551 ** 
-nox         -17.376023   3.535243  -4.915 1.21e-06 ***
-rm            3.801579   0.406316   9.356  < 2e-16 ***
-dis          -1.492711   0.185731  -8.037 6.84e-15 ***
-rad           0.299608   0.063402   4.726 3.00e-06 ***
-tax          -0.011778   0.003372  -3.493 0.000521 ***
-ptratio      -0.946525   0.129066  -7.334 9.24e-13 ***
-black         0.009291   0.002674   3.475 0.000557 ***
-lstat        -0.522553   0.047424 -11.019  < 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 4.736 on 494 degrees of freedom
-Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7348 
-F-statistic: 128.2 on 11 and 494 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"forward"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Start:  AIC=1589.64
-medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
-    tax + ptratio + black + lstat
-\end{verbatim}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ crim + zn + indus + chas + nox + rm + 
-    age + dis + rad + tax + ptratio + black + lstat, data = data)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--15.595  -2.730  -0.518   1.777  26.199 
-
-Coefficients:
-              Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  3.646e+01  5.103e+00   7.144 3.28e-12 ***
-crim        -1.080e-01  3.286e-02  -3.287 0.001087 ** 
-zn           4.642e-02  1.373e-02   3.382 0.000778 ***
-indus        2.056e-02  6.150e-02   0.334 0.738288    
-chas         2.687e+00  8.616e-01   3.118 0.001925 ** 
-nox         -1.777e+01  3.820e+00  -4.651 4.25e-06 ***
-rm           3.810e+00  4.179e-01   9.116  < 2e-16 ***
-age          6.922e-04  1.321e-02   0.052 0.958229    
-dis         -1.476e+00  1.995e-01  -7.398 6.01e-13 ***
-rad          3.060e-01  6.635e-02   4.613 5.07e-06 ***
-tax         -1.233e-02  3.760e-03  -3.280 0.001112 ** 
-ptratio     -9.527e-01  1.308e-01  -7.283 1.31e-12 ***
-black        9.312e-03  2.686e-03   3.467 0.000573 ***
-lstat       -5.248e-01  5.072e-02 -10.347  < 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 4.745 on 492 degrees of freedom
-Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7338 
-F-statistic: 108.1 on 13 and 492 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"both"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Start:  AIC=1589.64
-medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
-    tax + ptratio + black + lstat
-
-          Df Sum of Sq   RSS    AIC
-- age      1      0.06 11079 1587.7
-- indus    1      2.52 11081 1587.8
-<none>                 11079 1589.6
-- chas     1    218.97 11298 1597.5
-- tax      1    242.26 11321 1598.6
-- crim     1    243.22 11322 1598.6
-- zn       1    257.49 11336 1599.3
-- black    1    270.63 11349 1599.8
-- rad      1    479.15 11558 1609.1
-- nox      1    487.16 11566 1609.4
-- ptratio  1   1194.23 12273 1639.4
-- dis      1   1232.41 12311 1641.0
-- rm       1   1871.32 12950 1666.6
-- lstat    1   2410.84 13490 1687.3
-
-Step:  AIC=1587.65
-medv ~ crim + zn + indus + chas + nox + rm + dis + rad + tax + 
-    ptratio + black + lstat
-
-          Df Sum of Sq   RSS    AIC
-- indus    1      2.52 11081 1585.8
-<none>                 11079 1587.7
-+ age      1      0.06 11079 1589.6
-- chas     1    219.91 11299 1595.6
-- tax      1    242.24 11321 1596.6
-- crim     1    243.20 11322 1596.6
-- zn       1    260.32 11339 1597.4
-- black    1    272.26 11351 1597.9
-- rad      1    481.09 11560 1607.2
-- nox      1    520.87 11600 1608.9
-- ptratio  1   1200.23 12279 1637.7
-- dis      1   1352.26 12431 1643.9
-- rm       1   1959.55 13038 1668.0
-- lstat    1   2718.88 13798 1696.7
-
-Step:  AIC=1585.76
-medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
-    black + lstat
-
-          Df Sum of Sq   RSS    AIC
-<none>                 11081 1585.8
-+ indus    1      2.52 11079 1587.7
-+ age      1      0.06 11081 1587.8
-- chas     1    227.21 11309 1594.0
-- crim     1    245.37 11327 1594.8
-- zn       1    257.82 11339 1595.4
-- black    1    270.82 11352 1596.0
-- tax      1    273.62 11355 1596.1
-- rad      1    500.92 11582 1606.1
-- nox      1    541.91 11623 1607.9
-- ptratio  1   1206.45 12288 1636.0
-- dis      1   1448.94 12530 1645.9
-- rm       1   1963.66 13045 1666.3
-- lstat    1   2723.48 13805 1695.0
-\end{verbatim}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ crim + zn + chas + nox + rm + dis + 
-    rad + tax + ptratio + black + lstat, data = data)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--15.5984  -2.7386  -0.5046   1.7273  26.2373 
-
-Coefficients:
-              Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  36.341145   5.067492   7.171 2.73e-12 ***
-crim         -0.108413   0.032779  -3.307 0.001010 ** 
-zn            0.045845   0.013523   3.390 0.000754 ***
-chas          2.718716   0.854240   3.183 0.001551 ** 
-nox         -17.376023   3.535243  -4.915 1.21e-06 ***
-rm            3.801579   0.406316   9.356  < 2e-16 ***
-dis          -1.492711   0.185731  -8.037 6.84e-15 ***
-rad           0.299608   0.063402   4.726 3.00e-06 ***
-tax          -0.011778   0.003372  -3.493 0.000521 ***
-ptratio      -0.946525   0.129066  -7.334 9.24e-13 ***
-black         0.009291   0.002674   3.475 0.000557 ***
-lstat        -0.522553   0.047424 -11.019  < 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 4.736 on 494 degrees of freedom
-Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7348 
-F-statistic: 128.2 on 11 and 494 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lmm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-stats::lm(formula = medv ~ ., data = data)
-
-Coefficients:
-(Intercept)         crim           zn        indus         chas          nox  
-  3.646e+01   -1.080e-01    4.642e-02    2.056e-02    2.687e+00   -1.777e+01  
-         rm          age          dis          rad          tax      ptratio  
-  3.810e+00    6.922e-04   -1.476e+00    3.060e-01   -1.233e-02   -9.527e-01  
-      black        lstat  
-  9.312e-03   -5.248e-01  
-\end{verbatim}
-
-\bookmarksetup{startatroot}
-
 \hypertarget{classification}{%
 \chapter{Classification}\label{classification}}
 
@@ -7009,8 +5864,9 @@ Coefficients:
 \FunctionTok{library}\NormalTok{(hrbrthemes)}
 \FunctionTok{library}\NormalTok{(patchwork)}
 \FunctionTok{library}\NormalTok{(GGally)}
+\FunctionTok{library}\NormalTok{(showtext)}
 \NormalTok{\})}
-\NormalTok{extrafont}\SpecialCharTok{::}\FunctionTok{loadfonts}\NormalTok{(}\AttributeTok{quiet =}  \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{extrafont}\SpecialCharTok{::}\FunctionTok{loadfonts}\NormalTok{(}\AttributeTok{quiet =} \ConstantTok{TRUE}\NormalTok{)}
 \FunctionTok{theme\_set}\NormalTok{(}\FunctionTok{theme\_ipsum\_es}\NormalTok{(}\AttributeTok{axis\_title\_size =} \DecValTok{11}\NormalTok{ , }\AttributeTok{axis\_title\_just =} \StringTok{"c"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.line =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =}\StringTok{"black"}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}
@@ -8486,6 +7342,1301 @@ The following object is masked from 'package:dials':
  9 -1.36  1     1             0.991 0.00869   
 10 -0.822 1     1             0.937 0.0633    
 # i 30 more rows
+\end{verbatim}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{exercise}{%
+\chapter{Exercise}\label{exercise}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{suppressPackageStartupMessages}\NormalTok{(\{}
+\FunctionTok{library}\NormalTok{(ISLR)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(ggthemes)}
+\FunctionTok{library}\NormalTok{(sjPlot)}
+\FunctionTok{library}\NormalTok{(corrplot)}
+\FunctionTok{library}\NormalTok{(tidymodels)}
+\FunctionTok{library}\NormalTok{(magrittr)}
+\FunctionTok{library}\NormalTok{(dotwhisker)}
+\FunctionTok{library}\NormalTok{(hrbrthemes)}
+\FunctionTok{library}\NormalTok{(patchwork)}
+\FunctionTok{library}\NormalTok{(GGally)}
+\FunctionTok{library}\NormalTok{(showtext)}
+\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{slr}{%
+\section{SLR}\label{slr}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{=}\NormalTok{ MASS}\SpecialCharTok{::}\NormalTok{Boston}
+\NormalTok{data }\SpecialCharTok{\%\textless{}\textgreater{}\%} \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 14
+      crim    zn indus  chas   nox    rm   age   dis   rad   tax ptratio black
+     <dbl> <dbl> <dbl> <int> <dbl> <dbl> <dbl> <dbl> <int> <dbl>   <dbl> <dbl>
+ 1 0.00632  18    2.31     0 0.538  6.58  65.2  4.09     1   296    15.3  397.
+ 2 0.0273    0    7.07     0 0.469  6.42  78.9  4.97     2   242    17.8  397.
+ 3 0.0273    0    7.07     0 0.469  7.18  61.1  4.97     2   242    17.8  393.
+ 4 0.0324    0    2.18     0 0.458  7.00  45.8  6.06     3   222    18.7  395.
+ 5 0.0690    0    2.18     0 0.458  7.15  54.2  6.06     3   222    18.7  397.
+ 6 0.0298    0    2.18     0 0.458  6.43  58.7  6.06     3   222    18.7  394.
+ 7 0.0883   12.5  7.87     0 0.524  6.01  66.6  5.56     5   311    15.2  396.
+ 8 0.145    12.5  7.87     0 0.524  6.17  96.1  5.95     5   311    15.2  397.
+ 9 0.211    12.5  7.87     0 0.524  5.63 100    6.08     5   311    15.2  387.
+10 0.170    12.5  7.87     0 0.524  6.00  85.9  6.59     5   311    15.2  387.
+# i 496 more rows
+# i 2 more variables: lstat <dbl>, medv <dbl>
+\end{verbatim}
+
+We are going to predict \texttt{medv}(median house value) in Boston,
+using 13 predictors such as \texttt{rm}(average number of rooms per
+house), \texttt{age}(avarege age of houses), and \texttt{lstat} (percent
+of household with low socioeconomics status).
+
+Do a linear regression of \texttt{lstat} on \texttt{medv}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ slr\_res }
+
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.168  -3.990  -1.318   2.034  24.500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 34.55384    0.56263   61.41   <2e-16 ***
+lstat       -0.95005    0.03873  -24.53   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.216 on 504 degrees of freedom
+Multiple R-squared:  0.5441,    Adjusted R-squared:  0.5432 
+F-statistic: 601.6 on 1 and 504 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{names}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ [1] "coefficients"  "residuals"     "effects"       "rank"         
+ [5] "fitted.values" "assign"        "qr"            "df.residual"  
+ [9] "xlevels"       "call"          "terms"         "model"        
+\end{verbatim}
+
+Get the confidence intervals
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{confint}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                2.5 %     97.5 %
+(Intercept) 33.448457 35.6592247
+lstat       -1.026148 -0.8739505
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ dotwhisker}\SpecialCharTok{::}\FunctionTok{dwplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-5-1.pdf}
+
+}
+
+\end{figure}
+
+Lets do some predictions from this model. Lets create predictions for
+cases when \texttt{lstat} is equal to 5,10, and 15. We can use
+\texttt{predict} function for this. Here is a confidence interval for
+our p
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{predict}\NormalTok{(., }\FunctionTok{tibble}\NormalTok{(}\AttributeTok{lstat =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{15}\NormalTok{)), }\AttributeTok{interval =} \StringTok{"confidence"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       fit      lwr      upr
+1 29.80359 29.00741 30.59978
+2 25.05335 24.47413 25.63256
+3 20.30310 19.73159 20.87461
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{predict}\NormalTok{(., }\FunctionTok{tibble}\NormalTok{(}\AttributeTok{lstat =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{15}\NormalTok{)), }\AttributeTok{interval =} \StringTok{"prediction"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       fit       lwr      upr
+1 29.80359 17.565675 42.04151
+2 25.05335 12.827626 37.27907
+3 20.30310  8.077742 32.52846
+\end{verbatim}
+
+Lets plot \texttt{medv} and \texttt{lstat} along with the least squares
+regression line.
+
+We can either:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{medv, data}\SpecialCharTok{$}\NormalTok{lstat)}
+\FunctionTok{abline}\NormalTok{(slr\_res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-8-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ lstat, }\AttributeTok{y =}\NormalTok{ medv) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{geom\_abline}\NormalTok{(}\AttributeTok{intercept =}\NormalTok{ slr\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{], }\AttributeTok{slope =}\NormalTok{ slr\_res}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\AttributeTok{size =}\FloatTok{1.1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 8
+    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
+   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
+ 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
+ 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
+ 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
+ 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
+ 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
+ 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
+ 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
+ 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
+ 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
+10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
+# i 496 more rows
+\end{verbatim}
+
+\begin{verbatim}
+Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+i Please use `linewidth` instead.
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-9-1.pdf}
+
+}
+
+\end{figure}
+
+This looks like not a linear relationship actually; lets confirm this
+with our residual plot. Since this is a SLR i can plot \(x\) vs \(e_i\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{ .resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se=}\NormalTok{F) }\OtherTok{{-}\textgreater{}}\NormalTok{ p1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 8
+    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
+   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
+ 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
+ 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
+ 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
+ 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
+ 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
+ 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
+ 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
+ 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
+ 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
+10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
+# i 496 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ augment }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{ .std.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se=}\NormalTok{F) }\OtherTok{{-}\textgreater{}}\NormalTok{ p2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 506 x 8
+    medv lstat .fitted .resid    .hat .sigma     .cooksd .std.resid
+   <dbl> <dbl>   <dbl>  <dbl>   <dbl>  <dbl>       <dbl>      <dbl>
+ 1  24    4.98   29.8  -5.82  0.00426   6.22 0.00189        -0.939 
+ 2  21.6  9.14   25.9  -4.27  0.00246   6.22 0.000582       -0.688 
+ 3  34.7  4.03   30.7   3.97  0.00486   6.22 0.00100         0.641 
+ 4  33.4  2.94   31.8   1.64  0.00564   6.22 0.000198        0.264 
+ 5  36.2  5.33   29.5   6.71  0.00406   6.21 0.00238         1.08  
+ 6  28.7  5.21   29.6  -0.904 0.00413   6.22 0.0000440      -0.146 
+ 7  22.9 12.4    22.7   0.155 0.00198   6.22 0.000000620     0.0250
+ 8  27.1 19.2    16.4  10.7   0.00362   6.20 0.00544         1.73  
+ 9  16.5 29.9     6.12 10.4   0.0136    6.20 0.0194          1.68  
+10  18.9 17.1    18.3   0.592 0.00274   6.22 0.0000125       0.0954
+# i 496 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-10-1.pdf}
+
+}
+
+\end{figure}
+
+Our suspicions are true, it looks like there may not be a linear
+relationship, this shows a quadratic relationship.
+
+Our leverage statistics are given in the \texttt{.hat} column, but we
+can also get them using \texttt{hatvalues}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{hatvalues}\NormalTok{(slr\_res))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-11-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{which.max}\NormalTok{(}\FunctionTok{hatvalues}\NormalTok{(slr\_res))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+375 
+375 
+\end{verbatim}
+
+Lets check the outliers by plotting standardized residuals vs fitted
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(id,.std.resid) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pull}\NormalTok{(}\StringTok{"id"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ outliers}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 10 x 2
+      id .std.resid
+   <int>      <dbl>
+ 1   164       3.00
+ 2   167       3.06
+ 3   187       3.17
+ 4   226       3.20
+ 5   258       3.27
+ 6   263       3.20
+ 7   268       3.63
+ 8   370       3.06
+ 9   372       3.95
+10   373       3.85
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# visualize the outliers}
+
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{.std.resid, }\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{color =} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{, F,T)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =}\DecValTok{2}\NormalTok{, }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{  ggrepel}\SpecialCharTok{::}\FunctionTok{geom\_text\_repel}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{abs}\NormalTok{(.std.resid) }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{,id,}\StringTok{""}\NormalTok{)), }\AttributeTok{max.overlaps =} \DecValTok{100}\NormalTok{, }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{scale\_color\_ipsum}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-13-1.pdf}
+
+}
+
+\end{figure}
+
+Leverage points: we plot std res vs leverage
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(id, .std.resid,.hat) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{print}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{pull}\NormalTok{(}\StringTok{"id"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ highlevgs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 5 x 3
+     id .std.resid   .hat
+  <int>      <dbl>  <dbl>
+1   142       2.04 0.0204
+2   374       2.00 0.0210
+3   375       2.50 0.0269
+4   413       2.60 0.0203
+5   415       1.23 0.0250
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# high leverage points}
+
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{id =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{506}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{.hat, }\AttributeTok{y =}\NormalTok{ .std.resid, }\AttributeTok{color =} \FunctionTok{ifelse}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{,F,T)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =}\DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{  ggrepel}\SpecialCharTok{::}\FunctionTok{geom\_text\_repel}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{ifelse}\NormalTok{(.hat }\SpecialCharTok{\textgreater{}} \FloatTok{0.02}\NormalTok{,id,}\StringTok{""}\NormalTok{)), }\AttributeTok{show.legend =}\NormalTok{ F) }\SpecialCharTok{+}\FunctionTok{scale\_color\_ipsum}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-14-1.pdf}
+
+}
+
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr\_res }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.168  -3.990  -1.318   2.034  24.500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 34.55384    0.56263   61.41   <2e-16 ***
+lstat       -0.95005    0.03873  -24.53   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.216 on 504 degrees of freedom
+Multiple R-squared:  0.5441,    Adjusted R-squared:  0.5432 
+F-statistic: 601.6 on 1 and 504 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(outliers,highlevgs),]) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-14.633  -3.465  -1.012   1.937  19.060 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  34.0494     0.5110   66.63   <2e-16 ***
+lstat        -0.9538     0.0358  -26.64   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.376 on 489 degrees of freedom
+Multiple R-squared:  0.5921,    Adjusted R-squared:  0.5912 
+F-statistic: 709.7 on 1 and 489 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Removing high leverages and outliers improeves our result.
+
+\hypertarget{multiple-linear-regression-1}{%
+\section{Multiple linear
+Regression}\label{multiple-linear-regression-1}}
+
+\[
+medv = \beta_0 + \beta_1 lstat + \beta_2 age 
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat + age, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.981  -3.978  -1.283   1.968  23.158 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 33.22276    0.73085  45.458  < 2e-16 ***
+lstat       -1.03207    0.04819 -21.416  < 2e-16 ***
+age          0.03454    0.01223   2.826  0.00491 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.173 on 503 degrees of freedom
+Multiple R-squared:  0.5513,    Adjusted R-squared:  0.5495 
+F-statistic:   309 on 2 and 503 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Lets do a regression including all varaibles
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{., data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ mlr}
+\NormalTok{mlr }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ ., data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.595  -2.730  -0.518   1.777  26.199 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  3.646e+01  5.103e+00   7.144 3.28e-12 ***
+crim        -1.080e-01  3.286e-02  -3.287 0.001087 ** 
+zn           4.642e-02  1.373e-02   3.382 0.000778 ***
+indus        2.056e-02  6.150e-02   0.334 0.738288    
+chas         2.687e+00  8.616e-01   3.118 0.001925 ** 
+nox         -1.777e+01  3.820e+00  -4.651 4.25e-06 ***
+rm           3.810e+00  4.179e-01   9.116  < 2e-16 ***
+age          6.922e-04  1.321e-02   0.052 0.958229    
+dis         -1.476e+00  1.995e-01  -7.398 6.01e-13 ***
+rad          3.060e-01  6.635e-02   4.613 5.07e-06 ***
+tax         -1.233e-02  3.760e-03  -3.280 0.001112 ** 
+ptratio     -9.527e-01  1.308e-01  -7.283 1.31e-12 ***
+black        9.312e-03  2.686e-03   3.467 0.000573 ***
+lstat       -5.248e-01  5.072e-02 -10.347  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.745 on 492 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7338 
+F-statistic: 108.1 on 13 and 492 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Lets calculate the VIF values
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mlr }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ car}\SpecialCharTok{::}\FunctionTok{vif}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+    crim       zn    indus     chas      nox       rm      age      dis 
+1.792192 2.298758 3.991596 1.073995 4.393720 1.933744 3.100826 3.955945 
+     rad      tax  ptratio    black    lstat 
+7.484496 9.008554 1.799084 1.348521 2.941491 
+\end{verbatim}
+
+\texttt{age} has the highest p-value, lets remove that from the
+regression
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{. }\SpecialCharTok{{-}}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ . - age, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.6054  -2.7313  -0.5188   1.7601  26.2243 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  36.436927   5.080119   7.172 2.72e-12 ***
+crim         -0.108006   0.032832  -3.290 0.001075 ** 
+zn            0.046334   0.013613   3.404 0.000719 ***
+indus         0.020562   0.061433   0.335 0.737989    
+chas          2.689026   0.859598   3.128 0.001863 ** 
+nox         -17.713540   3.679308  -4.814 1.97e-06 ***
+rm            3.814394   0.408480   9.338  < 2e-16 ***
+dis          -1.478612   0.190611  -7.757 5.03e-14 ***
+rad           0.305786   0.066089   4.627 4.75e-06 ***
+tax          -0.012329   0.003755  -3.283 0.001099 ** 
+ptratio      -0.952211   0.130294  -7.308 1.10e-12 ***
+black         0.009321   0.002678   3.481 0.000544 ***
+lstat        -0.523852   0.047625 -10.999  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.74 on 493 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7343 
+F-statistic: 117.3 on 12 and 493 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{interaction-terms}{%
+\subsection{Interaction Terms}\label{interaction-terms}}
+
+following model
+
+\[
+medv = \beta_0 + \beta_1 lstat + \beta_2 age + \beta_3 lstat \cdot age + \epsilon
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{*}\NormalTok{ age, data) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# short for fit(medv\textasciitilde{} lstat + age + lstat * age)}
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat * age, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.806  -4.045  -1.333   2.085  27.552 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 36.0885359  1.4698355  24.553  < 2e-16 ***
+lstat       -1.3921168  0.1674555  -8.313 8.78e-16 ***
+age         -0.0007209  0.0198792  -0.036   0.9711    
+lstat:age    0.0041560  0.0018518   2.244   0.0252 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.149 on 502 degrees of freedom
+Multiple R-squared:  0.5557,    Adjusted R-squared:  0.5531 
+F-statistic: 209.3 on 3 and 502 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{non-linaer-transformation-of-the-predictors}{%
+\subsection{Non-linaer Transformation of the
+predictors}\label{non-linaer-transformation-of-the-predictors}}
+
+\[
+medv = \beta_0 + \beta_1 lstat + \beta_2 lstat^2 + \epsilon
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ lstat + I(lstat^2), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.2834  -3.8313  -0.5295   2.3095  25.4148 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 42.862007   0.872084   49.15   <2e-16 ***
+lstat       -2.332821   0.123803  -18.84   <2e-16 ***
+I(lstat^2)   0.043547   0.003745   11.63   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.524 on 503 degrees of freedom
+Multiple R-squared:  0.6407,    Adjusted R-squared:  0.6393 
+F-statistic: 448.5 on 2 and 503 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+The coefficient of the quadratic term is statistically significant:
+model is improved.
+
+We use \texttt{anova} function to further quantify the extent to which
+quadratic fit is superior to linear fit. We It takes models as its
+arguments. We want to compare two models, lets create them again and
+compare them
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ modelLin}
+
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ modelQuad}
+
+\FunctionTok{anova}\NormalTok{(modelLin, modelQuad)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Variance Table
+
+Model 1: medv ~ lstat
+Model 2: medv ~ lstat + I(lstat^2)
+  Res.Df   RSS Df Sum of Sq     F    Pr(>F)    
+1    504 19472                                 
+2    503 15347  1    4125.1 135.2 < 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+The annova function performs a hypothesis test comparing the two models.
+The null hypothesis is that the two models fit the data equally well,
+and the alternative hypothesis is that the full model is superior. Here
+we reject \(H_0\); and the model indcludes quadratic term is superior to
+the linaer odel. This is not a suprise to us, because we already
+suspected this.
+
+Lets do the plots again
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat, data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Linear model residual plot"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ p1}
+
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lstat }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(lstat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Quadratic model residual plot"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ p2}
+
+\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-23-1.pdf}
+
+}
+
+\end{figure}
+
+Now on the quadratic model it looks like there is still some pattern in
+the residuals. Should we create a cubic fit? Now what we can do is
+actually insert like 10 polynomial terms and check whether they are
+significant or not
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{10}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ poly(lstat, 10), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.5340  -3.0286  -0.7507   2.0437  26.4738 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         22.5328     0.2311  97.488  < 2e-16 ***
+poly(lstat, 10)1  -152.4595     5.1993 -29.323  < 2e-16 ***
+poly(lstat, 10)2    64.2272     5.1993  12.353  < 2e-16 ***
+poly(lstat, 10)3   -27.0511     5.1993  -5.203 2.88e-07 ***
+poly(lstat, 10)4    25.4517     5.1993   4.895 1.33e-06 ***
+poly(lstat, 10)5   -19.2524     5.1993  -3.703 0.000237 ***
+poly(lstat, 10)6     6.5088     5.1993   1.252 0.211211    
+poly(lstat, 10)7     1.9416     5.1993   0.373 0.708977    
+poly(lstat, 10)8    -6.7299     5.1993  -1.294 0.196133    
+poly(lstat, 10)9     8.4168     5.1993   1.619 0.106116    
+poly(lstat, 10)10   -7.3351     5.1993  -1.411 0.158930    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.199 on 495 degrees of freedom
+Multiple R-squared:  0.6867,    Adjusted R-squared:  0.6804 
+F-statistic: 108.5 on 10 and 495 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We see that up to 5 polynomial terms are statistically significant
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{5}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ poly(lstat, 5), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-13.5433  -3.1039  -0.7052   2.0844  27.1153 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       22.5328     0.2318  97.197  < 2e-16 ***
+poly(lstat, 5)1 -152.4595     5.2148 -29.236  < 2e-16 ***
+poly(lstat, 5)2   64.2272     5.2148  12.316  < 2e-16 ***
+poly(lstat, 5)3  -27.0511     5.2148  -5.187 3.10e-07 ***
+poly(lstat, 5)4   25.4517     5.2148   4.881 1.42e-06 ***
+poly(lstat, 5)5  -19.2524     5.2148  -3.692 0.000247 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.215 on 500 degrees of freedom
+Multiple R-squared:  0.6817,    Adjusted R-squared:  0.6785 
+F-statistic: 214.2 on 5 and 500 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(lstat,}\DecValTok{5}\NormalTok{),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"poly 5 model residual plot"}\NormalTok{)  }\OtherTok{{-}\textgreater{}}\NormalTok{ p3}
+
+\NormalTok{p1 }\SpecialCharTok{+}\NormalTok{ p2 }\SpecialCharTok{+}\NormalTok{ p3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-26-1.pdf}
+
+}
+
+\end{figure}
+
+Instead of adding the polynomial transformations, we could try log
+transformation
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(lstat),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{augment}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ .fitted, }\AttributeTok{y =}\NormalTok{.resid) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{se =}\NormalTok{F) }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"log model residual plot"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{analysis_files/figure-pdf/unnamed-chunk-27-1.pdf}
+
+}
+
+\end{figure}
+
+This is actually very nice.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(rm),data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ log(rm), data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-19.487  -2.875  -0.104   2.837  39.816 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -76.488      5.028  -15.21   <2e-16 ***
+log(rm)       54.055      2.739   19.73   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.915 on 504 degrees of freedom
+Multiple R-squared:  0.4358,    Adjusted R-squared:  0.4347 
+F-statistic: 389.3 on 1 and 504 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(medv}\SpecialCharTok{\textasciitilde{}}\NormalTok{.,data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pluck}\NormalTok{(}\StringTok{"fit"}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ lmm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{anova}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Variance Table
+
+Response: medv
+           Df  Sum Sq Mean Sq  F value    Pr(>F)    
+crim        1  6440.8  6440.8 286.0300 < 2.2e-16 ***
+zn          1  3554.3  3554.3 157.8452 < 2.2e-16 ***
+indus       1  2551.2  2551.2 113.2984 < 2.2e-16 ***
+chas        1  1529.8  1529.8  67.9393 1.543e-15 ***
+nox         1    76.2    76.2   3.3861 0.0663505 .  
+rm          1 10938.1 10938.1 485.7530 < 2.2e-16 ***
+age         1    90.3    90.3   4.0087 0.0458137 *  
+dis         1  1779.5  1779.5  79.0262 < 2.2e-16 ***
+rad         1    34.1    34.1   1.5159 0.2188325    
+tax         1   329.6   329.6  14.6352 0.0001472 ***
+ptratio     1  1309.3  1309.3  58.1454 1.266e-13 ***
+black       1   593.3   593.3  26.3496 4.109e-07 ***
+lstat       1  2410.8  2410.8 107.0634 < 2.2e-16 ***
+Residuals 492 11078.8    22.5                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{anova}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analysis of Variance Table
+
+Response: medv
+           Df  Sum Sq Mean Sq  F value    Pr(>F)    
+crim        1  6440.8  6440.8 286.0300 < 2.2e-16 ***
+zn          1  3554.3  3554.3 157.8452 < 2.2e-16 ***
+indus       1  2551.2  2551.2 113.2984 < 2.2e-16 ***
+chas        1  1529.8  1529.8  67.9393 1.543e-15 ***
+nox         1    76.2    76.2   3.3861 0.0663505 .  
+rm          1 10938.1 10938.1 485.7530 < 2.2e-16 ***
+age         1    90.3    90.3   4.0087 0.0458137 *  
+dis         1  1779.5  1779.5  79.0262 < 2.2e-16 ***
+rad         1    34.1    34.1   1.5159 0.2188325    
+tax         1   329.6   329.6  14.6352 0.0001472 ***
+ptratio     1  1309.3  1309.3  58.1454 1.266e-13 ***
+black       1   593.3   593.3  26.3496 4.109e-07 ***
+lstat       1  2410.8  2410.8 107.0634 < 2.2e-16 ***
+Residuals 492 11078.8    22.5                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"backward"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=1589.64
+medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+    tax + ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- age      1      0.06 11079 1587.7
+- indus    1      2.52 11081 1587.8
+<none>                 11079 1589.6
+- chas     1    218.97 11298 1597.5
+- tax      1    242.26 11321 1598.6
+- crim     1    243.22 11322 1598.6
+- zn       1    257.49 11336 1599.3
+- black    1    270.63 11349 1599.8
+- rad      1    479.15 11558 1609.1
+- nox      1    487.16 11566 1609.4
+- ptratio  1   1194.23 12273 1639.4
+- dis      1   1232.41 12311 1641.0
+- rm       1   1871.32 12950 1666.6
+- lstat    1   2410.84 13490 1687.3
+
+Step:  AIC=1587.65
+medv ~ crim + zn + indus + chas + nox + rm + dis + rad + tax + 
+    ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- indus    1      2.52 11081 1585.8
+<none>                 11079 1587.7
+- chas     1    219.91 11299 1595.6
+- tax      1    242.24 11321 1596.6
+- crim     1    243.20 11322 1596.6
+- zn       1    260.32 11339 1597.4
+- black    1    272.26 11351 1597.9
+- rad      1    481.09 11560 1607.2
+- nox      1    520.87 11600 1608.9
+- ptratio  1   1200.23 12279 1637.7
+- dis      1   1352.26 12431 1643.9
+- rm       1   1959.55 13038 1668.0
+- lstat    1   2718.88 13798 1696.7
+
+Step:  AIC=1585.76
+medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
+    black + lstat
+
+          Df Sum of Sq   RSS    AIC
+<none>                 11081 1585.8
+- chas     1    227.21 11309 1594.0
+- crim     1    245.37 11327 1594.8
+- zn       1    257.82 11339 1595.4
+- black    1    270.82 11352 1596.0
+- tax      1    273.62 11355 1596.1
+- rad      1    500.92 11582 1606.1
+- nox      1    541.91 11623 1607.9
+- ptratio  1   1206.45 12288 1636.0
+- dis      1   1448.94 12530 1645.9
+- rm       1   1963.66 13045 1666.3
+- lstat    1   2723.48 13805 1695.0
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ crim + zn + chas + nox + rm + dis + 
+    rad + tax + ptratio + black + lstat, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.5984  -2.7386  -0.5046   1.7273  26.2373 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  36.341145   5.067492   7.171 2.73e-12 ***
+crim         -0.108413   0.032779  -3.307 0.001010 ** 
+zn            0.045845   0.013523   3.390 0.000754 ***
+chas          2.718716   0.854240   3.183 0.001551 ** 
+nox         -17.376023   3.535243  -4.915 1.21e-06 ***
+rm            3.801579   0.406316   9.356  < 2e-16 ***
+dis          -1.492711   0.185731  -8.037 6.84e-15 ***
+rad           0.299608   0.063402   4.726 3.00e-06 ***
+tax          -0.011778   0.003372  -3.493 0.000521 ***
+ptratio      -0.946525   0.129066  -7.334 9.24e-13 ***
+black         0.009291   0.002674   3.475 0.000557 ***
+lstat        -0.522553   0.047424 -11.019  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.736 on 494 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7348 
+F-statistic: 128.2 on 11 and 494 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"forward"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=1589.64
+medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+    tax + ptratio + black + lstat
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ crim + zn + indus + chas + nox + rm + 
+    age + dis + rad + tax + ptratio + black + lstat, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.595  -2.730  -0.518   1.777  26.199 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  3.646e+01  5.103e+00   7.144 3.28e-12 ***
+crim        -1.080e-01  3.286e-02  -3.287 0.001087 ** 
+zn           4.642e-02  1.373e-02   3.382 0.000778 ***
+indus        2.056e-02  6.150e-02   0.334 0.738288    
+chas         2.687e+00  8.616e-01   3.118 0.001925 ** 
+nox         -1.777e+01  3.820e+00  -4.651 4.25e-06 ***
+rm           3.810e+00  4.179e-01   9.116  < 2e-16 ***
+age          6.922e-04  1.321e-02   0.052 0.958229    
+dis         -1.476e+00  1.995e-01  -7.398 6.01e-13 ***
+rad          3.060e-01  6.635e-02   4.613 5.07e-06 ***
+tax         -1.233e-02  3.760e-03  -3.280 0.001112 ** 
+ptratio     -9.527e-01  1.308e-01  -7.283 1.31e-12 ***
+black        9.312e-03  2.686e-03   3.467 0.000573 ***
+lstat       -5.248e-01  5.072e-02 -10.347  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.745 on 492 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7338 
+F-statistic: 108.1 on 13 and 492 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{ stats}\SpecialCharTok{::}\FunctionTok{step}\NormalTok{(}\AttributeTok{direction =} \StringTok{"both"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summary}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Start:  AIC=1589.64
+medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+    tax + ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- age      1      0.06 11079 1587.7
+- indus    1      2.52 11081 1587.8
+<none>                 11079 1589.6
+- chas     1    218.97 11298 1597.5
+- tax      1    242.26 11321 1598.6
+- crim     1    243.22 11322 1598.6
+- zn       1    257.49 11336 1599.3
+- black    1    270.63 11349 1599.8
+- rad      1    479.15 11558 1609.1
+- nox      1    487.16 11566 1609.4
+- ptratio  1   1194.23 12273 1639.4
+- dis      1   1232.41 12311 1641.0
+- rm       1   1871.32 12950 1666.6
+- lstat    1   2410.84 13490 1687.3
+
+Step:  AIC=1587.65
+medv ~ crim + zn + indus + chas + nox + rm + dis + rad + tax + 
+    ptratio + black + lstat
+
+          Df Sum of Sq   RSS    AIC
+- indus    1      2.52 11081 1585.8
+<none>                 11079 1587.7
++ age      1      0.06 11079 1589.6
+- chas     1    219.91 11299 1595.6
+- tax      1    242.24 11321 1596.6
+- crim     1    243.20 11322 1596.6
+- zn       1    260.32 11339 1597.4
+- black    1    272.26 11351 1597.9
+- rad      1    481.09 11560 1607.2
+- nox      1    520.87 11600 1608.9
+- ptratio  1   1200.23 12279 1637.7
+- dis      1   1352.26 12431 1643.9
+- rm       1   1959.55 13038 1668.0
+- lstat    1   2718.88 13798 1696.7
+
+Step:  AIC=1585.76
+medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
+    black + lstat
+
+          Df Sum of Sq   RSS    AIC
+<none>                 11081 1585.8
++ indus    1      2.52 11079 1587.7
++ age      1      0.06 11081 1587.8
+- chas     1    227.21 11309 1594.0
+- crim     1    245.37 11327 1594.8
+- zn       1    257.82 11339 1595.4
+- black    1    270.82 11352 1596.0
+- tax      1    273.62 11355 1596.1
+- rad      1    500.92 11582 1606.1
+- nox      1    541.91 11623 1607.9
+- ptratio  1   1206.45 12288 1636.0
+- dis      1   1448.94 12530 1645.9
+- rm       1   1963.66 13045 1666.3
+- lstat    1   2723.48 13805 1695.0
+\end{verbatim}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ crim + zn + chas + nox + rm + dis + 
+    rad + tax + ptratio + black + lstat, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.5984  -2.7386  -0.5046   1.7273  26.2373 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  36.341145   5.067492   7.171 2.73e-12 ***
+crim         -0.108413   0.032779  -3.307 0.001010 ** 
+zn            0.045845   0.013523   3.390 0.000754 ***
+chas          2.718716   0.854240   3.183 0.001551 ** 
+nox         -17.376023   3.535243  -4.915 1.21e-06 ***
+rm            3.801579   0.406316   9.356  < 2e-16 ***
+dis          -1.492711   0.185731  -8.037 6.84e-15 ***
+rad           0.299608   0.063402   4.726 3.00e-06 ***
+tax          -0.011778   0.003372  -3.493 0.000521 ***
+ptratio      -0.946525   0.129066  -7.334 9.24e-13 ***
+black         0.009291   0.002674   3.475 0.000557 ***
+lstat        -0.522553   0.047424 -11.019  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.736 on 494 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7348 
+F-statistic: 128.2 on 11 and 494 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+stats::lm(formula = medv ~ ., data = data)
+
+Coefficients:
+(Intercept)         crim           zn        indus         chas          nox  
+  3.646e+01   -1.080e-01    4.642e-02    2.056e-02    2.687e+00   -1.777e+01  
+         rm          age          dis          rad          tax      ptratio  
+  3.810e+00    6.922e-04   -1.476e+00    3.060e-01   -1.233e-02   -9.527e-01  
+      black        lstat  
+  9.312e-03   -5.248e-01  
 \end{verbatim}
 
 
